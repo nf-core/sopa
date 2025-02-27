@@ -1,3 +1,0 @@
-reports:
-  samplesheet.csv:
-    display: "Auto-created samplesheet with collated metadata and FASTQ paths"
