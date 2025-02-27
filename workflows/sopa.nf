@@ -3,7 +3,7 @@
     IMPORT MODULES / SUBWORKFLOWS / FUNCTIONS
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
-include { paramsSummaryMap       } from 'plugin/nf-schema'
+include { paramsSummaryMap } from 'plugin/nf-schema'
 include { softwareVersionsToYAML } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_sopa_pipeline'
 
@@ -14,12 +14,46 @@ include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_sopa
 */
 
 workflow SOPA {
-
     take:
     ch_samplesheet // channel: samplesheet read in from --input
+
     main:
 
     ch_versions = Channel.empty()
+
+    def config = readConfigFile("toy/cellpose.yaml")
+
+    def exp_dir = "test.zarr".replaceAll(/\.zarr$/, '.explorer')
+
+    toSpatialData("test.zarr", exp_dir)
+
+    sdata_path = toSpatialData.out.sdata_path
+    explorer_directory = toSpatialData.out.explorer_directory
+
+    tissue_seg = config.segmentation.tissue ? tissueSegmentation(sdata_path, mapToCliArgs(config.segmentation.tissue)) : Channel.of([])
+
+    makeImagePatches(tissue_seg, sdata_path, mapToCliArgs(config.patchify))
+
+    cellpose_args = mapToCliArgs(config.segmentation.cellpose)
+
+    makeImagePatches.out.patches_file_image
+        .map { file -> file.text.trim().toInteger() }
+        .map { n -> (0..<n) }
+        .flatten()
+        .map { index -> tuple(sdata_path.value, cellpose_args, index) }
+        .set {  -> cellpose_ch }
+
+    patchSegmentationCellpose(cellpose_ch)
+        .collect()
+        .set {  -> resolve_trigger }
+
+    aggregate_trigger = resolveCellpose(resolve_trigger, sdata_path)
+
+    is_aggregated = aggregate(aggregate_trigger, sdata_path)
+
+    report(is_aggregated, sdata_path, explorer_directory)
+    explorer(is_aggregated, sdata_path, explorer_directory, mapToCliArgs(config.explorer))
+
 
     //
     // Collate and save software versions
@@ -27,19 +61,178 @@ workflow SOPA {
     softwareVersionsToYAML(ch_versions)
         .collectFile(
             storeDir: "${params.outdir}/pipeline_info",
-            name: 'nf_core_'  +  'sopa_software_'  + 'versions.yml',
+            name: 'nf_core_' + 'sopa_software_' + 'versions.yml',
             sort: true,
-            newLine: true
-        ).set { ch_collated_versions }
-
+            newLine: true,
+        )
+        .set {  -> ch_collated_versions }
 
     emit:
-    versions       = ch_versions                 // channel: [ path(versions.yml) ]
-
+    versions = ch_versions // channel: [ path(versions.yml) ]
 }
 
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    THE END
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
+
+process toSpatialData {
+    publishDir 'results', mode: 'copy'
+
+    input:
+    val sdata_path
+    val explorer_directory
+
+    output:
+    path sdata_path, emit: sdata_path
+    path explorer_directory, emit: explorer_directory
+
+    script:
+    """
+    sopa convert . --sdata-path ${sdata_path} --technology toy_dataset
+
+    mkdir -p ${explorer_directory}
+    touch ${explorer_directory}/.nextflow
+    """
+}
+
+process tissueSegmentation {
+    publishDir 'results', mode: 'copy'
+
+    input:
+    path sdata_path
+    val cli_arguments
+
+    output:
+    path "${sdata_path}/shapes/region_of_interest"
+
+    script:
+    """
+    sopa segmentation tissue ${sdata_path} ${cli_arguments}
+    """
+}
+
+process makeImagePatches {
+    publishDir 'results', mode: 'copy'
+
+    input:
+    val trigger
+    path sdata_path
+    val cli_arguments
+
+    output:
+    path "${sdata_path}/shapes/image_patches"
+    path "${sdata_path}/.sopa_cache/patches_file_image", emit: patches_file_image
+
+    script:
+    """
+    sopa patchify image ${sdata_path} ${cli_arguments}
+    """
+}
+
+process patchSegmentationCellpose {
+    publishDir 'results', mode: 'copy'
+
+    input:
+    tuple path(sdata_path), val(cli_arguments), val(index)
+
+    output:
+    path "${sdata_path}/.sopa_cache/cellpose_boundaries/${index}.parquet"
+
+    script:
+    """
+    sopa segmentation cellpose ${sdata_path} --patch-index ${index} ${cli_arguments}
+    """
+}
+
+process resolveCellpose {
+    publishDir 'results', mode: 'copy'
+
+    input:
+    val trigger
+    path sdata_path
+
+    output:
+    path "${sdata_path}/shapes/cellpose_boundaries"
+
+    script:
+    """
+    sopa resolve cellpose ${sdata_path}
+    """
+}
+
+process aggregate {
+    publishDir 'results', mode: 'copy'
+
+    input:
+    val trigger
+    path sdata_path
+
+    output:
+    path "${sdata_path}/tables/table"
+
+    script:
+    """
+    sopa aggregate ${sdata_path}
+    """
+}
+
+process explorer {
+    publishDir 'results', mode: 'copy'
+
+    input:
+    val trigger
+    path sdata_path
+    path explorer_experiment
+    val cli_arguments
+
+    output:
+    path "${explorer_experiment}/experiment.xenium"
+
+    script:
+    """
+    sopa explorer write ${sdata_path} --output-path ${explorer_experiment} ${cli_arguments}
+    """
+}
+
+process report {
+    publishDir 'results', mode: 'copy'
+
+    input:
+    val trigger
+    path sdata_path
+    path explorer_directory
+
+    output:
+    path "${explorer_directory}/analysis_summary.html"
+
+    script:
+    """    
+    sopa report ${sdata_path} ${explorer_directory}/analysis_summary.html
+    """
+}
+
+def stringifyItem(String key, value) {
+    key = key.replace('_', '-')
+
+    def option = "--${key}"
+
+    if (value instanceof Boolean) {
+        return value ? option : "--no-${key}"
+    }
+    if (value instanceof List) {
+        return value.collect { v -> "${option} ${stringifyValueForCli(v)}" }.join(" ")
+    }
+    return "${option} ${stringifyValueForCli(value)}"
+}
+
+def stringifyValueForCli(value) {
+    if (value instanceof String || value instanceof Map) {
+        return "'${value}'"
+    }
+    return value.toString()
+}
+
+def mapToCliArgs(Map params) {
+    return params.collect { key, value -> stringifyItem(key, value) }.join(" ")
+}
+
+def readConfigFile(String config) {
+    return new groovy.yaml.YamlSlurper().parse(config as File)
+}
