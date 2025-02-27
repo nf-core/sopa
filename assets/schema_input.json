@@ -10,7 +10,9 @@
             "sample": {
                 "type": "string",
                 "pattern": "^\\S+$",
-                "errorMessage": "Sample name must be provided and cannot contain spaces",
+                "format": "file-path",
+                "exists": true,
+                "errorMessage": "Sample data path must exist",
                 "meta": [
                     "id"
                 ]

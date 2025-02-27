@@ -23,36 +23,29 @@ workflow SOPA {
 
     def config = readConfigFile("toy/cellpose.yaml")
 
-    def exp_dir = "test.zarr".replaceAll(/\.zarr$/, '.explorer')
+    sdata_dirs = ch_samplesheet.map { row -> row[3] }
 
-    toSpatialData("test.zarr", exp_dir)
+    sdata_path = toSpatialData(sdata_dirs)
 
-    sdata_path = toSpatialData.out.sdata_path
-    explorer_directory = toSpatialData.out.explorer_directory
-
-    tissue_seg = config.segmentation.tissue ? tissueSegmentation(sdata_path, mapToCliArgs(config.segmentation.tissue)) : Channel.of([])
+    tissue_seg = config.segmentation.tissue ? tissueSegmentation(sdata_path, mapToCliArgs(config.segmentation.tissue)) : ""
 
     makeImagePatches(tissue_seg, sdata_path, mapToCliArgs(config.patchify))
 
     cellpose_args = mapToCliArgs(config.segmentation.cellpose)
 
-    makeImagePatches.out.patches_file_image
-        .map { file -> file.text.trim().toInteger() }
-        .map { n -> (0..<n) }
-        .flatten()
-        .map { index -> tuple(sdata_path.value, cellpose_args, index) }
+    sdata_path
+        .merge(makeImagePatches.out.patches_file_image)
+        .flatMap { zarr, index_file -> (0..<index_file.text.trim().toInteger()).collect { index -> tuple(zarr, cellpose_args, index) } }
         .set {  -> cellpose_ch }
 
-    patchSegmentationCellpose(cellpose_ch)
-        .collect()
-        .set {  -> resolve_trigger }
+    patchSegmentationCellpose(cellpose_ch).set {  -> resolve_trigger }
 
-    aggregate_trigger = resolveCellpose(resolve_trigger, sdata_path)
+    // aggregate_trigger = resolveCellpose(resolve_trigger, sdata_path)
 
-    is_aggregated = aggregate(aggregate_trigger, sdata_path)
+    // is_aggregated = aggregate(aggregate_trigger, sdata_path)
 
-    report(is_aggregated, sdata_path, explorer_directory)
-    explorer(is_aggregated, sdata_path, explorer_directory, mapToCliArgs(config.explorer))
+    // report(is_aggregated, sdata_path, explorer_directory)
+    // explorer(is_aggregated, sdata_path, explorer_directory, mapToCliArgs(config.explorer))
 
 
     //
@@ -77,18 +70,13 @@ process toSpatialData {
 
     input:
     val sdata_path
-    val explorer_directory
 
     output:
     path sdata_path, emit: sdata_path
-    path explorer_directory, emit: explorer_directory
 
     script:
     """
     sopa convert . --sdata-path ${sdata_path} --technology toy_dataset
-
-    mkdir -p ${explorer_directory}
-    touch ${explorer_directory}/.nextflow
     """
 }
 

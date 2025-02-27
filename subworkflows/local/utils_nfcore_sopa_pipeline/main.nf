@@ -70,18 +70,16 @@ workflow PIPELINE_INITIALISATION {
         .fromList(samplesheetToList(params.input, "${projectDir}/assets/schema_input.json"))
         .map { meta, dataset_id ->
             if (!dataset_id) {
-                return [meta.id, meta + [single_end: true], []]
+                dataset_id = file(meta.id).baseName
             }
-            else {
-                return [meta.id, meta + [single_end: false], [dataset_id]]
-            }
+
+            def sdata_dir = "${dataset_id}.zarr"
+            def explorer_dir = "${dataset_id}.explorer"
+
+            return [meta.id, meta, dataset_id, sdata_dir, explorer_dir]
         }
-        .groupTuple()
         .map { samplesheet ->
             validateInputSamplesheet(samplesheet)
-        }
-        .map { meta, dataset_id ->
-            return [meta, dataset_id.flatten()]
         }
         .set {  -> ch_samplesheet }
 
@@ -145,15 +143,7 @@ workflow PIPELINE_COMPLETION {
 // Validate channels from input samplesheet
 //
 def validateInputSamplesheet(input) {
-    def (metas, dataset_id) = input[1..2]
-
-    // Check that multiple runs of the same sample are of the same datatype i.e. single-end / paired-end
-    def endedness_ok = metas.collect { meta -> meta.single_end }.unique().size == 1
-    if (!endedness_ok) {
-        error("Please check input samplesheet -> Multiple runs of a sample must be of the same datatype i.e. single-end or paired-end: ${metas[0].id}")
-    }
-
-    return [metas[0], dataset_id]
+    return input
 }
 //
 // Generate methods description for MultiQC
