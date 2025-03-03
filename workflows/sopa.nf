@@ -40,7 +40,7 @@ workflow SOPA {
         .flatMap { zarr, n_patches -> (0..<n_patches).collect { index -> tuple(zarr, cellpose_args, index, n_patches) } }
         .set { cellpose_ch }
 
-    ch_segmented = patchSegmentationCellpose(cellpose_ch).map { dataset_id, zarr, parquet, n_patches -> [groupKey(dataset_id, n_patches), zarr, parquet] }.groupTuple().map { it -> it[1][0] }.view()
+    ch_segmented = patchSegmentationCellpose(cellpose_ch).map { dataset_id, zarr, parquet, n_patches -> [groupKey(dataset_id, n_patches), zarr, parquet] }.groupTuple().map { it -> it[1][0] }
 
     ch_resolved = resolveCellpose(ch_segmented)
 
