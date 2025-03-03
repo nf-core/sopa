@@ -73,15 +73,12 @@ workflow PIPELINE_INITIALISATION {
                 dataset_id = file(meta.id).baseName
             }
 
-            def sdata_dir = "${dataset_id}.zarr"
-            def explorer_dir = "${dataset_id}.explorer"
-
-            return [meta.id, meta, dataset_id, sdata_dir, explorer_dir]
+            return [id: meta.id, dataset_id: dataset_id, sdata_dir: "${dataset_id}.zarr", explorer_dir: "${dataset_id}.explorer"]
         }
         .map { samplesheet ->
             validateInputSamplesheet(samplesheet)
         }
-        .set {  -> ch_samplesheet }
+        .set { ch_samplesheet }
 
     emit:
     samplesheet = ch_samplesheet
@@ -109,7 +106,7 @@ workflow PIPELINE_COMPLETION {
     //
     // Completion email and summary
     //
-    workflow.onComplete {  ->
+    workflow.onComplete {
         if (email || email_on_fail) {
             completionEmail(
                 summary_params,
@@ -128,7 +125,7 @@ workflow PIPELINE_COMPLETION {
         }
     }
 
-    workflow.onError {  ->
+    workflow.onError {
         log.error("Pipeline failed. Please refer to troubleshooting docs: https://nf-co.re/docs/usage/troubleshooting")
     }
 }

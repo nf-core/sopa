@@ -24,7 +24,7 @@ workflow SOPA {
 
     def config = readConfigFile("toy/cellpose.yaml")
 
-    sdata_dirs = ch_samplesheet.map { row -> row[3] }
+    sdata_dirs = ch_samplesheet.map { meta -> meta.sdata_dir }
 
     sdata_path = toSpatialData(sdata_dirs)
 
@@ -46,8 +46,14 @@ workflow SOPA {
 
     ch_aggregated = aggregate(ch_resolved, sdata_path)
 
-    // report(ch_aggregated, sdata_path, explorer_directory)
-    // explorer(ch_aggregated, sdata_path, explorer_directory, mapToCliArgs(config.explorer))
+    ch_dataset_id_explorer = ch_samplesheet.map { row -> [row[3], row[4]] }
+
+    ch_explorer = ch_dataset_id_explorer.join(ch_aggregated).view()
+
+    ch_samplesheet.map { meta -> meta.explorer_dir }.view()
+
+    report(ch_explorer)
+    explorer(ch_explorer, mapToCliArgs(config.explorer))
 
 
     //
@@ -78,7 +84,7 @@ process toSpatialData {
 
     script:
     """
-    sopa convert . --sdata-path ${sdata_path} --technology toy_dataset
+    sopa convert . --sdata-path ${sdata_path} --technology toy_dataset --kwargs '{"length": 200}'
     """
 }
 
@@ -154,7 +160,7 @@ process aggregate {
     path sdata_path
 
     output:
-    path "${sdata_path}/tables/table"
+    tuple val(sdata_path), path(sdata_path), path("${sdata_path}/tables/table")
 
     script:
     """
@@ -166,17 +172,15 @@ process explorer {
     publishDir 'results', mode: 'copy'
 
     input:
-    val trigger
-    path sdata_path
-    path explorer_experiment
+    tuple val(__), path(sdata_path), path(explorer_directory)
     val cli_arguments
 
     output:
-    path "${explorer_experiment}/experiment.xenium"
+    path "${explorer_directory}/experiment.xenium"
 
     script:
     """
-    sopa explorer write ${sdata_path} --output-path ${explorer_experiment} ${cli_arguments}
+    sopa explorer write ${sdata_path} --output-path ${explorer_directory} ${cli_arguments}
     """
 }
 
@@ -184,9 +188,7 @@ process report {
     publishDir 'results', mode: 'copy'
 
     input:
-    val trigger
-    path sdata_path
-    path explorer_directory
+    tuple val(__), path(sdata_path), path(explorer_directory)
 
     output:
     path "${explorer_directory}/analysis_summary.html"
