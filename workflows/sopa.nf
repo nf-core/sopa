@@ -6,7 +6,8 @@
 include { paramsSummaryMap } from 'plugin/nf-schema'
 include { softwareVersionsToYAML } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_sopa_pipeline'
-
+include { readConfigFile } from '../modules/local/utils'
+include { mapToCliArgs } from '../modules/local/utils'
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     RUN MAIN WORKFLOW
@@ -35,17 +36,18 @@ workflow SOPA {
 
     sdata_path
         .merge(makeImagePatches.out.patches_file_image)
-        .flatMap { zarr, index_file -> (0..<index_file.text.trim().toInteger()).collect { index -> tuple(zarr, cellpose_args, index) } }
-        .set {  -> cellpose_ch }
+        .map { zarr, patches_file_image -> tuple(zarr, patches_file_image.text.trim().toInteger()) }
+        .flatMap { zarr, n_patches -> (0..<n_patches).collect { index -> tuple(zarr, cellpose_args, index, n_patches) } }
+        .set { cellpose_ch }
 
-    patchSegmentationCellpose(cellpose_ch).set {  -> resolve_trigger }
+    ch_segmented = patchSegmentationCellpose(cellpose_ch).map { dataset_id, zarr, parquet, n_patches -> [groupKey(dataset_id, n_patches), zarr, parquet] }.groupTuple().map { it -> it[1][0] }.view()
 
-    // aggregate_trigger = resolveCellpose(resolve_trigger, sdata_path)
+    ch_resolved = resolveCellpose(ch_segmented)
 
-    // is_aggregated = aggregate(aggregate_trigger, sdata_path)
+    ch_aggregated = aggregate(ch_resolved, sdata_path)
 
-    // report(is_aggregated, sdata_path, explorer_directory)
-    // explorer(is_aggregated, sdata_path, explorer_directory, mapToCliArgs(config.explorer))
+    // report(ch_aggregated, sdata_path, explorer_directory)
+    // explorer(ch_aggregated, sdata_path, explorer_directory, mapToCliArgs(config.explorer))
 
 
     //
@@ -58,7 +60,7 @@ workflow SOPA {
             sort: true,
             newLine: true,
         )
-        .set {  -> ch_collated_versions }
+        .set { ch_collated_versions }
 
     emit:
     versions = ch_versions // channel: [ path(versions.yml) ]
@@ -118,10 +120,10 @@ process patchSegmentationCellpose {
     publishDir 'results', mode: 'copy'
 
     input:
-    tuple path(sdata_path), val(cli_arguments), val(index)
+    tuple path(sdata_path), val(cli_arguments), val(index), val(n_patches)
 
     output:
-    path "${sdata_path}/.sopa_cache/cellpose_boundaries/${index}.parquet"
+    tuple val(sdata_path), path(sdata_path), path("${sdata_path}/.sopa_cache/cellpose_boundaries/${index}.parquet"), val(n_patches)
 
     script:
     """
@@ -133,7 +135,6 @@ process resolveCellpose {
     publishDir 'results', mode: 'copy'
 
     input:
-    val trigger
     path sdata_path
 
     output:
@@ -194,33 +195,4 @@ process report {
     """    
     sopa report ${sdata_path} ${explorer_directory}/analysis_summary.html
     """
-}
-
-def stringifyItem(String key, value) {
-    key = key.replace('_', '-')
-
-    def option = "--${key}"
-
-    if (value instanceof Boolean) {
-        return value ? option : "--no-${key}"
-    }
-    if (value instanceof List) {
-        return value.collect { v -> "${option} ${stringifyValueForCli(v)}" }.join(" ")
-    }
-    return "${option} ${stringifyValueForCli(value)}"
-}
-
-def stringifyValueForCli(value) {
-    if (value instanceof String || value instanceof Map) {
-        return "'${value}'"
-    }
-    return value.toString()
-}
-
-def mapToCliArgs(Map params) {
-    return params.collect { key, value -> stringifyItem(key, value) }.join(" ")
-}
-
-def readConfigFile(String config) {
-    return new groovy.yaml.YamlSlurper().parse(config as File)
 }
