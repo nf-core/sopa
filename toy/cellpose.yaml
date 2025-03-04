@@ -3,8 +3,8 @@ read:
   technology: toy_dataset
 
 patchify:
-  patch_width_pixel: 500
-  patch_overlap_pixel: 20
+  patch_width_pixel: 1200
+  patch_overlap_pixel: 50
 
 segmentation:
 

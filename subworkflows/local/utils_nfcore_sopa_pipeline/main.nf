@@ -73,7 +73,7 @@ workflow PIPELINE_INITIALISATION {
                 dataset_id = file(meta.id).baseName
             }
 
-            return [id: meta.id, dataset_id: dataset_id, sdata_dir: "${dataset_id}.zarr", explorer_dir: "${dataset_id}.explorer"]
+            return [id: meta.id, sdata_dir: "${dataset_id}.zarr", explorer_dir: "${dataset_id}.explorer"]
         }
         .map { samplesheet ->
             validateInputSamplesheet(samplesheet)

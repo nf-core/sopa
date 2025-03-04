@@ -24,36 +24,32 @@ workflow SOPA {
 
     def config = readConfigFile("toy/cellpose.yaml")
 
-    sdata_dirs = ch_samplesheet.map { meta -> meta.sdata_dir }
+    ch_spatialdata = toSpatialData(ch_samplesheet.map { meta -> [meta, meta.sdata_dir] })
 
-    sdata_path = toSpatialData(sdata_dirs)
+    if (config.segmentation.tissue) {
+        (ch_tissue_seg, _out) = tissueSegmentation(ch_spatialdata, mapToCliArgs(config.segmentation.tissue))
+    }
+    else {
+        ch_tissue_seg = ch_spatialdata
+    }
 
-    tissue_seg = config.segmentation.tissue ? tissueSegmentation(sdata_path, mapToCliArgs(config.segmentation.tissue)) : ""
-
-    makeImagePatches(tissue_seg, sdata_path, mapToCliArgs(config.patchify))
+    (ch_patches, _out) = makeImagePatches(ch_tissue_seg, mapToCliArgs(config.patchify))
 
     cellpose_args = mapToCliArgs(config.segmentation.cellpose)
 
-    sdata_path
-        .merge(makeImagePatches.out.patches_file_image)
-        .map { zarr, patches_file_image -> tuple(zarr, patches_file_image.text.trim().toInteger()) }
-        .flatMap { zarr, n_patches -> (0..<n_patches).collect { index -> tuple(zarr, cellpose_args, index, n_patches) } }
-        .set { cellpose_ch }
+    ch_patches
+        .map { meta, sdata_path, patches_file_image -> [meta, sdata_path, patches_file_image.text.trim().toInteger()] }
+        .flatMap { meta, sdata_path, n_patches -> (0..<n_patches).collect { index -> [meta, sdata_path, cellpose_args, index, n_patches] } }
+        .set { ch_cellpose }
 
-    ch_segmented = patchSegmentationCellpose(cellpose_ch).map { dataset_id, zarr, parquet, n_patches -> [groupKey(dataset_id, n_patches), zarr, parquet] }.groupTuple().map { it -> it[1][0] }
+    ch_segmented = patchSegmentationCellpose(ch_cellpose).map { meta, sdata_path, _out2, n_patches -> [groupKey(meta.sdata_dir, n_patches), [meta, sdata_path]] }.groupTuple().map { it -> it[1][0] }
 
-    ch_resolved = resolveCellpose(ch_segmented)
+    (ch_resolved, _out) = resolveCellpose(ch_segmented)
 
-    ch_aggregated = aggregate(ch_resolved, sdata_path)
+    (ch_aggregated, _out) = aggregate(ch_resolved)
 
-    ch_dataset_id_explorer = ch_samplesheet.map { row -> [row[3], row[4]] }
-
-    ch_explorer = ch_dataset_id_explorer.join(ch_aggregated).view()
-
-    ch_samplesheet.map { meta -> meta.explorer_dir }.view()
-
-    report(ch_explorer)
-    explorer(ch_explorer, mapToCliArgs(config.explorer))
+    report(ch_aggregated)
+    explorer(ch_aggregated, mapToCliArgs(config.explorer))
 
 
     //
@@ -77,14 +73,14 @@ process toSpatialData {
     publishDir 'results', mode: 'copy'
 
     input:
-    val sdata_path
+    tuple val(meta), val(sdata_dir)
 
     output:
-    path sdata_path, emit: sdata_path
+    tuple val(meta), path(sdata_dir)
 
     script:
     """
-    sopa convert . --sdata-path ${sdata_path} --technology toy_dataset --kwargs '{"length": 200}'
+    sopa convert . --sdata-path ${meta.sdata_dir} --technology toy_dataset --kwargs '{"length": 200}'
     """
 }
 
@@ -92,10 +88,11 @@ process tissueSegmentation {
     publishDir 'results', mode: 'copy'
 
     input:
-    path sdata_path
+    tuple val(meta), path(sdata_path)
     val cli_arguments
 
     output:
+    tuple val(meta), path(sdata_path)
     path "${sdata_path}/shapes/region_of_interest"
 
     script:
@@ -108,13 +105,12 @@ process makeImagePatches {
     publishDir 'results', mode: 'copy'
 
     input:
-    val trigger
-    path sdata_path
+    tuple val(meta), path(sdata_path)
     val cli_arguments
 
     output:
+    tuple val(meta), path(sdata_path), path("${sdata_path}/.sopa_cache/patches_file_image")
     path "${sdata_path}/shapes/image_patches"
-    path "${sdata_path}/.sopa_cache/patches_file_image", emit: patches_file_image
 
     script:
     """
@@ -126,10 +122,10 @@ process patchSegmentationCellpose {
     publishDir 'results', mode: 'copy'
 
     input:
-    tuple path(sdata_path), val(cli_arguments), val(index), val(n_patches)
+    tuple val(meta), path(sdata_path), val(cli_arguments), val(index), val(n_patches)
 
     output:
-    tuple val(sdata_path), path(sdata_path), path("${sdata_path}/.sopa_cache/cellpose_boundaries/${index}.parquet"), val(n_patches)
+    tuple val(meta), path(sdata_path), path("${sdata_path}/.sopa_cache/cellpose_boundaries/${index}.parquet"), val(n_patches)
 
     script:
     """
@@ -141,9 +137,10 @@ process resolveCellpose {
     publishDir 'results', mode: 'copy'
 
     input:
-    path sdata_path
+    tuple val(meta), path(sdata_path)
 
     output:
+    tuple val(meta), path(sdata_path)
     path "${sdata_path}/shapes/cellpose_boundaries"
 
     script:
@@ -156,11 +153,11 @@ process aggregate {
     publishDir 'results', mode: 'copy'
 
     input:
-    val trigger
-    path sdata_path
+    tuple val(meta), path(sdata_path)
 
     output:
-    tuple val(sdata_path), path(sdata_path), path("${sdata_path}/tables/table")
+    tuple val(meta), path(sdata_path)
+    path "${sdata_path}/tables/table"
 
     script:
     """
@@ -172,15 +169,20 @@ process explorer {
     publishDir 'results', mode: 'copy'
 
     input:
-    tuple val(__), path(sdata_path), path(explorer_directory)
+    tuple val(meta), path(sdata_path)
     val cli_arguments
 
     output:
-    path "${explorer_directory}/experiment.xenium"
+    path "${meta.explorer_dir}/experiment.xenium"
+    path "${meta.explorer_dir}/morphology.ome.tif"
+    path "${meta.explorer_dir}/cell_feature_matrix.zarr.zip"
+    path "${meta.explorer_dir}/cells.zarr.zip"
+    path "${meta.explorer_dir}/transcripts.zarr.zip"
+    path "${meta.explorer_dir}/adata.h5ad"
 
     script:
     """
-    sopa explorer write ${sdata_path} --output-path ${explorer_directory} ${cli_arguments}
+    sopa explorer write ${sdata_path} --output-path ${meta.explorer_dir} ${cli_arguments}
     """
 }
 
@@ -188,13 +190,15 @@ process report {
     publishDir 'results', mode: 'copy'
 
     input:
-    tuple val(__), path(sdata_path), path(explorer_directory)
+    tuple val(meta), path(sdata_path)
 
     output:
-    path "${explorer_directory}/analysis_summary.html"
+    path "${meta.explorer_dir}/analysis_summary.html"
 
     script:
-    """    
-    sopa report ${sdata_path} ${explorer_directory}/analysis_summary.html
+    """
+    mkdir -p ${meta.explorer_dir}
+
+    sopa report ${sdata_path} ${meta.explorer_dir}/analysis_summary.html
     """
 }
