@@ -58,6 +58,7 @@ Now, you can run the pipeline using:
 nextflow run nf-core/sopa \
    -profile <docker/singularity/.../institute> \
    --input samplesheet.csv \
+   --configfile sopa_config_name.yaml \
    --outdir <OUTDIR>
 ```
 
