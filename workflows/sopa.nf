@@ -19,15 +19,15 @@ include { mapToCliArgs } from '../modules/local/utils'
 workflow SOPA {
     take:
     ch_samplesheet // channel: samplesheet read in from --input
-    config_file
+    configfile // sopa configfile  from --configfile
 
     main:
 
     ch_versions = Channel.empty()
 
-    def config = readConfigFile(config_file)
+    def config = readConfigFile(configfile)
 
-    ch_spatialdata = toSpatialData(ch_samplesheet.map { meta -> [meta, meta.sdata_dir] })
+    ch_spatialdata = toSpatialData(ch_samplesheet.map { meta -> [meta, meta.sdata_dir] }, mapToCliArgs(config.read))
 
     if (config.segmentation.tissue) {
         (ch_tissue_seg, _out) = tissueSegmentation(ch_spatialdata, mapToCliArgs(config.segmentation.tissue))
@@ -57,33 +57,36 @@ workflow SOPA {
     //
     // Collate and save software versions
     //
-    softwareVersionsToYAML(ch_versions)
-        .collectFile(
-            storeDir: "${params.outdir}/pipeline_info",
-            name: 'nf_core_' + 'sopa_software_' + 'versions.yml',
-            sort: true,
-            newLine: true,
-        )
-        .set { ch_collated_versions }
+    softwareVersionsToYAML(ch_versions).collectFile(
+        storeDir: "${params.outdir}/pipeline_info",
+        name: 'nf_core_sopa_software_versions.yml',
+        sort: true,
+        newLine: true,
+    )
 
     emit:
     versions = ch_versions // channel: [ path(versions.yml) ]
 }
 
 process toSpatialData {
+    label "process_high"
+
     input:
     tuple val(meta), val(sdata_dir)
+    val cli_arguments
 
     output:
     tuple val(meta), path(sdata_dir)
 
     script:
     """
-    sopa convert . --sdata-path ${meta.sdata_dir} --technology toy_dataset --kwargs '{"length": 2000}'
+    sopa convert ${meta.id} --sdata-path ${meta.sdata_dir} ${cli_arguments}
     """
 }
 
 process tissueSegmentation {
+    label "process_low"
+
     input:
     tuple val(meta), path(sdata_path)
     val cli_arguments
@@ -99,6 +102,8 @@ process tissueSegmentation {
 }
 
 process makeImagePatches {
+    label "process_single"
+
     input:
     tuple val(meta), path(sdata_path)
     val cli_arguments
@@ -114,6 +119,8 @@ process makeImagePatches {
 }
 
 process makeTranscriptPatches {
+    label "process_medium"
+
     input:
     tuple val(meta), path(sdata_path)
     val cli_arguments
@@ -128,6 +135,8 @@ process makeTranscriptPatches {
 }
 
 process aggregate {
+    label "process_medium"
+
     input:
     tuple val(meta), path(sdata_path)
     val cli_arguments
@@ -143,6 +152,8 @@ process aggregate {
 }
 
 process explorer {
+    label "process_high"
+
     input:
     tuple val(meta), path(sdata_path)
     val cli_arguments
@@ -157,6 +168,8 @@ process explorer {
 }
 
 process report {
+    label "process_medium"
+
     input:
     tuple val(meta), path(sdata_path)
 

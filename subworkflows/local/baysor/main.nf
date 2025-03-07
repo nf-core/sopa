@@ -23,6 +23,8 @@ workflow baysor {
 
 
 process patchSegmentation {
+    label "process_medium"
+
     input:
     tuple val(meta), path(sdata_path), val(cli_arguments), val(index), val(n_patches)
 
@@ -40,6 +42,8 @@ process patchSegmentation {
 }
 
 process resolve {
+    label "process_low"
+
     input:
     tuple val(meta), path(sdata_path)
     val cli_arguments

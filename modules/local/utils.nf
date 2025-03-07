@@ -40,8 +40,8 @@ def mapToCliArgs(Map params, String contains = null, List keys = null) {
         .join(" ")
 }
 
-def readConfigFile(String config_file) {
-    def config = new groovy.yaml.YamlSlurper().parse(config_file as File)
+def readConfigFile(String configfile) {
+    def config = new groovy.yaml.YamlSlurper().parse(configfile as File)
 
     if (config.segmentation.baysor) {
         if (config.segmentation.cellpose) {
