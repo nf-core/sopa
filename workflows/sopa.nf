@@ -7,6 +7,7 @@ include { paramsSummaryMap } from 'plugin/nf-schema'
 include { softwareVersionsToYAML } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_sopa_pipeline'
 include { cellpose } from '../subworkflows/local/cellpose'
+include { baysor } from '../subworkflows/local/baysor'
 include { readConfigFile } from '../modules/local/utils'
 include { mapToCliArgs } from '../modules/local/utils'
 /*
@@ -23,7 +24,7 @@ workflow SOPA {
 
     ch_versions = Channel.empty()
 
-    def config = readConfigFile("toy/cellpose.yaml")
+    def config = readConfigFile("toy/baysor.yaml")
 
     ch_spatialdata = toSpatialData(ch_samplesheet.map { meta -> [meta, meta.sdata_dir] })
 
@@ -34,9 +35,11 @@ workflow SOPA {
         ch_tissue_seg = ch_spatialdata
     }
 
-    (ch_patches, _out) = makeImagePatches(ch_tissue_seg, mapToCliArgs(config.patchify))
+    // (ch_image_patches, _out) = makeImagePatches(ch_tissue_seg, mapToCliArgs(config.patchify, "pixel"))
+    // ch_resolved = cellpose(ch_image_patches, config)
 
-    ch_resolved = cellpose(ch_patches, config)
+    (ch_transcripts_patches, _out) = makeTranscriptPatches(ch_tissue_seg, mapToCliArgs(config.patchify, "micron"))
+    ch_resolved = baysor(ch_transcripts_patches, config)
 
     (ch_aggregated, _out) = aggregate(ch_resolved)
 
@@ -60,6 +63,17 @@ workflow SOPA {
     versions = ch_versions // channel: [ path(versions.yml) ]
 }
 
+process baysorVersion {
+    publishDir 'results', mode: 'copy'
+
+    output:
+    path "baysor_version.txt"
+
+    script:
+    """
+    baysor --version > baysor_version.txt
+    """
+}
 
 process toSpatialData {
     publishDir 'results', mode: 'copy'
@@ -72,7 +86,7 @@ process toSpatialData {
 
     script:
     """
-    sopa convert . --sdata-path ${meta.sdata_dir} --technology toy_dataset --kwargs '{"length": 200}'
+    sopa convert . --sdata-path ${meta.sdata_dir} --technology toy_dataset --kwargs '{"length": 2000}'
     """
 }
 
@@ -110,6 +124,22 @@ process makeImagePatches {
     """
 }
 
+process makeTranscriptPatches {
+    publishDir 'results', mode: 'copy'
+
+    input:
+    tuple val(meta), path(sdata_path)
+    val cli_arguments
+
+    output:
+    tuple val(meta), path(sdata_path), path("${sdata_path}/.sopa_cache/patches_file_transcripts")
+
+    script:
+    """
+    sopa patchify transcripts ${sdata_path} ${cli_arguments}
+    """
+}
+
 process aggregate {
     publishDir 'results', mode: 'copy'
 
@@ -134,12 +164,7 @@ process explorer {
     val cli_arguments
 
     output:
-    path "${meta.explorer_dir}/experiment.xenium"
-    path "${meta.explorer_dir}/morphology.ome.tif"
-    path "${meta.explorer_dir}/cell_feature_matrix.zarr.zip"
-    path "${meta.explorer_dir}/cells.zarr.zip"
-    path "${meta.explorer_dir}/transcripts.zarr.zip"
-    path "${meta.explorer_dir}/adata.h5ad"
+    path meta.explorer_dir
 
     script:
     """

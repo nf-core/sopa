@@ -7,9 +7,6 @@ patchify:
   patch_overlap_microns: 20
 
 segmentation:
-  tissue:
-    level: 2
-
   baysor:
     min_area: 20
 
@@ -20,7 +17,7 @@ segmentation:
         x: "x"
         y: "y"
         z: "z"
-        gene: "feature_name"
+        gene: "genes"
         min_molecules_per_gene: 0
         min_molecules_per_segment: 3
         confidence_nn_id: 6
@@ -49,5 +46,5 @@ aggregate:
 #     cell_type_key: ct
 
 explorer:
-  gene_column: "feature_name"
+  gene_column: "genes"
   ram_threshold_gb: 4

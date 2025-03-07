@@ -9,19 +9,37 @@ def stringifyItem(String key, value) {
     if (value instanceof List) {
         return value.collect { v -> "${option} ${stringifyValueForCli(v)}" }.join(" ")
     }
+    if (value instanceof Map) {
+        return "${option} \"" + stringifyValueForCli(value) + "\""
+    }
     return "${option} ${stringifyValueForCli(value)}"
 }
 
 def stringifyValueForCli(value) {
-    if (value instanceof String || value instanceof Map) {
+    if (value instanceof Map) {
+        return "{" + value.collect { k, v -> "'${k}': ${stringifyValueForCli(v)}" }.join(", ") + "}"
+    }
+    if (value instanceof List) {
+        return "[" + value.collect { stringifyValueForCli(it) }.join(", ") + "]"
+    }
+    if (value instanceof String) {
         return "'${value}'"
+    }
+    if (value instanceof Boolean) {
+        return value ? "True" : "False"
     }
     return value.toString()
 }
 
-def mapToCliArgs(Map params) {
-    return params.collect { key, value -> stringifyItem(key, value) }.join(" ")
+def mapToCliArgs(Map params, String contains = null, List keys = null) {
+    return params
+        .findAll { key, _value ->
+            (contains == null || key.contains(contains)) && (keys == null || key in keys)
+        }
+        .collect { key, value -> stringifyItem(key, value) }
+        .join(" ")
 }
+
 
 def readConfigFile(String config) {
     return new groovy.yaml.YamlSlurper().parse(config as File)
