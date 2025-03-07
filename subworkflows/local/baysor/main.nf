@@ -61,9 +61,8 @@ process resolve {
 }
 
 def resolveArgs(Map config) {
-    def gene_column = config["segmentation"]["baysor"]["config"]["data"]["gene"]
-
-    def min_area = config["segmentation"]["baysor"]["min_area"] ?: 0
+    def gene_column = config.segmentation.baysor.config.data.gene
+    def min_area = config.segmentation.baysor.min_area ?: 0
 
     return "--gene-column ${gene_column} --min-area ${min_area}"
 }

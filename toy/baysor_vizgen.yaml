@@ -1,6 +1,8 @@
 # For parameters details, see this commented example: https://github.com/gustaveroussy/sopa/blob/master/workflow/config/example_commented.yaml
 read:
   technology: toy_dataset
+  kwargs:
+    transcript_cell_id_as_merscope: true
 
 patchify:
   patch_width_pixel: 1200
@@ -11,6 +13,8 @@ patchify:
 segmentation:
   baysor:
     min_area: 10
+    prior_shapes_key: "cell_id"
+    unassigned_value: -1
 
     config:
       data:
@@ -27,7 +31,7 @@ segmentation:
       segmentation:
         scale: 3 # typical cell radius in microns
         scale_std: "25%" # cell radius standard deviation
-        prior_segmentation_confidence: 0
+        prior_segmentation_confidence: 1
         estimate_scale_from_centers: false
         n_clusters: 4
         iters: 500

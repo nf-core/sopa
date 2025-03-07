@@ -40,7 +40,17 @@ def mapToCliArgs(Map params, String contains = null, List keys = null) {
         .join(" ")
 }
 
+def readConfigFile(String config_file) {
+    def config = new groovy.yaml.YamlSlurper().parse(config_file as File)
 
-def readConfigFile(String config) {
-    return new groovy.yaml.YamlSlurper().parse(config as File)
+    if (config.segmentation.baysor) {
+        if (config.segmentation.cellpose) {
+            config.segmentation.baysor.prior_shapes_key = "cellpose_boundaries"
+        }
+        else if (config.segmentation.baysor.cell_key) {
+            println("Config argument 'cell_key' is deprecated. Use 'prior_shapes_key' instead.")
+            config.segmentation.baysor.prior_shapes_key = config.segmentation.baysor.cell_key
+        }
+    }
+    return config
 }

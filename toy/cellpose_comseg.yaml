@@ -1,6 +1,8 @@
 # For parameters details, see this commented example: https://github.com/gustaveroussy/sopa/blob/master/workflow/config/example_commented.yaml
 read:
   technology: toy_dataset
+  kwargs:
+    add_nan_gene_name: false
 
 patchify:
   patch_width_pixel: 1200
@@ -15,6 +17,22 @@ segmentation:
     flow_threshold: 2
     cellprob_threshold: -6
     min_area: 2500
+
+  comseg:
+    min_area: 10
+
+    config:
+      dict_scale:
+        x: 1
+        y: 1
+        z: 1
+      mean_cell_diameter: 15
+      max_cell_radius: 25
+      allow_disconnected_polygon: false
+      alpha: 0.5
+      min_rna_per_cell: 5
+      gene_column: "genes"
+      norm_vector: false # [optional] requires exeternal R package '"sctransform"' "feather" and "arrow" to be installed, otherwise set to false
 
 aggregate:
   average_intensities: true

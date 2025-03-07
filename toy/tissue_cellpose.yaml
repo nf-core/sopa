@@ -9,6 +9,9 @@ patchify:
   patch_overlap_microns: 40
 
 segmentation:
+  tissue:
+    mode: saturation
+
   cellpose:
     diameter: 35
     channels: ["DAPI"]

@@ -24,9 +24,11 @@ workflow SOPA {
 
     ch_versions = Channel.empty()
 
-    def config = readConfigFile("toy/baysor.yaml")
+    def config = readConfigFile("toy/cellpose_baysor.yaml")
 
     ch_spatialdata = toSpatialData(ch_samplesheet.map { meta -> [meta, meta.sdata_dir] })
+
+    explorer_raw_inputs(ch_spatialdata, mapToCliArgs(config.explorer))
 
     if (config.segmentation.tissue) {
         (ch_tissue_seg, _out) = tissueSegmentation(ch_spatialdata, mapToCliArgs(config.segmentation.tissue))
@@ -35,13 +37,19 @@ workflow SOPA {
         ch_tissue_seg = ch_spatialdata
     }
 
-    // (ch_image_patches, _out) = makeImagePatches(ch_tissue_seg, mapToCliArgs(config.patchify, "pixel"))
-    // ch_resolved = cellpose(ch_image_patches, config)
+    if (config.segmentation.cellpose) {
+        (ch_image_patches, _out) = makeImagePatches(ch_tissue_seg, mapToCliArgs(config.patchify, "pixel"))
+        ch_resolved = cellpose(ch_image_patches, config)
+    }
 
-    (ch_transcripts_patches, _out) = makeTranscriptPatches(ch_tissue_seg, mapToCliArgs(config.patchify, "micron"))
-    ch_resolved = baysor(ch_transcripts_patches, config)
+    if (config.segmentation.baysor) {
+        ch_input_baysor = config.segmentation.cellpose ? ch_resolved : ch_tissue_seg
 
-    (ch_aggregated, _out) = aggregate(ch_resolved)
+        (ch_transcripts_patches, _out) = makeTranscriptPatches(ch_input_baysor, transcriptPatchesArgs(config))
+        ch_resolved = baysor(ch_transcripts_patches, config)
+    }
+
+    (ch_aggregated, _out) = aggregate(ch_resolved, mapToCliArgs(config.aggregate))
 
     report(ch_aggregated)
     explorer(ch_aggregated, mapToCliArgs(config.explorer))
@@ -61,18 +69,6 @@ workflow SOPA {
 
     emit:
     versions = ch_versions // channel: [ path(versions.yml) ]
-}
-
-process baysorVersion {
-    publishDir 'results', mode: 'copy'
-
-    output:
-    path "baysor_version.txt"
-
-    script:
-    """
-    baysor --version > baysor_version.txt
-    """
 }
 
 process toSpatialData {
@@ -145,6 +141,7 @@ process aggregate {
 
     input:
     tuple val(meta), path(sdata_path)
+    val cli_arguments
 
     output:
     tuple val(meta), path(sdata_path)
@@ -152,7 +149,23 @@ process aggregate {
 
     script:
     """
-    sopa aggregate ${sdata_path}
+    sopa aggregate ${sdata_path} ${cli_arguments}
+    """
+}
+
+process explorer_raw_inputs {
+    publishDir 'results', mode: 'copy'
+
+    input:
+    tuple val(meta), path(sdata_path)
+    val cli_arguments
+
+    output:
+    path meta.explorer_dir
+
+    script:
+    """
+    sopa explorer write ${sdata_path} --output-path ${meta.explorer_dir} ${cli_arguments} --mode "+it" --no-save-h5ad
     """
 }
 
@@ -168,7 +181,7 @@ process explorer {
 
     script:
     """
-    sopa explorer write ${sdata_path} --output-path ${meta.explorer_dir} ${cli_arguments}
+    sopa explorer write ${sdata_path} --output-path ${meta.explorer_dir} ${cli_arguments} --mode "-it"
     """
 }
 
@@ -187,4 +200,10 @@ process report {
 
     sopa report ${sdata_path} ${meta.explorer_dir}/analysis_summary.html
     """
+}
+
+def transcriptPatchesArgs(Map config) {
+    def prior_args = mapToCliArgs(config.segmentation.baysor, null, ["prior_shapes_key", "unassigned_value"])
+
+    return mapToCliArgs(config.patchify, "micron") + " " + prior_args
 }
