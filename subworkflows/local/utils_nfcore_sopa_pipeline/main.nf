@@ -49,11 +49,11 @@ workflow PIPELINE_INITIALISATION {
     //
     // Validate parameters and generate parameter summary to stdout
     //
-    UTILS_NFSCHEMA_PLUGIN(
-        workflow,
-        validate_params,
-        null,
-    )
+    // UTILS_NFSCHEMA_PLUGIN(
+    //     workflow,
+    //     validate_params,
+    //     null,
+    // )
 
     //
     // Check config provided to the pipeline

@@ -41,7 +41,8 @@ workflow {
     // WORKFLOW: Run main workflow
     //
     NFCORE_SOPA(
-        PIPELINE_INITIALISATION.out.samplesheet
+        PIPELINE_INITIALISATION.out.samplesheet,
+        params.config,
     )
     //
     // SUBWORKFLOW: Run completion tasks
@@ -67,6 +68,7 @@ workflow {
 workflow NFCORE_SOPA {
     take:
     samplesheet // channel: samplesheet read in from --input
+    config
 
     main:
 
@@ -74,6 +76,7 @@ workflow NFCORE_SOPA {
     // WORKFLOW: Run pipeline
     //
     SOPA(
-        samplesheet
+        samplesheet,
+        config,
     )
 }

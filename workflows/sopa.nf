@@ -19,16 +19,15 @@ include { mapToCliArgs } from '../modules/local/utils'
 workflow SOPA {
     take:
     ch_samplesheet // channel: samplesheet read in from --input
+    config_file
 
     main:
 
     ch_versions = Channel.empty()
 
-    def config = readConfigFile("toy/cellpose_baysor.yaml")
+    def config = readConfigFile(config_file)
 
     ch_spatialdata = toSpatialData(ch_samplesheet.map { meta -> [meta, meta.sdata_dir] })
-
-    explorer_raw_inputs(ch_spatialdata, mapToCliArgs(config.explorer))
 
     if (config.segmentation.tissue) {
         (ch_tissue_seg, _out) = tissueSegmentation(ch_spatialdata, mapToCliArgs(config.segmentation.tissue))
@@ -72,8 +71,6 @@ workflow SOPA {
 }
 
 process toSpatialData {
-    publishDir 'results', mode: 'copy'
-
     input:
     tuple val(meta), val(sdata_dir)
 
@@ -87,8 +84,6 @@ process toSpatialData {
 }
 
 process tissueSegmentation {
-    publishDir 'results', mode: 'copy'
-
     input:
     tuple val(meta), path(sdata_path)
     val cli_arguments
@@ -104,8 +99,6 @@ process tissueSegmentation {
 }
 
 process makeImagePatches {
-    publishDir 'results', mode: 'copy'
-
     input:
     tuple val(meta), path(sdata_path)
     val cli_arguments
@@ -121,8 +114,6 @@ process makeImagePatches {
 }
 
 process makeTranscriptPatches {
-    publishDir 'results', mode: 'copy'
-
     input:
     tuple val(meta), path(sdata_path)
     val cli_arguments
@@ -137,8 +128,6 @@ process makeTranscriptPatches {
 }
 
 process aggregate {
-    publishDir 'results', mode: 'copy'
-
     input:
     tuple val(meta), path(sdata_path)
     val cli_arguments
@@ -153,25 +142,7 @@ process aggregate {
     """
 }
 
-process explorer_raw_inputs {
-    publishDir 'results', mode: 'copy'
-
-    input:
-    tuple val(meta), path(sdata_path)
-    val cli_arguments
-
-    output:
-    path meta.explorer_dir
-
-    script:
-    """
-    sopa explorer write ${sdata_path} --output-path ${meta.explorer_dir} ${cli_arguments} --mode "+it" --no-save-h5ad
-    """
-}
-
 process explorer {
-    publishDir 'results', mode: 'copy'
-
     input:
     tuple val(meta), path(sdata_path)
     val cli_arguments
@@ -181,13 +152,11 @@ process explorer {
 
     script:
     """
-    sopa explorer write ${sdata_path} --output-path ${meta.explorer_dir} ${cli_arguments} --mode "-it"
+    sopa explorer write ${sdata_path} --output-path ${meta.explorer_dir} ${cli_arguments}
     """
 }
 
 process report {
-    publishDir 'results', mode: 'copy'
-
     input:
     tuple val(meta), path(sdata_path)
 

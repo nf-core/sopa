@@ -23,8 +23,6 @@ workflow baysor {
 
 
 process patchSegmentation {
-    publishDir 'results', mode: 'copy'
-
     input:
     tuple val(meta), path(sdata_path), val(cli_arguments), val(index), val(n_patches)
 
@@ -42,8 +40,6 @@ process patchSegmentation {
 }
 
 process resolve {
-    publishDir 'results', mode: 'copy'
-
     input:
     tuple val(meta), path(sdata_path)
     val cli_arguments
