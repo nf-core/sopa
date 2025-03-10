@@ -10,7 +10,7 @@
             "sample": {
                 "type": "string",
                 "pattern": "^\\S+$",
-                "format": "file-path",
+                "format": "path",
                 "exists": true,
                 "errorMessage": "Sample data path must exist",
                 "meta": [
