@@ -26,7 +26,6 @@ process patchSegmentation {
     label "process_medium"
 
     conda "${moduleDir}/environment.yml"
-    container "jeffquinnmsk/sopa"
 
     input:
     tuple val(meta), path(sdata_path), val(cli_arguments), val(index), val(n_patches)
