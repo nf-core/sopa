@@ -13,7 +13,7 @@
             "required": [
                 "input",
                 "outdir",
-                "config"
+                "configfile"
             ],
             "properties": {
                 "input": {
@@ -31,12 +31,10 @@
                     "type": "string",
                     "format": "file-path",
                     "exists": true,
-                    "schema": "assets/schema_input.json",
-                    "mimetype": "text/csv",
-                    "pattern": "^\\S+\\.csv$",
-                    "description": "Path to comma-separated file containing information about the samples in the experiment.",
-                    "help_text": "You will need to create a design file with information about the samples in your experiment before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 3 columns, and a header row. See [usage docs](https://nf-co.re/sopa/usage#samplesheet-input).",
-                    "fa_icon": "fas fa-file-csv"
+                    "pattern": "^\\S+\\.yaml$",
+                    "description": "Path to a Sopa config file describing the technology used and the pipeline parameters.",
+                    "help_text": "Choose one existing config file amont public one: https://github.com/gustaveroussy/sopa/tree/master/workflow/config",
+                    "fa_icon": "fas fa-file"
                 },
                 "outdir": {
                     "type": "string",
