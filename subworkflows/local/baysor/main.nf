@@ -25,6 +25,8 @@ workflow baysor {
 process patchSegmentation {
     label "process_medium"
 
+    conda "${moduleDir}/environment.yml"
+
     input:
     tuple val(meta), path(sdata_path), val(cli_arguments), val(index), val(n_patches)
 
@@ -43,6 +45,8 @@ process patchSegmentation {
 
 process resolve {
     label "process_low"
+
+    conda "${moduleDir}/environment.yml"
 
     input:
     tuple val(meta), path(sdata_path)
