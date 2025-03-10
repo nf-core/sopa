@@ -74,9 +74,7 @@ process toSpatialData {
     label "process_high"
 
     conda "${moduleDir}/environment.yml"
-    container "${workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container
-        ? 'TODO'
-        : 'TODO'}"
+    container "jeffquinnmsk/sopa"
 
     input:
     tuple val(meta), val(sdata_dir)
@@ -95,6 +93,7 @@ process tissueSegmentation {
     label "process_low"
 
     conda "${moduleDir}/environment.yml"
+    container "jeffquinnmsk/sopa"
 
     input:
     tuple val(meta), path(sdata_path)
@@ -114,6 +113,7 @@ process makeImagePatches {
     label "process_single"
 
     conda "${moduleDir}/environment.yml"
+    container "jeffquinnmsk/sopa"
 
     input:
     tuple val(meta), path(sdata_path)
@@ -133,6 +133,7 @@ process makeTranscriptPatches {
     label "process_medium"
 
     conda "${moduleDir}/environment.yml"
+    container "jeffquinnmsk/sopa"
 
     input:
     tuple val(meta), path(sdata_path)
@@ -151,6 +152,7 @@ process aggregate {
     label "process_medium"
 
     conda "${moduleDir}/environment.yml"
+    container "jeffquinnmsk/sopa"
 
     input:
     tuple val(meta), path(sdata_path)
@@ -170,6 +172,7 @@ process explorer_raw {
     label "process_high"
 
     conda "${moduleDir}/environment.yml"
+    container "jeffquinnmsk/sopa"
 
     input:
     tuple val(meta), path(sdata_path)
@@ -189,6 +192,7 @@ process explorer {
     label "process_high"
 
     conda "${moduleDir}/environment.yml"
+    container "jeffquinnmsk/sopa"
 
     input:
     tuple val(meta), path(sdata_path)
@@ -211,6 +215,7 @@ process report {
     label "process_medium"
 
     conda "${moduleDir}/environment.yml"
+    container "jeffquinnmsk/sopa"
 
     input:
     tuple val(meta), path(sdata_path)
