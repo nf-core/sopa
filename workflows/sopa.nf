@@ -29,6 +29,8 @@ workflow SOPA {
 
     ch_spatialdata = toSpatialData(ch_samplesheet.map { meta -> [meta, meta.sdata_dir] }, mapToCliArgs(config.read))
 
+    // explorer_raw(ch_spatialdata, mapToCliArgs(config.explorer))
+
     if (config.segmentation.tissue) {
         (ch_tissue_seg, _out) = tissueSegmentation(ch_spatialdata, mapToCliArgs(config.segmentation.tissue))
     }
@@ -164,6 +166,25 @@ process aggregate {
     """
 }
 
+process explorer_raw {
+    label "process_high"
+
+    conda "${moduleDir}/environment.yml"
+
+    input:
+    tuple val(meta), path(sdata_path)
+    val cli_arguments
+
+    output:
+    path "${meta.explorer_dir}/morphology.ome.tif"
+    path "${meta.explorer_dir}/transcripts.zarr.zip"
+
+    script:
+    """
+    sopa explorer write ${sdata_path} --output-path ${meta.explorer_dir} ${cli_arguments} --mode "+it" --no-save-h5ad
+    """
+}
+
 process explorer {
     label "process_high"
 
@@ -174,11 +195,15 @@ process explorer {
     val cli_arguments
 
     output:
-    path meta.explorer_dir
+    path "${meta.explorer_dir}/experiment.xenium"
+    path "${meta.explorer_dir}/analysis.zarr.zip"
+    path "${meta.explorer_dir}/cell_feature_matrix.zarr.zip"
+    path "${meta.explorer_dir}/adata.h5ad"
+    path "${meta.explorer_dir}/cells.zarr.zip"
 
     script:
     """
-    sopa explorer write ${sdata_path} --output-path ${meta.explorer_dir} ${cli_arguments}
+    sopa explorer write ${sdata_path} --output-path ${meta.explorer_dir} ${cli_arguments} --mode "-it"
     """
 }
 
