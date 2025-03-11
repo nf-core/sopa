@@ -52,8 +52,10 @@ workflow SOPA {
 
     (ch_aggregated, _out) = aggregate(ch_resolved, mapToCliArgs(config.aggregate))
 
-    report(ch_aggregated)
     explorer(ch_aggregated, mapToCliArgs(config.explorer))
+    report(ch_aggregated)
+
+    publish(ch_aggregated.map { it[1] })
 
 
     //
@@ -174,6 +176,8 @@ process explorer_raw {
     conda "${moduleDir}/environment.yml"
     container "jeffquinnmsk/sopa"
 
+    publishDir "${params.outdir}", mode: params.publish_dir_mode
+
     input:
     tuple val(meta), path(sdata_path)
     val cli_arguments
@@ -193,6 +197,8 @@ process explorer {
 
     conda "${moduleDir}/environment.yml"
     container "jeffquinnmsk/sopa"
+
+    publishDir "${params.outdir}", mode: params.publish_dir_mode
 
     input:
     tuple val(meta), path(sdata_path)
@@ -217,6 +223,8 @@ process report {
     conda "${moduleDir}/environment.yml"
     container "jeffquinnmsk/sopa"
 
+    publishDir "${params.outdir}", mode: params.publish_dir_mode
+
     input:
     tuple val(meta), path(sdata_path)
 
@@ -228,6 +236,23 @@ process report {
     mkdir -p ${meta.explorer_dir}
 
     sopa report ${sdata_path} ${meta.explorer_dir}/analysis_summary.html
+    """
+}
+
+process publish {
+    label "process_single"
+
+    publishDir "${params.outdir}", mode: params.publish_dir_mode
+
+    input:
+    path sdata_path
+
+    output:
+    path sdata_path
+
+    script:
+    """
+    echo "Publishing ${sdata_path}"
     """
 }
 
