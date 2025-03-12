@@ -23,9 +23,11 @@ workflow baysor {
 
 
 process patchSegmentation {
-    label "process_high"
+    label "process_long"
 
-    conda "${moduleDir}/environment.yml"
+    container "${workflow.containerEngine == 'apptainer' && !task.ext.singularity_pull_docker_container
+        ? 'docker://jeffquinnmsk/baysor:latest'
+        : 'docker.io/jeffquinnmsk/baysor:latest'}"
 
     input:
     tuple val(meta), path(sdata_path), val(cli_arguments), val(index), val(n_patches)
@@ -38,7 +40,7 @@ process patchSegmentation {
     if command -v module &> /dev/null; then
         module purge
     fi
-
+    
     sopa segmentation baysor ${sdata_path} --patch-index ${index} ${cli_arguments}
     """
 }
@@ -47,7 +49,9 @@ process resolve {
     label "process_low"
 
     conda "${moduleDir}/environment.yml"
-    container "jeffquinnmsk/sopa"
+    container "${workflow.containerEngine == 'apptainer' && !task.ext.singularity_pull_docker_container
+        ? 'docker://jeffquinnmsk/sopa:latest'
+        : 'docker.io/jeffquinnmsk/sopa:latest'}"
 
     input:
     tuple val(meta), path(sdata_path)

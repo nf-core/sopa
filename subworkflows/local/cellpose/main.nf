@@ -26,7 +26,9 @@ process patchSegmentation {
     label "process_single"
 
     conda "${moduleDir}/environment.yml"
-    container "jeffquinnmsk/sopa"
+    container "${workflow.containerEngine == 'apptainer' && !task.ext.singularity_pull_docker_container
+        ? 'docker://jeffquinnmsk/sopa:latest'
+        : 'docker.io/jeffquinnmsk/sopa:latest'}"
 
     input:
     tuple val(meta), path(sdata_path), val(cli_arguments), val(index), val(n_patches)
@@ -44,7 +46,9 @@ process resolve {
     label "process_low"
 
     conda "${moduleDir}/environment.yml"
-    container "jeffquinnmsk/sopa"
+    container "${workflow.containerEngine == 'apptainer' && !task.ext.singularity_pull_docker_container
+        ? 'docker://jeffquinnmsk/sopa:latest'
+        : 'docker.io/jeffquinnmsk/sopa:latest'}"
 
     input:
     tuple val(meta), path(sdata_path)

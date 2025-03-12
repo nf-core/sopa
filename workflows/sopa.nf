@@ -76,7 +76,9 @@ process toSpatialData {
     label "process_high"
 
     conda "${moduleDir}/environment.yml"
-    container "jeffquinnmsk/sopa"
+    container "${workflow.containerEngine == 'apptainer' && !task.ext.singularity_pull_docker_container
+        ? 'docker://jeffquinnmsk/sopa:latest'
+        : 'docker.io/jeffquinnmsk/sopa:latest'}"
 
     input:
     tuple val(meta), val(sdata_dir)
@@ -95,7 +97,9 @@ process tissueSegmentation {
     label "process_low"
 
     conda "${moduleDir}/environment.yml"
-    container "jeffquinnmsk/sopa"
+    container "${workflow.containerEngine == 'apptainer' && !task.ext.singularity_pull_docker_container
+        ? 'docker://jeffquinnmsk/sopa:latest'
+        : 'docker.io/jeffquinnmsk/sopa:latest'}"
 
     input:
     tuple val(meta), path(sdata_path)
@@ -115,7 +119,9 @@ process makeImagePatches {
     label "process_single"
 
     conda "${moduleDir}/environment.yml"
-    container "jeffquinnmsk/sopa"
+    container "${workflow.containerEngine == 'apptainer' && !task.ext.singularity_pull_docker_container
+        ? 'docker://jeffquinnmsk/sopa:latest'
+        : 'docker.io/jeffquinnmsk/sopa:latest'}"
 
     input:
     tuple val(meta), path(sdata_path)
@@ -135,7 +141,9 @@ process makeTranscriptPatches {
     label "process_medium"
 
     conda "${moduleDir}/environment.yml"
-    container "jeffquinnmsk/sopa"
+    container "${workflow.containerEngine == 'apptainer' && !task.ext.singularity_pull_docker_container
+        ? 'docker://jeffquinnmsk/sopa:latest'
+        : 'docker.io/jeffquinnmsk/sopa:latest'}"
 
     input:
     tuple val(meta), path(sdata_path)
@@ -154,7 +162,9 @@ process aggregate {
     label "process_medium"
 
     conda "${moduleDir}/environment.yml"
-    container "jeffquinnmsk/sopa"
+    container "${workflow.containerEngine == 'apptainer' && !task.ext.singularity_pull_docker_container
+        ? 'docker://jeffquinnmsk/sopa:latest'
+        : 'docker.io/jeffquinnmsk/sopa:latest'}"
 
     input:
     tuple val(meta), path(sdata_path)
@@ -174,7 +184,9 @@ process explorer_raw {
     label "process_high"
 
     conda "${moduleDir}/environment.yml"
-    container "jeffquinnmsk/sopa"
+    container "${workflow.containerEngine == 'apptainer' && !task.ext.singularity_pull_docker_container
+        ? 'docker://jeffquinnmsk/sopa:latest'
+        : 'docker.io/jeffquinnmsk/sopa:latest'}"
 
     publishDir "${params.outdir}", mode: params.publish_dir_mode
 
@@ -196,7 +208,9 @@ process explorer {
     label "process_high"
 
     conda "${moduleDir}/environment.yml"
-    container "jeffquinnmsk/sopa"
+    container "${workflow.containerEngine == 'apptainer' && !task.ext.singularity_pull_docker_container
+        ? 'docker://jeffquinnmsk/sopa:latest'
+        : 'docker.io/jeffquinnmsk/sopa:latest'}"
 
     publishDir "${params.outdir}", mode: params.publish_dir_mode
 
@@ -221,7 +235,9 @@ process report {
     label "process_medium"
 
     conda "${moduleDir}/environment.yml"
-    container "jeffquinnmsk/sopa"
+    container "${workflow.containerEngine == 'apptainer' && !task.ext.singularity_pull_docker_container
+        ? 'docker://jeffquinnmsk/sopa:latest'
+        : 'docker.io/jeffquinnmsk/sopa:latest'}"
 
     publishDir "${params.outdir}", mode: params.publish_dir_mode
 
