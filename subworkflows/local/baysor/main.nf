@@ -23,7 +23,7 @@ workflow baysor {
 
 
 process patchSegmentation {
-    label "process_medium"
+    label "process_high"
 
     conda "${moduleDir}/environment.yml"
 
