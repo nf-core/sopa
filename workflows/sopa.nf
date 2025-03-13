@@ -8,6 +8,7 @@ include { softwareVersionsToYAML } from '../subworkflows/nf-core/utils_nfcore_pi
 include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_sopa_pipeline'
 include { cellpose } from '../subworkflows/local/cellpose'
 include { baysor } from '../subworkflows/local/baysor'
+include { proseg } from '../subworkflows/local/proseg'
 include { readConfigFile } from '../modules/local/utils'
 include { mapToCliArgs } from '../modules/local/utils'
 /*
@@ -29,7 +30,7 @@ workflow SOPA {
 
     ch_spatialdata = toSpatialData(ch_samplesheet.map { meta -> [meta, meta.sdata_dir] }, mapToCliArgs(config.read))
 
-    // explorer_raw(ch_spatialdata, mapToCliArgs(config.explorer))
+    explorer_raw(ch_spatialdata, mapToCliArgs(config.explorer))
 
     if (config.segmentation.tissue) {
         (ch_tissue_seg, _out) = tissueSegmentation(ch_spatialdata, mapToCliArgs(config.segmentation.tissue))
@@ -46,8 +47,15 @@ workflow SOPA {
     if (config.segmentation.baysor) {
         ch_input_baysor = config.segmentation.cellpose ? ch_resolved : ch_tissue_seg
 
-        (ch_transcripts_patches, _out) = makeTranscriptPatches(ch_input_baysor, transcriptPatchesArgs(config))
+        ch_transcripts_patches = makeTranscriptPatches(ch_input_baysor, transcriptPatchesArgs(config, "baysor"))
         ch_resolved = baysor(ch_transcripts_patches, config)
+    }
+
+    if (config.segmentation.proseg) {
+        ch_input_proseg = config.segmentation.cellpose ? ch_resolved : ch_tissue_seg
+
+        ch_proseg_patches = makeTranscriptPatches(ch_input_proseg, transcriptPatchesArgs(config, "proseg"))
+        ch_resolved = proseg(ch_proseg_patches.map { meta, sdata_path, _file -> [meta, sdata_path] }, config)
     }
 
     (ch_aggregated, _out) = aggregate(ch_resolved, mapToCliArgs(config.aggregate))
@@ -272,8 +280,8 @@ process publish {
     """
 }
 
-def transcriptPatchesArgs(Map config) {
-    def prior_args = mapToCliArgs(config.segmentation.baysor, null, ["prior_shapes_key", "unassigned_value"])
+def transcriptPatchesArgs(Map config, String method) {
+    def prior_args = mapToCliArgs(config.segmentation[method], null, ["prior_shapes_key", "unassigned_value"])
 
     return mapToCliArgs(config.patchify, "micron") + " " + prior_args
 }
