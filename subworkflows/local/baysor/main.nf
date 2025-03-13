@@ -1,4 +1,4 @@
-include { mapToCliArgs } from '../../../modules/local/utils'
+include { ArgsCLI } from '../../../modules/local/utils'
 
 workflow baysor {
     take:
@@ -6,7 +6,7 @@ workflow baysor {
     config
 
     main:
-    baysor_args = mapToCliArgs(config.segmentation.baysor, null, ["config"])
+    baysor_args = ArgsCLI(config.segmentation.baysor, null, ["config"])
 
     ch_patches
         .map { meta, sdata_path, patches_file_transcripts -> [meta, sdata_path, patches_file_transcripts.splitText()] }

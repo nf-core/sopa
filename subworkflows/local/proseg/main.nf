@@ -1,4 +1,4 @@
-include { mapToCliArgs } from '../../../modules/local/utils'
+include { ArgsCLI } from '../../../modules/local/utils'
 
 workflow proseg {
     take:
@@ -6,7 +6,7 @@ workflow proseg {
     config
 
     main:
-    proseg_args = mapToCliArgs(config.segmentation.proseg, null, ["command_line_suffix"])
+    proseg_args = ArgsCLI(config.segmentation.proseg, null, ["command_line_suffix"])
 
     (ch_segmented, _out) = patchSegmentation(ch_patches, proseg_args)
 

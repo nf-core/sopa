@@ -1,4 +1,4 @@
-include { mapToCliArgs } from '../../../modules/local/utils'
+include { ArgsCLI } from '../../../modules/local/utils'
 
 workflow cellpose {
     take:
@@ -6,7 +6,7 @@ workflow cellpose {
     config
 
     main:
-    cellpose_args = mapToCliArgs(config.segmentation.cellpose)
+    cellpose_args = ArgsCLI(config.segmentation.cellpose)
 
     ch_patches
         .map { meta, sdata_path, patches_file_image -> [meta, sdata_path, patches_file_image.text.trim().toInteger()] }

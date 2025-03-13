@@ -10,7 +10,7 @@ include { cellpose } from '../subworkflows/local/cellpose'
 include { baysor } from '../subworkflows/local/baysor'
 include { proseg } from '../subworkflows/local/proseg'
 include { readConfigFile } from '../modules/local/utils'
-include { mapToCliArgs } from '../modules/local/utils'
+include { ArgsCLI } from '../modules/local/utils'
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     RUN MAIN WORKFLOW
@@ -28,19 +28,19 @@ workflow SOPA {
 
     def config = readConfigFile(configfile)
 
-    ch_spatialdata = toSpatialData(ch_samplesheet.map { meta -> [meta, meta.sdata_dir] }, mapToCliArgs(config.read))
+    ch_spatialdata = toSpatialData(ch_samplesheet.map { meta -> [meta, meta.sdata_dir] }, ArgsCLI(config.read))
 
-    explorer_raw(ch_spatialdata, mapToCliArgs(config.explorer))
+    explorer_raw(ch_spatialdata, ArgsCLI(config.explorer))
 
     if (config.segmentation.tissue) {
-        (ch_tissue_seg, _out) = tissueSegmentation(ch_spatialdata, mapToCliArgs(config.segmentation.tissue))
+        (ch_tissue_seg, _out) = tissueSegmentation(ch_spatialdata, ArgsCLI(config.segmentation.tissue))
     }
     else {
         ch_tissue_seg = ch_spatialdata
     }
 
     if (config.segmentation.cellpose) {
-        (ch_image_patches, _out) = makeImagePatches(ch_tissue_seg, mapToCliArgs(config.patchify, "pixel"))
+        (ch_image_patches, _out) = makeImagePatches(ch_tissue_seg, ArgsCLI(config.patchify, "pixel"))
         ch_resolved = cellpose(ch_image_patches, config)
     }
 
@@ -58,9 +58,9 @@ workflow SOPA {
         ch_resolved = proseg(ch_proseg_patches.map { meta, sdata_path, _file -> [meta, sdata_path] }, config)
     }
 
-    (ch_aggregated, _out) = aggregate(ch_resolved, mapToCliArgs(config.aggregate))
+    (ch_aggregated, _out) = aggregate(ch_resolved, ArgsCLI(config.aggregate))
 
-    explorer(ch_aggregated, mapToCliArgs(config.explorer))
+    explorer(ch_aggregated, ArgsCLI(config.explorer))
     report(ch_aggregated)
 
     publish(ch_aggregated.map { it[1] })
@@ -281,7 +281,7 @@ process publish {
 }
 
 def transcriptPatchesArgs(Map config, String method) {
-    def prior_args = mapToCliArgs(config.segmentation[method], null, ["prior_shapes_key", "unassigned_value"])
+    def prior_args = ArgsCLI(config.segmentation[method], null, ["prior_shapes_key", "unassigned_value"])
 
-    return mapToCliArgs(config.patchify, "micron") + " " + prior_args
+    return ArgsCLI(config.patchify, "micron") + " " + prior_args
 }

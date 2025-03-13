@@ -31,7 +31,7 @@ def stringifyValueForCli(value) {
     return value.toString()
 }
 
-def mapToCliArgs(Map params, String contains = null, List keys = null) {
+def ArgsCLI(Map params, String contains = null, List keys = null) {
     return params
         .findAll { key, _value ->
             (contains == null || key.contains(contains)) && (keys == null || key in keys)
