@@ -7,6 +7,7 @@ include { paramsSummaryMap } from 'plugin/nf-schema'
 include { softwareVersionsToYAML } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_sopa_pipeline'
 include { cellpose } from '../subworkflows/local/cellpose'
+include { stardist } from '../subworkflows/local/stardist'
 include { baysor } from '../subworkflows/local/baysor'
 include { proseg } from '../subworkflows/local/proseg'
 include { readConfigFile } from '../modules/local/utils'
@@ -42,6 +43,11 @@ workflow SOPA {
     if (config.segmentation.cellpose) {
         (ch_image_patches, _out) = makeImagePatches(ch_tissue_seg, ArgsCLI(config.patchify, "pixel"))
         ch_resolved = cellpose(ch_image_patches, config)
+    }
+
+    if (config.segmentation.stardist) {
+        (ch_image_patches, _out) = makeImagePatches(ch_tissue_seg, ArgsCLI(config.patchify, "pixel"))
+        ch_resolved = stardist(ch_image_patches, config)
     }
 
     if (config.segmentation.baysor) {
