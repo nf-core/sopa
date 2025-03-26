@@ -51,8 +51,8 @@ process resolve {
 
     conda "${moduleDir}/environment.yml"
     container "${workflow.containerEngine == 'apptainer' && !task.ext.singularity_pull_docker_container
-        ? 'docker://jeffquinnmsk/sopa:latest'
-        : 'docker.io/jeffquinnmsk/sopa:latest'}"
+        ? 'docker://quentinblampey/sopa:2.0.3'
+        : 'docker.io/quentinblampey/sopa:2.0.3'}"
 
     input:
     tuple val(meta), path(sdata_path)

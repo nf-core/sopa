@@ -91,8 +91,8 @@ process toSpatialData {
 
     conda "${moduleDir}/environment.yml"
     container "${workflow.containerEngine == 'apptainer' && !task.ext.singularity_pull_docker_container
-        ? 'docker://jeffquinnmsk/sopa:latest'
-        : 'docker.io/jeffquinnmsk/sopa:latest'}"
+        ? 'docker://quentinblampey/sopa:2.0.3'
+        : 'docker.io/quentinblampey/sopa:2.0.3'}"
 
     input:
     tuple val(meta), val(sdata_dir)
@@ -112,8 +112,8 @@ process tissueSegmentation {
 
     conda "${moduleDir}/environment.yml"
     container "${workflow.containerEngine == 'apptainer' && !task.ext.singularity_pull_docker_container
-        ? 'docker://jeffquinnmsk/sopa:latest'
-        : 'docker.io/jeffquinnmsk/sopa:latest'}"
+        ? 'docker://quentinblampey/sopa:2.0.3'
+        : 'docker.io/quentinblampey/sopa:2.0.3'}"
 
     input:
     tuple val(meta), path(sdata_path)
@@ -134,8 +134,8 @@ process makeImagePatches {
 
     conda "${moduleDir}/environment.yml"
     container "${workflow.containerEngine == 'apptainer' && !task.ext.singularity_pull_docker_container
-        ? 'docker://jeffquinnmsk/sopa:latest'
-        : 'docker.io/jeffquinnmsk/sopa:latest'}"
+        ? 'docker://quentinblampey/sopa:2.0.3'
+        : 'docker.io/quentinblampey/sopa:2.0.3'}"
 
     input:
     tuple val(meta), path(sdata_path)
@@ -156,8 +156,8 @@ process makeTranscriptPatches {
 
     conda "${moduleDir}/environment.yml"
     container "${workflow.containerEngine == 'apptainer' && !task.ext.singularity_pull_docker_container
-        ? 'docker://jeffquinnmsk/sopa:latest'
-        : 'docker.io/jeffquinnmsk/sopa:latest'}"
+        ? 'docker://quentinblampey/sopa:2.0.3'
+        : 'docker.io/quentinblampey/sopa:2.0.3'}"
 
     input:
     tuple val(meta), path(sdata_path)
@@ -177,8 +177,8 @@ process aggregate {
 
     conda "${moduleDir}/environment.yml"
     container "${workflow.containerEngine == 'apptainer' && !task.ext.singularity_pull_docker_container
-        ? 'docker://jeffquinnmsk/sopa:latest'
-        : 'docker.io/jeffquinnmsk/sopa:latest'}"
+        ? 'docker://quentinblampey/sopa:2.0.3'
+        : 'docker.io/quentinblampey/sopa:2.0.3'}"
 
     input:
     tuple val(meta), path(sdata_path)
@@ -199,8 +199,8 @@ process explorer_raw {
 
     conda "${moduleDir}/environment.yml"
     container "${workflow.containerEngine == 'apptainer' && !task.ext.singularity_pull_docker_container
-        ? 'docker://jeffquinnmsk/sopa:latest'
-        : 'docker.io/jeffquinnmsk/sopa:latest'}"
+        ? 'docker://quentinblampey/sopa:2.0.3'
+        : 'docker.io/quentinblampey/sopa:2.0.3'}"
 
     publishDir "${params.outdir}", mode: params.publish_dir_mode
 
@@ -223,8 +223,8 @@ process explorer {
 
     conda "${moduleDir}/environment.yml"
     container "${workflow.containerEngine == 'apptainer' && !task.ext.singularity_pull_docker_container
-        ? 'docker://jeffquinnmsk/sopa:latest'
-        : 'docker.io/jeffquinnmsk/sopa:latest'}"
+        ? 'docker://quentinblampey/sopa:2.0.3'
+        : 'docker.io/quentinblampey/sopa:2.0.3'}"
 
     publishDir "${params.outdir}", mode: params.publish_dir_mode
 
@@ -250,8 +250,8 @@ process report {
 
     conda "${moduleDir}/environment.yml"
     container "${workflow.containerEngine == 'apptainer' && !task.ext.singularity_pull_docker_container
-        ? 'docker://jeffquinnmsk/sopa:latest'
-        : 'docker.io/jeffquinnmsk/sopa:latest'}"
+        ? 'docker://quentinblampey/sopa:2.0.3'
+        : 'docker.io/quentinblampey/sopa:2.0.3'}"
 
     publishDir "${params.outdir}", mode: params.publish_dir_mode
 
