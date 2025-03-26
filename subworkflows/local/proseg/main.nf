@@ -20,8 +20,8 @@ process patchSegmentation {
 
     conda "${moduleDir}/environment.yml"
     container "${workflow.containerEngine == 'apptainer' && !task.ext.singularity_pull_docker_container
-        ? 'docker://quentinblampey/sopa:2.0.3-prosegx'
-        : 'docker.io/quentinblampey/sopa:2.0.3-prosegx'}"
+        ? 'docker://quentinblampey/sopa:2.0.3-proseg'
+        : 'docker.io/quentinblampey/sopa:2.0.3-proseg'}"
 
     input:
     tuple val(meta), path(sdata_path)
