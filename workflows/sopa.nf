@@ -209,8 +209,8 @@ process explorer_raw {
     val cli_arguments
 
     output:
-    path "${meta.explorer_dir}/morphology.ome.tif"
-    path "${meta.explorer_dir}/transcripts.zarr.zip"
+    path "${meta.explorer_dir}/morphology*"
+    path "${meta.explorer_dir}/transcripts*"
 
     script:
     """
