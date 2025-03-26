@@ -27,8 +27,8 @@ process patchSegmentation {
 
     conda "${moduleDir}/environment.yml"
     container "${workflow.containerEngine == 'apptainer' && !task.ext.singularity_pull_docker_container
-        ? 'docker://jeffquinnmsk/baysor:latest'
-        : 'docker.io/jeffquinnmsk/baysor:latest'}"
+        ? 'docker://quentinblampey/sopa:2.0.3-baysor'
+        : 'docker.io/quentinblampey/sopa:2.0.3-baysor'}"
 
     input:
     tuple val(meta), path(sdata_path), val(cli_arguments), val(index), val(n_patches)
@@ -51,8 +51,8 @@ process resolve {
 
     conda "${moduleDir}/environment.yml"
     container "${workflow.containerEngine == 'apptainer' && !task.ext.singularity_pull_docker_container
-        ? 'docker://quentinblampey/sopa:2.0.3'
-        : 'docker.io/quentinblampey/sopa:2.0.3'}"
+        ? 'docker://quentinblampey/sopa:2.0.3-baysor'
+        : 'docker.io/quentinblampey/sopa:2.0.3-baysor'}"
 
     input:
     tuple val(meta), path(sdata_path)
