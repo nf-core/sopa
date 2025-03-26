@@ -13,16 +13,16 @@ workflow cellpose {
         .flatMap { meta, sdata_path, n_patches -> (0..<n_patches).collect { index -> [meta, sdata_path, cellpose_args, index, n_patches] } }
         .set { ch_cellpose }
 
-    ch_segmented = patchSegmentation(ch_cellpose).map { meta, sdata_path, _out, n_patches -> [groupKey(meta.sdata_dir, n_patches), [meta, sdata_path]] }.groupTuple().map { it -> it[1][0] }
+    ch_segmented = patchSegmentationCellpose(ch_cellpose).map { meta, sdata_path, _out, n_patches -> [groupKey(meta.sdata_dir, n_patches), [meta, sdata_path]] }.groupTuple().map { it -> it[1][0] }
 
-    (ch_resolved, _out) = resolve(ch_segmented)
+    (ch_resolved, _out) = resolveCellpose(ch_segmented)
 
     emit:
     ch_resolved
 }
 
 
-process patchSegmentation {
+process patchSegmentationCellpose {
     label "process_single"
 
     conda "${moduleDir}/environment.yml"
@@ -42,7 +42,7 @@ process patchSegmentation {
     """
 }
 
-process resolve {
+process resolveCellpose {
     label "process_low"
 
     conda "${moduleDir}/environment.yml"

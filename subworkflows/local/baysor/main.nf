@@ -13,16 +13,16 @@ workflow baysor {
         .flatMap { meta, sdata_path, patches_indices -> patches_indices.collect { index -> [meta, sdata_path, baysor_args, index.trim().toInteger(), patches_indices.size] } }
         .set { ch_baysor }
 
-    ch_segmented = patchSegmentation(ch_baysor).map { meta, sdata_path, _out, n_patches -> [groupKey(meta.sdata_dir, n_patches), [meta, sdata_path]] }.groupTuple().map { it -> it[1][0] }
+    ch_segmented = patchSegmentationBaysor(ch_baysor).map { meta, sdata_path, _out, n_patches -> [groupKey(meta.sdata_dir, n_patches), [meta, sdata_path]] }.groupTuple().map { it -> it[1][0] }
 
-    (ch_resolved, _out) = resolve(ch_segmented, resolveArgs(config))
+    (ch_resolved, _out) = resolveBaysor(ch_segmented, resolveArgs(config))
 
     emit:
     ch_resolved
 }
 
 
-process patchSegmentation {
+process patchSegmentationBaysor {
     label "process_long"
 
     conda "${moduleDir}/environment.yml"
@@ -46,7 +46,7 @@ process patchSegmentation {
     """
 }
 
-process resolve {
+process resolveBaysor {
     label "process_low"
 
     conda "${moduleDir}/environment.yml"

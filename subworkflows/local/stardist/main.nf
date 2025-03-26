@@ -13,16 +13,16 @@ workflow stardist {
         .flatMap { meta, sdata_path, n_patches -> (0..<n_patches).collect { index -> [meta, sdata_path, stardist_args, index, n_patches] } }
         .set { ch_stardist }
 
-    ch_segmented = patchSegmentation(ch_stardist).map { meta, sdata_path, _out, n_patches -> [groupKey(meta.sdata_dir, n_patches), [meta, sdata_path]] }.groupTuple().map { it -> it[1][0] }
+    ch_segmented = patchSegmentationStardist(ch_stardist).map { meta, sdata_path, _out, n_patches -> [groupKey(meta.sdata_dir, n_patches), [meta, sdata_path]] }.groupTuple().map { it -> it[1][0] }
 
-    (ch_resolved, _out) = resolve(ch_segmented)
+    (ch_resolved, _out) = resolveStardist(ch_segmented)
 
     emit:
     ch_resolved
 }
 
 
-process patchSegmentation {
+process patchSegmentationStardist {
     label "process_single"
 
     conda "${moduleDir}/environment.yml"
@@ -42,7 +42,7 @@ process patchSegmentation {
     """
 }
 
-process resolve {
+process resolveStardist {
     label "process_low"
 
     conda "${moduleDir}/environment.yml"

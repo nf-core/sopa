@@ -8,14 +8,14 @@ workflow proseg {
     main:
     proseg_args = ArgsCLI(config.segmentation.proseg, null, ["command_line_suffix"])
 
-    (ch_segmented, _out) = patchSegmentation(ch_patches, proseg_args)
+    (ch_segmented, _out) = patchSegmentationProseg(ch_patches, proseg_args)
 
     emit:
     ch_segmented
 }
 
 
-process patchSegmentation {
+process patchSegmentationProseg {
     label "process_high"
 
     conda "${moduleDir}/environment.yml"
