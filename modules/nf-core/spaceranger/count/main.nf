@@ -45,7 +45,7 @@ process SPACERANGER_COUNT {
         $probeset \\
         $alignment \\
         $slidefile \\
-        --create-bam="false"
+        $args
     mv ${prefix}/outs outs
 
     cat <<-END_VERSIONS > versions.yml
