@@ -19,8 +19,8 @@ workflow INPUT_CHECK {
     ch_spaceranger = ch_samplesheet
         .map { it -> [it, it.fastq_dir]}
         .branch {
-            tar: it[1].contains(".tar.gz")
-            dir: !it[1].contains(".tar.gz")
+            tar: it[1].name.contains(".tar.gz")
+            dir: !it[1].name.contains(".tar.gz")
         }
 
     // Extract tarballed inputs
