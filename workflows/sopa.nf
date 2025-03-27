@@ -12,6 +12,8 @@ include { baysor } from '../subworkflows/local/baysor'
 include { proseg } from '../subworkflows/local/proseg'
 include { readConfigFile } from '../modules/local/utils'
 include { ArgsCLI } from '../modules/local/utils'
+include { SPACERANGER } from '../subworkflows/local/spaceranger'
+include { INPUT_CHECK } from '../subworkflows/local/input_check'
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     RUN MAIN WORKFLOW
@@ -28,6 +30,20 @@ workflow SOPA {
     ch_versions = Channel.empty()
 
     def config = readConfigFile(configfile)
+
+    if (config.read.technology == "visium_hd") {
+        INPUT_CHECK(ch_samplesheet)
+
+        ch_space_ranger_input = INPUT_CHECK.out.ch_spaceranger_input
+
+        ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
+        SPACERANGER(ch_space_ranger_input)
+
+        (ch_samplesheet, _files) = SPACERANGER.out.sr_dir
+        ch_versions = ch_versions.mix(SPACERANGER.out.versions.first())
+
+        ch_samplesheet
+    }
 
     ch_spatialdata = toSpatialData(ch_samplesheet.map { meta -> [meta, meta.sdata_dir] }, ArgsCLI(config.read))
 
@@ -103,7 +119,7 @@ process toSpatialData {
 
     script:
     """
-    sopa convert ${meta.id} --sdata-path ${meta.sdata_dir} ${cli_arguments}
+    sopa convert ${meta.data_dir} --sdata-path ${meta.sdata_dir} ${cli_arguments}
     """
 }
 

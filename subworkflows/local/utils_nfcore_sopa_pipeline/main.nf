@@ -68,12 +68,29 @@ workflow PIPELINE_INITIALISATION {
 
     Channel
         .fromList(samplesheetToList(params.input, "${projectDir}/assets/schema_input.json"))
-        .map { meta, dataset_id ->
-            if (!dataset_id) {
-                dataset_id = file(meta.id).baseName
-            }
+        .map { meta, data_path ->
+            if (!meta.fastq_dir) {
+                if (!data_path) {
+                    exit(1, "The data_path must be provided (path to the raw inputs)")
+                }
 
-            return [id: meta.id, sdata_dir: "${dataset_id}.zarr", explorer_dir: "${dataset_id}.explorer"]
+                if (!meta.id) {
+                    meta.id = file(data_path).baseName
+                }
+
+                meta.data_dir = data_path
+            }
+            else {
+                meta.data_dir = "${meta.id}/spaceranger/outs"
+
+                if (!meta.id) {
+                    exit(1, "The id must be provided when running on Visium HD data")
+                }
+            }
+            meta.sdata_dir = "${meta.id}.zarr"
+            meta.explorer_dir = "${meta.id}.explorer"
+
+            return meta
         }
         .map { samplesheet ->
             validateInputSamplesheet(samplesheet)

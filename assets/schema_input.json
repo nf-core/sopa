@@ -10,21 +10,74 @@
             "sample": {
                 "type": "string",
                 "pattern": "^\\S+$",
-                "format": "path",
-                "exists": true,
-                "errorMessage": "Sample data path must exist",
+                "errorMessage": "Sample name cannot contain spaces",
                 "meta": [
                     "id"
                 ]
             },
-            "dataset_id": {
+            "data_path": {
                 "type": "string",
                 "pattern": "^\\S+$",
-                "errorMessage": "Dataset IDs cannot contain spaces"
+                "format": "path",
+                "exists": true,
+                "errorMessage": "Data path must exist"
+            },
+            "fastq_dir": {
+                "type": "string",
+                "pattern": "^\\S+$",
+                "format": "path",
+                "exists": true,
+                "errorMessage": "Path to the fastq directory must exist",
+                "meta": [
+                    "fastq_dir"
+                ]
+            },
+            "cytaimage": {
+                "type": "string",
+                "pattern": "^\\S+$",
+                "format": "path",
+                "exists": true,
+                "errorMessage": "Path to the cytaimage file must exist",
+                "meta": [
+                    "cytaimage"
+                ]
+            },
+            "slide": {
+                "type": "string",
+                "pattern": "^\\S+$",
+                "errorMessage": "Slide name cannot contain spaces",
+                "meta": [
+                    "slide"
+                ]
+            },
+            "area": {
+                "type": "string",
+                "pattern": "^\\S+$",
+                "errorMessage": "Area name cannot contain spaces",
+                "meta": [
+                    "area"
+                ]
+            },
+            "manual_alignment": {
+                "type": "string",
+                "pattern": "^\\S+$",
+                "format": "path",
+                "exists": true,
+                "errorMessage": "Path to the manual_alignment file must exist",
+                "meta": [
+                    "manual_alignment"
+                ]
+            },
+            "slidefile": {
+                "type": "string",
+                "pattern": "^\\S+$",
+                "format": "path",
+                "exists": true,
+                "errorMessage": "Path to the slidefile must exist",
+                "meta": [
+                    "slidefile"
+                ]
             }
-        },
-        "required": [
-            "sample"
-        ]
+        }
     }
 }
