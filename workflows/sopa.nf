@@ -39,53 +39,50 @@ workflow SOPA {
         ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
         SPACERANGER(ch_space_ranger_input)
 
-        (ch_samplesheet, _files) = SPACERANGER.out.sr_dir
-        ch_versions = ch_versions.mix(SPACERANGER.out.versions.first())
-
-        ch_samplesheet
+        SPACERANGER.out.sr_dir.view()
     }
 
-    ch_spatialdata = toSpatialData(ch_samplesheet.map { meta -> [meta, meta.sdata_dir] }, ArgsCLI(config.read))
+    // ch_spatialdata = toSpatialData(ch_samplesheet.map { meta -> [meta, meta.sdata_dir] }, ArgsCLI(config.read))
 
-    explorer_raw(ch_spatialdata, ArgsCLI(config.explorer))
+    // explorer_raw(ch_spatialdata, ArgsCLI(config.explorer))
 
-    if (config.segmentation.tissue) {
-        (ch_tissue_seg, _out) = tissueSegmentation(ch_spatialdata, ArgsCLI(config.segmentation.tissue))
-    }
-    else {
-        ch_tissue_seg = ch_spatialdata
-    }
+    // if (config.segmentation.tissue) {
+    //     (ch_tissue_seg, _out) = tissueSegmentation(ch_spatialdata, ArgsCLI(config.segmentation.tissue))
+    // }
+    // else {
+    //     ch_tissue_seg = ch_spatialdata
+    // }
 
-    if (config.segmentation.cellpose) {
-        (ch_image_patches, _out) = makeImagePatches(ch_tissue_seg, ArgsCLI(config.patchify, "pixel"))
-        ch_resolved = cellpose(ch_image_patches, config)
-    }
+    // if (config.segmentation.cellpose) {
+    //     (ch_image_patches, _out) = makeImagePatches(ch_tissue_seg, ArgsCLI(config.patchify, "pixel"))
+    //     ch_resolved = cellpose(ch_image_patches, config)
+    // }
 
-    if (config.segmentation.stardist) {
-        (ch_image_patches, _out) = makeImagePatches(ch_tissue_seg, ArgsCLI(config.patchify, "pixel"))
-        ch_resolved = stardist(ch_image_patches, config)
-    }
+    // if (config.segmentation.stardist) {
+    //     (ch_image_patches, _out) = makeImagePatches(ch_tissue_seg, ArgsCLI(config.patchify, "pixel"))
+    //     ch_resolved = stardist(ch_image_patches, config)
+    // }
 
-    if (config.segmentation.baysor) {
-        ch_input_baysor = config.segmentation.cellpose ? ch_resolved : ch_tissue_seg
+    // if (config.segmentation.baysor) {
+    //     ch_input_baysor = config.segmentation.cellpose ? ch_resolved : ch_tissue_seg
 
-        ch_transcripts_patches = makeTranscriptPatches(ch_input_baysor, transcriptPatchesArgs(config, "baysor"))
-        ch_resolved = baysor(ch_transcripts_patches, config)
-    }
+    //     ch_transcripts_patches = makeTranscriptPatches(ch_input_baysor, transcriptPatchesArgs(config, "baysor"))
+    //     ch_resolved = baysor(ch_transcripts_patches, config)
+    // }
 
-    if (config.segmentation.proseg) {
-        ch_input_proseg = config.segmentation.cellpose ? ch_resolved : ch_tissue_seg
+    // if (config.segmentation.proseg) {
+    //     ch_input_proseg = config.segmentation.cellpose ? ch_resolved : ch_tissue_seg
 
-        ch_proseg_patches = makeTranscriptPatches(ch_input_proseg, transcriptPatchesArgs(config, "proseg"))
-        ch_resolved = proseg(ch_proseg_patches.map { meta, sdata_path, _file -> [meta, sdata_path] }, config)
-    }
+    //     ch_proseg_patches = makeTranscriptPatches(ch_input_proseg, transcriptPatchesArgs(config, "proseg"))
+    //     ch_resolved = proseg(ch_proseg_patches.map { meta, sdata_path, _file -> [meta, sdata_path] }, config)
+    // }
 
-    (ch_aggregated, _out) = aggregate(ch_resolved, ArgsCLI(config.aggregate))
+    // (ch_aggregated, _out) = aggregate(ch_resolved, ArgsCLI(config.aggregate))
 
-    explorer(ch_aggregated, ArgsCLI(config.explorer))
-    report(ch_aggregated)
+    // explorer(ch_aggregated, ArgsCLI(config.explorer))
+    // report(ch_aggregated)
 
-    publish(ch_aggregated.map { it[1] })
+    // publish(ch_aggregated.map { it[1] })
 
 
     //
