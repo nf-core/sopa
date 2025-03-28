@@ -40,6 +40,25 @@ def ArgsCLI(Map params, String contains = null, List keys = null) {
         .join(" ")
 }
 
+def ArgsReaderCLI(Map args, Map meta) {
+    if (args.technology == "visium_hd") {
+        args = deepCopyCollection(args)
+
+        if (!args.kwargs) {
+            args.kwargs = ["dataset_id": meta.id]
+        }
+        else {
+            args.kwargs["dataset_id"] = meta.id
+        }
+
+        if (meta.image) {
+            args.kwargs["fullres_image_file"] = meta.image
+        }
+    }
+
+    return ArgsCLI(args)
+}
+
 def readConfigFile(String configfile) {
     def config = new groovy.yaml.YamlSlurper().parse(configfile as File)
 
@@ -53,4 +72,20 @@ def readConfigFile(String configfile) {
         }
     }
     return config
+}
+
+def deepCopyCollection(object) {
+    if (object instanceof Map) {
+        object.collectEntries { key, value ->
+            [key, deepCopyCollection(value)]
+        }
+    }
+    else if (object instanceof List) {
+        object.collect { item ->
+            deepCopyCollection(item)
+        }
+    }
+    else {
+        object
+    }
 }

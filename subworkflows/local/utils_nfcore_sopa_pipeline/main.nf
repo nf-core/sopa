@@ -81,7 +81,7 @@ workflow PIPELINE_INITIALISATION {
                 meta.data_dir = data_path
             }
             else {
-                meta.data_dir = "${meta.id}/spaceranger/outs"
+                meta.data_dir = "${meta.id}_spaceranger/outs"
 
                 if (!meta.id) {
                     exit(1, "The id must be provided when running on Visium HD data")

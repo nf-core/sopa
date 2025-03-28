@@ -12,6 +12,7 @@ include { baysor } from '../subworkflows/local/baysor'
 include { proseg } from '../subworkflows/local/proseg'
 include { readConfigFile } from '../modules/local/utils'
 include { ArgsCLI } from '../modules/local/utils'
+include { ArgsReaderCLI } from '../modules/local/utils'
 include { SPACERANGER } from '../subworkflows/local/spaceranger'
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -31,52 +32,54 @@ workflow SOPA {
     def config = readConfigFile(configfile)
 
     if (config.read.technology == "visium_hd") {
-        SPACERANGER(ch_samplesheet)
+        (ch_samplesheet, versions) = SPACERANGER(ch_samplesheet)
 
-        SPACERANGER.out.ch_samplesheet.view()
+        ch_versions = ch_versions.mix(versions)
     }
 
-    // ch_spatialdata = toSpatialData(ch_samplesheet.map { meta -> [meta, meta.sdata_dir] }, ArgsCLI(config.read))
+    ch_input_spatialdata = ch_samplesheet.map { meta -> [meta, meta.sdata_dir] }
 
-    // explorer_raw(ch_spatialdata, ArgsCLI(config.explorer))
+    ch_spatialdata = toSpatialData(ch_input_spatialdata, config.read)
 
-    // if (config.segmentation.tissue) {
-    //     (ch_tissue_seg, _out) = tissueSegmentation(ch_spatialdata, ArgsCLI(config.segmentation.tissue))
-    // }
-    // else {
-    //     ch_tissue_seg = ch_spatialdata
-    // }
+    explorer_raw(ch_spatialdata, ArgsCLI(config.explorer))
 
-    // if (config.segmentation.cellpose) {
-    //     (ch_image_patches, _out) = makeImagePatches(ch_tissue_seg, ArgsCLI(config.patchify, "pixel"))
-    //     ch_resolved = cellpose(ch_image_patches, config)
-    // }
+    if (config.segmentation.tissue) {
+        (ch_tissue_seg, _out) = tissueSegmentation(ch_spatialdata, ArgsCLI(config.segmentation.tissue))
+    }
+    else {
+        ch_tissue_seg = ch_spatialdata
+    }
 
-    // if (config.segmentation.stardist) {
-    //     (ch_image_patches, _out) = makeImagePatches(ch_tissue_seg, ArgsCLI(config.patchify, "pixel"))
-    //     ch_resolved = stardist(ch_image_patches, config)
-    // }
+    if (config.segmentation.cellpose) {
+        (ch_image_patches, _out) = makeImagePatches(ch_tissue_seg, ArgsCLI(config.patchify, "pixel"))
+        ch_resolved = cellpose(ch_image_patches, config)
+    }
 
-    // if (config.segmentation.baysor) {
-    //     ch_input_baysor = config.segmentation.cellpose ? ch_resolved : ch_tissue_seg
+    if (config.segmentation.stardist) {
+        (ch_image_patches, _out) = makeImagePatches(ch_tissue_seg, ArgsCLI(config.patchify, "pixel"))
+        ch_resolved = stardist(ch_image_patches, config)
+    }
 
-    //     ch_transcripts_patches = makeTranscriptPatches(ch_input_baysor, transcriptPatchesArgs(config, "baysor"))
-    //     ch_resolved = baysor(ch_transcripts_patches, config)
-    // }
+    if (config.segmentation.baysor) {
+        ch_input_baysor = config.segmentation.cellpose ? ch_resolved : ch_tissue_seg
 
-    // if (config.segmentation.proseg) {
-    //     ch_input_proseg = config.segmentation.cellpose ? ch_resolved : ch_tissue_seg
+        ch_transcripts_patches = makeTranscriptPatches(ch_input_baysor, transcriptPatchesArgs(config, "baysor"))
+        ch_resolved = baysor(ch_transcripts_patches, config)
+    }
 
-    //     ch_proseg_patches = makeTranscriptPatches(ch_input_proseg, transcriptPatchesArgs(config, "proseg"))
-    //     ch_resolved = proseg(ch_proseg_patches.map { meta, sdata_path, _file -> [meta, sdata_path] }, config)
-    // }
+    if (config.segmentation.proseg) {
+        ch_input_proseg = config.segmentation.cellpose ? ch_resolved : ch_tissue_seg
 
-    // (ch_aggregated, _out) = aggregate(ch_resolved, ArgsCLI(config.aggregate))
+        ch_proseg_patches = makeTranscriptPatches(ch_input_proseg, transcriptPatchesArgs(config, "proseg"))
+        ch_resolved = proseg(ch_proseg_patches.map { meta, sdata_path, _file -> [meta, sdata_path] }, config)
+    }
 
-    // explorer(ch_aggregated, ArgsCLI(config.explorer))
-    // report(ch_aggregated)
+    (ch_aggregated, _out) = aggregate(ch_resolved, ArgsCLI(config.aggregate))
 
-    // publish(ch_aggregated.map { it[1] })
+    explorer(ch_aggregated, ArgsCLI(config.explorer))
+    report(ch_aggregated)
+
+    publish(ch_aggregated.map { it[1] })
 
 
     //
@@ -103,14 +106,14 @@ process toSpatialData {
 
     input:
     tuple val(meta), val(sdata_dir)
-    val cli_arguments
+    val args
 
     output:
     tuple val(meta), path(sdata_dir)
 
     script:
     """
-    sopa convert ${meta.data_dir} --sdata-path ${meta.sdata_dir} ${cli_arguments}
+    sopa convert ${meta.data_dir} --sdata-path ${meta.sdata_dir} ${ArgsReaderCLI(args, meta)}
     """
 }
 
