@@ -13,7 +13,6 @@ include { proseg } from '../subworkflows/local/proseg'
 include { readConfigFile } from '../modules/local/utils'
 include { ArgsCLI } from '../modules/local/utils'
 include { SPACERANGER } from '../subworkflows/local/spaceranger'
-include { INPUT_CHECK } from '../subworkflows/local/input_check'
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     RUN MAIN WORKFLOW
@@ -32,14 +31,9 @@ workflow SOPA {
     def config = readConfigFile(configfile)
 
     if (config.read.technology == "visium_hd") {
-        INPUT_CHECK(ch_samplesheet)
+        SPACERANGER(ch_samplesheet)
 
-        ch_space_ranger_input = INPUT_CHECK.out.ch_spaceranger_input
-
-        ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
-        SPACERANGER(ch_space_ranger_input)
-
-        SPACERANGER.out.sr_dir.view()
+        SPACERANGER.out.ch_samplesheet.view()
     }
 
     // ch_spatialdata = toSpatialData(ch_samplesheet.map { meta -> [meta, meta.sdata_dir] }, ArgsCLI(config.read))
