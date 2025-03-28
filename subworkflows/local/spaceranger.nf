@@ -2,7 +2,8 @@
 // Raw data processing with Space Ranger
 //
 
-include { UNTAR } from "../../modules/nf-core/untar"
+include { UNTAR as SPACERANGER_UNTAR_REFERENCE} from "../../modules/nf-core/untar"
+include { UNTAR as UNTAR_SPACERANGER_INPUT} from "../../modules/nf-core/untar"
 include { SPACERANGER_COUNT } from '../../modules/nf-core/spaceranger/count'
 
 workflow SPACERANGER {
@@ -24,11 +25,11 @@ workflow SPACERANGER {
         }
 
     // Extract tarballed inputs
-    UNTAR ( ch_spaceranger.tar )
-    ch_versions = ch_versions.mix(UNTAR.out.versions)
+    UNTAR_SPACERANGER_INPUT ( ch_spaceranger.tar )
+    ch_versions = ch_versions.mix(UNTAR_SPACERANGER_INPUT.out.versions)
 
     // Combine extracted and directory inputs into one channel
-    ch_spaceranger_combined = UNTAR.out.untar
+    ch_spaceranger_combined = UNTAR_SPACERANGER_INPUT.out.untar
         .mix ( ch_spaceranger.dir )
         .map { meta, dir -> meta + [fastq_dir: dir] }
 
@@ -42,14 +43,14 @@ workflow SPACERANGER {
     ch_reference = Channel.empty()
     if (params.spaceranger_reference ==~ /.*\.tar\.gz$/) {
         ref_file = file(params.spaceranger_reference)
-        UNTAR(
+        SPACERANGER_UNTAR_REFERENCE(
             [
                 [id: "reference"],
                 ref_file,
             ]
         )
-        ch_reference = UNTAR.out.untar.map { meta, ref -> ref }
-        ch_versions = ch_versions.mix(UNTAR.out.versions)
+        ch_reference = SPACERANGER_UNTAR_REFERENCE.out.untar.map { meta, ref -> ref }
+        ch_versions = ch_versions.mix(SPACERANGER_UNTAR_REFERENCE.out.versions)
     }
     else {
         ch_reference = file(params.spaceranger_reference, type: "dir", checkIfExists: true)
