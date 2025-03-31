@@ -220,7 +220,7 @@ process explorer_raw {
 
     output:
     path "${meta.explorer_dir}/morphology*"
-    path "${meta.explorer_dir}/transcripts*"
+    path "${meta.explorer_dir}/transcripts*", optional: true
 
     script:
     """
