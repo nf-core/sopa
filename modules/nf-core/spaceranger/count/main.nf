@@ -1,6 +1,6 @@
 process SPACERANGER_COUNT {
     tag "$meta.id"
-    label 'process_high'
+    label 'process_low'
 
     container "nf-core/modules/spaceranger:d71611e316a8614b"
 
