@@ -35,10 +35,9 @@ workflow SOPA {
         (ch_input_spatialdata, versions) = SPACERANGER(ch_samplesheet)
 
         ch_versions = ch_versions.mix(versions)
-        ch_input_spatialdata = ch_input_spatialdata.map { meta, sr_outs -> [meta, meta.sdata_dir, sr_outs] }
     }
     else {
-        ch_input_spatialdata = ch_samplesheet.map { meta -> [meta, meta.sdata_dir, meta.data_dir] }
+        ch_input_spatialdata = ch_samplesheet.map { meta -> [meta, meta.data_dir] }
     }
 
     ch_spatialdata = toSpatialData(ch_input_spatialdata, config.read)
@@ -107,11 +106,11 @@ process toSpatialData {
         : 'docker.io/quentinblampey/sopa:2.0.3'}"
 
     input:
-    tuple val(meta), val(sdata_dir), path(input_files)
+    tuple val(meta), path(input_files)
     val args
 
     output:
-    tuple val(meta), path(sdata_dir)
+    tuple val(meta), path("${meta.sdata_dir}")
 
     script:
     """
