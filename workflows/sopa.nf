@@ -99,7 +99,7 @@ workflow SOPA {
 }
 
 process toSpatialData {
-    label "process_high"
+    label "process_low"
 
     conda "${moduleDir}/environment.yml"
     container "${workflow.containerEngine == 'apptainer' && !task.ext.singularity_pull_docker_container
