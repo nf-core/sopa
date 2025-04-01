@@ -42,10 +42,32 @@
                     "cytaimage"
                 ]
             },
+            "colorizedimage": {
+                "type": "string",
+                "pattern": "^\\S+$",
+                "format": "path",
+                "exists": true,
+                "errorMessage": "Path to the colorizedimage file must exist",
+                "meta": [
+                    "colorizedimage"
+                ]
+            },
+            "darkimage": {
+                "type": "string",
+                "pattern": "^\\S+$",
+                "format": "path",
+                "exists": true,
+                "errorMessage": "Path to the darkimage file must exist",
+                "meta": [
+                    "darkimage"
+                ]
+            },
             "image": {
                 "type": "string",
                 "pattern": "^\\S+$",
-                "errorMessage": "Slide image cannot contain spaces",
+                "format": "path",
+                "exists": true,
+                "errorMessage": "Path to the image must exist",
                 "meta": [
                     "image"
                 ]
