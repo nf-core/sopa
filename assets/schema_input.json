@@ -42,6 +42,14 @@
                     "cytaimage"
                 ]
             },
+            "image": {
+                "type": "string",
+                "pattern": "^\\S+$",
+                "errorMessage": "Slide image cannot contain spaces",
+                "meta": [
+                    "image"
+                ]
+            },
             "slide": {
                 "type": "string",
                 "pattern": "^\\S+$",
