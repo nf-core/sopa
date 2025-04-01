@@ -32,12 +32,14 @@ workflow SOPA {
     def config = readConfigFile(configfile)
 
     if (config.read.technology == "visium_hd") {
-        (ch_samplesheet, versions) = SPACERANGER(ch_samplesheet)
+        (sr_dir, versions) = SPACERANGER(ch_samplesheet)
 
         ch_versions = ch_versions.mix(versions)
+        ch_input_spatialdata = sr_dir.map { outs -> [outs[0], outs[0].sdata_dir, outs[1]] }
     }
-
-    ch_input_spatialdata = ch_samplesheet.map { meta -> [meta, meta.sdata_dir] }
+    else {
+        ch_input_spatialdata = ch_samplesheet.map { meta -> [meta, meta.sdata_dir, []] }
+    }
 
     ch_spatialdata = toSpatialData(ch_input_spatialdata, config.read)
 
@@ -105,7 +107,7 @@ process toSpatialData {
         : 'docker.io/quentinblampey/sopa:2.0.3'}"
 
     input:
-    tuple val(meta), val(sdata_dir)
+    tuple val(meta), val(sdata_dir), path(intermediate_files)
     val args
 
     output:

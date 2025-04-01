@@ -76,11 +76,10 @@ workflow SPACERANGER {
         ch_probeset,
     )
 
-    ch_samplesheet = SPACERANGER_COUNT.out.outs.map { outs -> outs[0] }
     ch_versions = ch_versions.mix(SPACERANGER_COUNT.out.versions.first())
 
     emit:
-    ch_samplesheet = ch_samplesheet
+    sr_dir = SPACERANGER_COUNT.out.outs
     versions = ch_versions // channel: [ versions.yml ]
 }
 
