@@ -28,7 +28,10 @@ def stringifyValueForCli(value) {
     if (value instanceof Boolean) {
         return value ? "True" : "False"
     }
-    return value.toString()
+    if (value instanceof Number) {
+        return value.toString()
+    }
+    return "'${value.toString()}'"
 }
 
 def ArgsCLI(Map params, String contains = null, List keys = null) {
@@ -50,6 +53,8 @@ def ArgsReaderCLI(Map args, Map meta) {
         else {
             args.kwargs["dataset_id"] = meta.id
         }
+
+        println("meta: ${meta}")
 
         if (meta.image) {
             args.kwargs["fullres_image_file"] = meta.image
