@@ -71,7 +71,7 @@ workflow PIPELINE_INITIALISATION {
         .map { meta, data_path ->
             if (!meta.fastq_dir) {
                 if (!data_path) {
-                    exit(1, "The data_path must be provided (path to the raw inputs)")
+                    error("The data_path must be provided (path to the raw inputs)")
                 }
 
                 if (!meta.id) {
@@ -85,7 +85,11 @@ workflow PIPELINE_INITIALISATION {
                 meta.data_dir = "outs"
 
                 if (!meta.id) {
-                    exit(1, "The id must be provided when running on Visium HD data")
+                    error("The id must be provided when running on Visium HD data")
+                }
+
+                if (!meta.image) {
+                    error("The image (full resolution image) must be provided when running Sopa on Visium HD data - it is required for the cell segmentation")
                 }
             }
             meta.sdata_dir = "${meta.id}.zarr"
