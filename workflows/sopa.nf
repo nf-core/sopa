@@ -33,6 +33,7 @@ workflow SOPA {
 
     if (config.read.technology == "visium_hd") {
         (ch_input_spatialdata, versions) = SPACERANGER(ch_samplesheet)
+        ch_input_spatialdata = ch_input_spatialdata.map { meta, out -> [meta, [out, meta.image]] }
 
         ch_versions = ch_versions.mix(versions)
     }
