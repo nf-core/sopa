@@ -47,8 +47,8 @@ process resolveCellpose {
 
     conda "${moduleDir}/environment.yml"
     container "${workflow.containerEngine == 'apptainer' && !task.ext.singularity_pull_docker_container
-        ? 'docker://quentinblampey/sopa:2.0.3'
-        : 'docker.io/quentinblampey/sopa:2.0.3'}"
+        ? 'docker://quentinblampey/sopa:2.0.4'
+        : 'docker.io/quentinblampey/sopa:2.0.4'}"
 
     input:
     tuple val(meta), path(sdata_path)
