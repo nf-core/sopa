@@ -7,6 +7,5 @@ testing/
 testing*
 *.pyc
 null/
-tests
 sandbox
 samplesheets

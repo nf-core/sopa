@@ -61,8 +61,6 @@ def ArgsReaderCLI(Map args, Map meta) {
         }
     }
 
-    println("ArgsReaderCLI: ${args}")
-
     return ArgsCLI(args)
 }
 
