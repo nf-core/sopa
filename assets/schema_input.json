@@ -17,14 +17,12 @@
             },
             "data_path": {
                 "type": "string",
-                "pattern": "^\\S+$",
                 "format": "path",
                 "exists": true,
                 "errorMessage": "Data path must exist"
             },
             "fastq_dir": {
                 "type": "string",
-                "pattern": "^\\S+$",
                 "format": "path",
                 "exists": true,
                 "errorMessage": "Path to the fastq directory must exist",
@@ -34,7 +32,6 @@
             },
             "cytaimage": {
                 "type": "string",
-                "pattern": "^\\S+$",
                 "format": "path",
                 "exists": true,
                 "errorMessage": "Path to the cytaimage file must exist",
@@ -44,7 +41,6 @@
             },
             "colorizedimage": {
                 "type": "string",
-                "pattern": "^\\S+$",
                 "format": "path",
                 "exists": true,
                 "errorMessage": "Path to the colorizedimage file must exist",
@@ -54,7 +50,6 @@
             },
             "darkimage": {
                 "type": "string",
-                "pattern": "^\\S+$",
                 "format": "path",
                 "exists": true,
                 "errorMessage": "Path to the darkimage file must exist",
@@ -64,7 +59,6 @@
             },
             "image": {
                 "type": "string",
-                "pattern": "^\\S+$",
                 "format": "path",
                 "exists": true,
                 "errorMessage": "Path to the image must exist",
@@ -74,7 +68,6 @@
             },
             "slide": {
                 "type": "string",
-                "pattern": "^\\S+$",
                 "errorMessage": "Slide name cannot contain spaces",
                 "meta": [
                     "slide"
@@ -90,7 +83,6 @@
             },
             "manual_alignment": {
                 "type": "string",
-                "pattern": "^\\S+$",
                 "format": "path",
                 "exists": true,
                 "errorMessage": "Path to the manual_alignment file must exist",
@@ -100,7 +92,6 @@
             },
             "slidefile": {
                 "type": "string",
-                "pattern": "^\\S+$",
                 "format": "path",
                 "exists": true,
                 "errorMessage": "Path to the slidefile must exist",
