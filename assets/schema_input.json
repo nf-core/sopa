@@ -17,57 +17,64 @@
             },
             "data_path": {
                 "type": "string",
+                "pattern": "^\\S+$",
                 "format": "path",
                 "exists": true,
-                "errorMessage": "Data path must exist"
+                "errorMessage": "Data path must exist and not contain spaces"
             },
             "fastq_dir": {
                 "type": "string",
+                "pattern": "^\\S+$",
                 "format": "path",
                 "exists": true,
-                "errorMessage": "Path to the fastq directory must exist",
+                "errorMessage": "Path to the fastq directory must exist and not contain spaces",
                 "meta": [
                     "fastq_dir"
                 ]
             },
             "cytaimage": {
                 "type": "string",
+                "pattern": "^\\S+$",
                 "format": "path",
                 "exists": true,
-                "errorMessage": "Path to the cytaimage file must exist",
+                "errorMessage": "Path to the cytaimage file must exist and not contain spaces",
                 "meta": [
                     "cytaimage"
                 ]
             },
             "colorizedimage": {
                 "type": "string",
+                "pattern": "^\\S+$",
                 "format": "path",
                 "exists": true,
-                "errorMessage": "Path to the colorizedimage file must exist",
+                "errorMessage": "Path to the colorizedimage file must exist and not contain spaces",
                 "meta": [
                     "colorizedimage"
                 ]
             },
             "darkimage": {
                 "type": "string",
+                "pattern": "^\\S+$",
                 "format": "path",
                 "exists": true,
-                "errorMessage": "Path to the darkimage file must exist",
+                "errorMessage": "Path to the darkimage file must exist and not contain spaces",
                 "meta": [
                     "darkimage"
                 ]
             },
             "image": {
                 "type": "string",
+                "pattern": "^\\S+$",
                 "format": "path",
                 "exists": true,
-                "errorMessage": "Path to the image must exist",
+                "errorMessage": "Path to the image must exist and not contain spaces",
                 "meta": [
                     "image"
                 ]
             },
             "slide": {
                 "type": "string",
+                "pattern": "^\\S+$",
                 "errorMessage": "Slide name cannot contain spaces",
                 "meta": [
                     "slide"
@@ -83,18 +90,20 @@
             },
             "manual_alignment": {
                 "type": "string",
+                "pattern": "^\\S+$",
                 "format": "path",
                 "exists": true,
-                "errorMessage": "Path to the manual_alignment file must exist",
+                "errorMessage": "Path to the manual_alignment file must exist and not contain spaces",
                 "meta": [
                     "manual_alignment"
                 ]
             },
             "slidefile": {
                 "type": "string",
+                "pattern": "^\\S+$",
                 "format": "path",
                 "exists": true,
-                "errorMessage": "Path to the slidefile must exist",
+                "errorMessage": "Path to the slidefile must exist and not contain spaces",
                 "meta": [
                     "slidefile"
                 ]
