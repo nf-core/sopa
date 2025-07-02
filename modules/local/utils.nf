@@ -65,7 +65,16 @@ def ArgsReaderCLI(Map args, Map meta) {
 }
 
 def readConfigFile(String configfile) {
-    def config = new groovy.yaml.YamlSlurper().parse(configfile as File)
+    def reader
+
+    if (configfile ==~ /^https?:\/\/.*/) {
+        reader = new InputStreamReader(new URL(configfile).openStream())
+    }
+    else {
+        reader = new File(configfile).newReader()
+    }
+
+    def config = new groovy.yaml.YamlSlurper().parse(reader)
 
     if (config.segmentation.baysor) {
         if (config.segmentation.cellpose) {
