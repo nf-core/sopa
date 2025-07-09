@@ -3,8 +3,12 @@
     <source media="(prefers-color-scheme: dark)" srcset="docs/images/nf-core-sopa_logo_dark.png">
     <img alt="nf-core/sopa" src="docs/images/nf-core-sopa_logo_light.png">
   </picture>
-</h1>[![GitHub Actions CI Status](https://github.com/nf-core/sopa/actions/workflows/ci.yml/badge.svg)](https://github.com/nf-core/sopa/actions/workflows/ci.yml)
-[![GitHub Actions Linting Status](https://github.com/nf-core/sopa/actions/workflows/linting.yml/badge.svg)](https://github.com/nf-core/sopa/actions/workflows/linting.yml)[![AWS CI](https://img.shields.io/badge/CI%20tests-full%20size-FF9900?labelColor=000000&logo=Amazon%20AWS)](https://nf-co.re/sopa/results)[![Cite with Zenodo](http://img.shields.io/badge/DOI-10.5281/zenodo.XXXXXXX-1073c8?labelColor=000000)](https://doi.org/10.5281/zenodo.XXXXXXX)
+</h1>
+
+[![GitHub Actions CI Status](https://github.com/nf-core/sopa/actions/workflows/ci.yml/badge.svg)](https://github.com/nf-core/sopa/actions/workflows/ci.yml)
+[![GitHub Actions Linting Status](https://github.com/nf-core/sopa/actions/workflows/linting.yml/badge.svg)](https://github.com/nf-core/sopa/actions/workflows/linting.yml)
+[![AWS CI](https://img.shields.io/badge/CI%20tests-full%20size-FF9900?labelColor=000000&logo=Amazon%20AWS)](https://nf-co.re/sopa/results)
+[![Cite with Zenodo](http://img.shields.io/badge/DOI-10.5281/zenodo.XXXXXXX-1073c8?labelColor=000000)](https://doi.org/10.5281/zenodo.XXXXXXX)
 [![nf-test](https://img.shields.io/badge/unit_tests-nf--test-337ab7.svg)](https://www.nf-test.com)
 
 [![Nextflow](https://img.shields.io/badge/nextflow%20DSL2-%E2%89%A524.04.2-23aa62.svg)](https://www.nextflow.io/)
@@ -65,7 +69,7 @@ For more details about the output files and reports, please refer to the
 
 ## Credits
 
-nf-core/sopa was originally written by Quentin Blampey.
+nf-core/sopa was originally written by Quentin Blampey based on fundings from the following institutions: CentraleSupélec, Gustave Roussy Institute, and Université Paris-Saclay.
 
 We thank the following people for their extensive assistance in the development of this pipeline:
 
@@ -86,19 +90,11 @@ An extensive list of references for the tools used by the pipeline can be found 
 
 You can cite the `sopa` publication as follows:
 
-```txt
-@article{blampey_sopa_2024,
-	title = {Sopa: a technology-invariant pipeline for analyses of image-based spatial omics},
-	volume = {15},
-	url = {https://www.nature.com/articles/s41467-024-48981-z},
-	doi = {10.1038/s41467-024-48981-z},
-	journal = {Nature Communications},
-	author = {Blampey, Quentin and Mulder, Kevin and Gardet, Margaux and Christodoulidis, Stergios and Dutertre, Charles-Antoine and André, Fabrice and Ginhoux, Florent and Cournède, Paul-Henry},
-	year = {2024},
-	note = {Publisher: Nature Publishing Group},
-	pages = {4981},
-}
-```
+> Sopa: a technology-invariant pipeline for analyses of image-based spatial omics.
+>
+> Quentin Blampey, Kevin Mulder, Margaux Gardet, Stergios Christodoulidis, Charles-Antoine Dutertre, Fabrice André, Florent Ginhoux & Paul-Henry Cournède.
+>
+> _Nat Commun._ 2024 June 11. doi: [10.1038/s41467-024-48981-z](https://doi.org/10.1038/s41467-024-48981-z)
 
 You can cite the `nf-core` publication as follows:
 
