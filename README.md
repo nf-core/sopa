@@ -69,7 +69,7 @@ For more details about the output files and reports, please refer to the
 
 ## Credits
 
-nf-core/sopa was originally written by Quentin Blampey based on fundings from the following institutions: CentraleSupélec, Gustave Roussy Institute, and Université Paris-Saclay.
+nf-core/sopa was originally written by Quentin Blampey during his work at the following institutions: CentraleSupélec, Gustave Roussy Institute, and Université Paris-Saclay.
 
 We thank the following people for their extensive assistance in the development of this pipeline:
 
