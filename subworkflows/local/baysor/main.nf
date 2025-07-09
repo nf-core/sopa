@@ -41,7 +41,7 @@ process patchSegmentationBaysor {
     if command -v module &> /dev/null; then
         module purge
     fi
-    
+
     sopa segmentation baysor ${sdata_path} --patch-index ${index} ${cli_arguments}
     """
 }

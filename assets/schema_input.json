@@ -11,9 +11,7 @@
                 "type": "string",
                 "pattern": "^\\S+$",
                 "errorMessage": "Sample name cannot contain spaces",
-                "meta": [
-                    "id"
-                ]
+                "meta": ["id"]
             },
             "data_path": {
                 "type": "string",
@@ -28,9 +26,7 @@
                 "format": "path",
                 "exists": true,
                 "errorMessage": "Path to the fastq directory must exist and not contain spaces",
-                "meta": [
-                    "fastq_dir"
-                ]
+                "meta": ["fastq_dir"]
             },
             "cytaimage": {
                 "type": "string",
@@ -38,9 +34,7 @@
                 "format": "path",
                 "exists": true,
                 "errorMessage": "Path to the cytaimage file must exist and not contain spaces",
-                "meta": [
-                    "cytaimage"
-                ]
+                "meta": ["cytaimage"]
             },
             "colorizedimage": {
                 "type": "string",
@@ -48,9 +42,7 @@
                 "format": "path",
                 "exists": true,
                 "errorMessage": "Path to the colorizedimage file must exist and not contain spaces",
-                "meta": [
-                    "colorizedimage"
-                ]
+                "meta": ["colorizedimage"]
             },
             "darkimage": {
                 "type": "string",
@@ -58,9 +50,7 @@
                 "format": "path",
                 "exists": true,
                 "errorMessage": "Path to the darkimage file must exist and not contain spaces",
-                "meta": [
-                    "darkimage"
-                ]
+                "meta": ["darkimage"]
             },
             "image": {
                 "type": "string",
@@ -68,25 +58,19 @@
                 "format": "path",
                 "exists": true,
                 "errorMessage": "Path to the image must exist and not contain spaces",
-                "meta": [
-                    "image"
-                ]
+                "meta": ["image"]
             },
             "slide": {
                 "type": "string",
                 "pattern": "^\\S+$",
                 "errorMessage": "Slide name cannot contain spaces",
-                "meta": [
-                    "slide"
-                ]
+                "meta": ["slide"]
             },
             "area": {
                 "type": "string",
                 "pattern": "^\\S+$",
                 "errorMessage": "Area name cannot contain spaces",
-                "meta": [
-                    "area"
-                ]
+                "meta": ["area"]
             },
             "manual_alignment": {
                 "type": "string",
@@ -94,9 +78,7 @@
                 "format": "path",
                 "exists": true,
                 "errorMessage": "Path to the manual_alignment file must exist and not contain spaces",
-                "meta": [
-                    "manual_alignment"
-                ]
+                "meta": ["manual_alignment"]
             },
             "slidefile": {
                 "type": "string",
@@ -104,9 +86,7 @@
                 "format": "path",
                 "exists": true,
                 "errorMessage": "Path to the slidefile must exist and not contain spaces",
-                "meta": [
-                    "slidefile"
-                ]
+                "meta": ["slidefile"]
             }
         }
     }
