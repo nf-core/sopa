@@ -20,16 +20,12 @@
 
 ## Introduction
 
-**nf-core/sopa** is a bioinformatics pipeline that ...
+**nf-core/sopa** is the Nextflow version of [Sopa](https://github.com/gustaveroussy/sopa). Built on top of [SpatialData](https://github.com/scverse/spatialdata), Sopa enables processing and analyses of spatial omics data with single-cell resolution (spatial transcriptomics or multiplex imaging data) using a standard data structure and output. We currently support the following technologies: Xenium, Visium HD, MERSCOPE, CosMX, PhenoCycler, MACSima, Molecural Cartography, and others. It outputs a `.zarr` directory containing a processed [SpatialData](https://github.com/scverse/spatialdata) object, and a `.explorer` directory for visualization.
 
-<!-- TODO nf-core:
-   Complete this sentence with a 2-3 sentence summary of what types of data the pipeline ingests, a brief overview of the
-   major pipeline sections and the types of output it produces. You're giving an overview to someone new
-   to nf-core here, in 15-20 seconds. For an example, see https://github.com/nf-core/rnaseq/blob/master/README.md#introduction
--->
+<p align="center">
+  <img src="https://raw.githubusercontent.com/gustaveroussy/sopa/main/docs/assets/overview_white.png" alt="sopa_overview" width="100%"/>
+</p>
 
-<!-- TODO nf-core: Include a figure that guides the user through the major workflow steps. Many nf-core
-     workflows use the "tube map" design for that. See https://nf-co.re/docs/guidelines/graphic_design/workflow_diagrams#examples for examples.   -->
 <!-- TODO nf-core: Fill in short bullet-pointed list of the default steps in the pipeline -->
 
 ## Usage
@@ -37,30 +33,25 @@
 > [!NOTE]
 > If you are new to Nextflow and nf-core, please refer to [this page](https://nf-co.re/docs/usage/installation) on how to set-up Nextflow. Make sure to [test your setup](https://nf-co.re/docs/usage/introduction#how-to-run-a-pipeline) with `-profile test` before running the workflow on actual data.
 
-<!-- TODO nf-core: Describe the minimum required steps to execute the pipeline, e.g. how to prepare samplesheets.
-     Explain what rows and columns represent. For instance (please edit as appropriate):
-
-First, prepare a samplesheet with your input data that looks as follows:
+First, prepare a samplesheet that lists the `data_path` to each sample data directory (typically, the per-sample output of the Xenium/MERSCOPE/etc, see more info [here](https://gustaveroussy.github.io/sopa/faq/#what-are-the-inputs-or-sopa)). You can optionally add `sample` to provide a name to your output directory, else it will be named based on `data_path`. Here is a samplesheet example:
 
 `samplesheet.csv`:
 
 ```csv
-sample,fastq_1,fastq_2
-CONTROL_REP1,AEG588A1_S1_L002_R1_001.fastq.gz,AEG588A1_S1_L002_R2_001.fastq.gz
+sample,data_path
+SAMPLE1,/path/to/one/merscope_directory
+SAMPLE2,/path/to/one/merscope_directory
 ```
 
-Each row represents a fastq file (single-end) or a pair of fastq files (paired end).
-
--->
+Then, choose a Sopa config file. You can find existing Sopa config files [here](https://github.com/gustaveroussy/sopa/tree/main/workflow/config). Follow the README instructions of the latter link to get your `--configfile`.
 
 Now, you can run the pipeline using:
-
-<!-- TODO nf-core: update the following command to include all required parameters for a minimal example -->
 
 ```bash
 nextflow run nf-core/sopa \
    -profile <docker/singularity/.../institute> \
    --input samplesheet.csv \
+   --configfile <CONFIGFILE> \
    --outdir <OUTDIR>
 ```
 
@@ -77,7 +68,7 @@ For more details about the output files and reports, please refer to the
 
 ## Credits
 
-nf-core/sopa was originally written by Quentin Blampey.
+nf-core/sopa was originally written by Quentin Blampey during his work at the following institutions: CentraleSupélec, Gustave Roussy Institute, and Université Paris-Saclay.
 
 We thank the following people for their extensive assistance in the development of this pipeline:
 
@@ -97,6 +88,14 @@ For further information or help, don't hesitate to get in touch on the [Slack `#
 <!-- TODO nf-core: Add bibliography of tools and data used in your pipeline -->
 
 An extensive list of references for the tools used by the pipeline can be found in the [`CITATIONS.md`](CITATIONS.md) file.
+
+You can cite the `sopa` publication as follows:
+
+> Sopa: a technology-invariant pipeline for analyses of image-based spatial omics.
+>
+> Quentin Blampey, Kevin Mulder, Margaux Gardet, Stergios Christodoulidis, Charles-Antoine Dutertre, Fabrice André, Florent Ginhoux & Paul-Henry Cournède.
+>
+> _Nat Commun._ 2024 June 11. doi: [10.1038/s41467-024-48981-z](https://doi.org/10.1038/s41467-024-48981-z)
 
 You can cite the `nf-core` publication as follows:
 

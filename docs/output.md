@@ -2,11 +2,9 @@
 
 ## Introduction
 
-This document describes the output produced by the pipeline.
+[This section from the Sopa documentation](https://gustaveroussy.github.io/sopa/tutorials/snakemake/#pipeline-outputs) describes the output produced by the pipeline.
 
-The directories listed below will be created in the results directory after the pipeline has finished. All paths are relative to the top-level results directory.
-
-<!-- TODO nf-core: Write this documentation describing your workflow's output -->
+The directories listed in the above link will be created in the results directory after the pipeline has finished. All paths are relative to the top-level results directory.
 
 ## Pipeline overview
 

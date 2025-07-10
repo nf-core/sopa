@@ -10,7 +10,7 @@
             "type": "object",
             "fa_icon": "fas fa-terminal",
             "description": "Define where the pipeline should find input data and save output data.",
-            "required": ["input", "outdir"],
+            "required": ["input", "outdir", "configfile"],
             "properties": {
                 "input": {
                     "type": "string",
@@ -22,6 +22,15 @@
                     "description": "Path to comma-separated file containing information about the samples in the experiment.",
                     "help_text": "You will need to create a design file with information about the samples in your experiment before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 3 columns, and a header row. See [usage docs](https://nf-co.re/sopa/usage#samplesheet-input).",
                     "fa_icon": "fas fa-file-csv"
+                },
+                "configfile": {
+                    "type": "string",
+                    "format": "file-path",
+                    "exists": true,
+                    "pattern": "^\\S+\\.yaml$",
+                    "description": "Path to a Sopa config file describing the technology used and the pipeline parameters.",
+                    "help_text": "Choose one existing config file amont public one: https://github.com/gustaveroussy/sopa/tree/master/workflow/config",
+                    "fa_icon": "fas fa-file"
                 },
                 "outdir": {
                     "type": "string",
@@ -35,6 +44,32 @@
                     "fa_icon": "fas fa-envelope",
                     "help_text": "Set this parameter to your e-mail address to get a summary e-mail with details of the run sent to you when the workflow exits. If set in your user config file (`~/.nextflow/config`) then you don't need to specify this on the command line for every run.",
                     "pattern": "^([a-zA-Z0-9_\\-\\.]+)@([a-zA-Z0-9_\\-\\.]+)\\.([a-zA-Z]{2,5})$"
+                }
+            }
+        },
+        "spaceranger_options": {
+            "title": "Space Ranger options",
+            "type": "object",
+            "fa_icon": "fas fa-rocket",
+            "description": "Options related to Space Ranger execution and raw spatial data processing",
+            "properties": {
+                "spaceranger_probeset": {
+                    "type": "string",
+                    "format": "file-path",
+                    "mimetype": "text/csv",
+                    "pattern": "^\\S+\\.csv$",
+                    "description": "Location of Space Ranger probeset file.",
+                    "fa_icon": "fas fa-file-csv",
+                    "exists": true
+                },
+                "spaceranger_reference": {
+                    "type": "string",
+                    "format": "path",
+                    "description": "Location of Space Ranger reference directory. May be packed as `tar.gz` file.",
+                    "help_text": "Please see the [10x website](https://support.10xgenomics.com/spatial-gene-expression/software/downloads/latest) to download either of the supported human or mouse references. If not specified the GRCh38 human reference is automatically downladed and used.",
+                    "fa_icon": "fas fa-folder-open",
+                    "default": "https://cf.10xgenomics.com/supp/spatial-exp/refdata-gex-GRCh38-2020-A.tar.gz",
+                    "exists": true
                 }
             }
         },
@@ -161,6 +196,9 @@
     "allOf": [
         {
             "$ref": "#/$defs/input_output_options"
+        },
+        {
+            "$ref": "#/$defs/spaceranger_options"
         },
         {
             "$ref": "#/$defs/institutional_config_options"
