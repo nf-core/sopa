@@ -1,6 +1,6 @@
 include { ArgsCLI } from '../../../modules/local/utils'
 
-workflow cellpose {
+workflow CELLPOSE {
     take:
     ch_patches
     config
