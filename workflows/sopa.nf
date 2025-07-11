@@ -33,7 +33,7 @@ workflow SOPA {
 
     if (config.read.technology == "visium_hd") {
         (ch_input_spatialdata, versions) = SPACERANGER(ch_samplesheet)
-        ch_input_spatialdata = ch_input_spatialdata.map { meta, out -> [meta, [out, meta.image]] }
+        ch_input_spatialdata = ch_input_spatialdata.map { meta, out -> [meta, [out.toString().replaceFirst(/(.*?outs).*/, '$1'), meta.image]] }
 
         ch_versions = ch_versions.mix(versions)
     }
@@ -89,7 +89,7 @@ workflow SOPA {
     //
     softwareVersionsToYAML(ch_versions).collectFile(
         storeDir: "${params.outdir}/pipeline_info",
-        name: 'nf_core_sopa_software_versions.yml',
+        name: 'nf_core_sopa_software_mqc_versions.yml',
         sort: true,
         newLine: true,
     )
