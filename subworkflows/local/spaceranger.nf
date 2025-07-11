@@ -93,6 +93,8 @@ def create_channel_spaceranger(LinkedHashMap meta) {
         return v ? file(v) : []
     }
 
+    def slide = meta.remove("slide")
+    def area = meta.remove("area")
     def fastq_dir = meta.remove("fastq_dir")
     def fastq_files = file("${fastq_dir}/${meta['id']}*.fastq.gz")
     def manual_alignment = get_file_from_meta("manual_alignment")
@@ -106,15 +108,25 @@ def create_channel_spaceranger(LinkedHashMap meta) {
         error("No `fastq_dir` specified or no samples found in folder.")
     }
 
-    def check_optional_files = [["manual_alignment", manual_alignment], ["slidefile", slidefile], ["image", image], ["cytaimage", cytaimage], ["colorizedimage", colorizedimage], ["darkimage", darkimage]]
-    check_optional_files.each { name, value ->
-        if (value && !file(value).exists()) {
-            error("File for `${name}` is specified, but does not exist: ${value}.")
+    // Check for existance of optional files
+    def optional_files = [
+        'manual_alignment': manual_alignment,
+        'slidefile': slidefile,
+        'image': image,
+        'cytaimage': cytaimage,
+        'colorizedimage': colorizedimage,
+        'darkimage': darkimage,
+    ]
+    optional_files.each { k, f ->
+        if (f && !f.exists()) {
+            error("File for `${k}` is specified, but does not exist: ${f}.")
         }
     }
+
+    // Check that at least one type of image is specified
     if (!(image || cytaimage || colorizedimage || darkimage)) {
         error("Need to specify at least one of 'image', 'cytaimage', 'colorizedimage', or 'darkimage' in the samplesheet")
     }
 
-    return [meta, fastq_files, image, cytaimage, darkimage, colorizedimage, manual_alignment, slidefile]
+    return [meta, fastq_files, image, slide, area, cytaimage, darkimage, colorizedimage, manual_alignment, slidefile]
 }
