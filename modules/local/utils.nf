@@ -96,49 +96,43 @@ def deepCopyCollection(object) {
 }
 
 
-def validate(Map cfg) {
+def validate(Map config) {
     def TRANSCRIPT_BASED_METHODS = ['proseg', 'baysor', 'comseg']
     def STAINING_BASED_METHODS = ['stardist', 'cellpose']
 
-    def backwardCompatibility = { Map c ->
-        TRANSCRIPT_BASED_METHODS.each { m ->
-            if (c.segmentation?.get(m)?.containsKey('cell_key')) {
-                println("Deprecated 'cell_key' → using 'prior_shapes_key' instead.")
-                c.segmentation[m].prior_shapes_key = c.segmentation[m].cell_key
-                c.segmentation[m].remove('cell_key')
-            }
+    // top-level checks
+    assert config.read instanceof Map && config.read.containsKey('technology') : "Provide a 'read.technology' key"
+    assert config.containsKey('segmentation') : "Provide a 'segmentation' section"
+
+    // backward compatibility
+    TRANSCRIPT_BASED_METHODS.each { m ->
+        if (config.segmentation?.get(m)?.containsKey('cell_key')) {
+            println("Deprecated 'cell_key' → using 'prior_shapes_key' instead.")
+            config.segmentation[m].prior_shapes_key = config.segmentation[m].cell_key
+            config.segmentation[m].remove('cell_key')
         }
-        if (c.aggregate?.containsKey('average_intensities')) {
-            println("Deprecated 'average_intensities' → using 'aggregate_channels' instead.")
-            c.aggregate.aggregate_channels = c.aggregate.average_intensities
-            c.aggregate.remove('average_intensities')
+    }
+    if (config.aggregate?.containsKey('average_intensities')) {
+        println("Deprecated 'average_intensities' → using 'aggregate_channels' instead.")
+        config.aggregate.aggregate_channels = config.aggregate.average_intensities
+        config.aggregate.remove('average_intensities')
+    }
+
+    // check segmentation methods
+    assert config.segmentation : "Provide at least one segmentation method"
+    assert TRANSCRIPT_BASED_METHODS.count { config.segmentation.containsKey(it) } <= 1 : "Only one of ${TRANSCRIPT_BASED_METHODS} may be used"
+    assert STAINING_BASED_METHODS.count { config.segmentation.containsKey(it) } <= 1 : "Only one of ${STAINING_BASED_METHODS} may be used"
+    if (config.segmentation.containsKey('stardist')) {
+        assert TRANSCRIPT_BASED_METHODS.every { !config.segmentation.containsKey(it) } : "'stardist' cannot be combined with transcript-based methods"
+    }
+
+    // check prior shapes key
+    TRANSCRIPT_BASED_METHODS.each { m ->
+        if (config.segmentation.containsKey(m) && config.segmentation.containsKey('cellpose')) {
+            config.segmentation[m].prior_shapes_key = 'cellpose_boundaries'
         }
     }
 
-    def checkSegmentationMethods = { Map c ->
-        assert c.segmentation && c.segmentation : "Provide at least one segmentation method"
-        assert TRANSCRIPT_BASED_METHODS.count { c.segmentation.containsKey(it) } <= 1 : "Only one of ${TRANSCRIPT_BASED_METHODS} may be used"
-        assert STAINING_BASED_METHODS.count { c.segmentation.containsKey(it) } <= 1 : "Only one of ${STAINING_BASED_METHODS} may be used"
-        if (c.segmentation.containsKey('stardist')) {
-            assert TRANSCRIPT_BASED_METHODS.every { !c.segmentation.containsKey(it) } : "'stardist' cannot be combined with transcript-based methods"
-        }
-    }
 
-    def checkPriorShapesKey = { Map c ->
-        TRANSCRIPT_BASED_METHODS.each { m ->
-            if (c.segmentation.containsKey(m) && c.segmentation.containsKey('cellpose')) {
-                c.segmentation[m].prior_shapes_key = 'cellpose_boundaries'
-            }
-        }
-    }
-
-    /* ───────── top-level checks ───────── */
-    assert cfg.read instanceof Map && cfg.read.containsKey('technology') : "Provide a 'read.technology' key"
-    assert cfg.containsKey('segmentation') : "Provide a 'segmentation' section"
-
-    backwardCompatibility(cfg)
-    checkSegmentationMethods(cfg)
-    checkPriorShapesKey(cfg)
-
-    return cfg
+    return config
 }
