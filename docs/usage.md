@@ -4,61 +4,64 @@
 
 > _Documentation of pipeline parameters is generated automatically from the pipeline schema and can no longer be found in markdown files._
 
-## Introduction
-
-<!-- TODO nf-core: Add documentation about anything specific to running your pipeline. For general topics, please point to (and add to) the main nf-core website. -->
-
 ## Samplesheet input
 
-You will need to create a samplesheet with information about the samples you would like to analyse before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 3 columns, and a header row as shown in the examples below.
+You will need to create a samplesheet with information about the samples you would like to analyse before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 2 columns, and a header row as shown in the examples below.
 
 ```bash
 --input '[path to samplesheet file]'
 ```
 
-### Multiple runs of the same sample
+### Main technologies
 
-The `sample` identifiers have to be the same when you have re-sequenced the same sample more than once e.g. to increase sequencing depth. The pipeline will concatenate the raw reads before performing any downstream analysis. Below is an example for the same sample sequenced across 3 lanes:
+For most technologies (i.e., all technologies supported by Sopa except Visium HD), the samplesheet lists the `data_path` to each sample data directory (typically, the per-sample output of the Xenium/MERSCOPE/etc, see more info [here](https://gustaveroussy.github.io/sopa/faq/#what-are-the-inputs-or-sopa)). You can optionally add `sample` to provide a name to your output directory, else it will be named based on `data_path`. Here is a samplesheet example:
 
-```csv title="samplesheet.csv"
-sample,fastq_1,fastq_2
-CONTROL_REP1,AEG588A1_S1_L002_R1_001.fastq.gz,AEG588A1_S1_L002_R2_001.fastq.gz
-CONTROL_REP1,AEG588A1_S1_L003_R1_001.fastq.gz,AEG588A1_S1_L003_R2_001.fastq.gz
-CONTROL_REP1,AEG588A1_S1_L004_R1_001.fastq.gz,AEG588A1_S1_L004_R2_001.fastq.gz
-```
-
-### Full samplesheet
-
-The pipeline will auto-detect whether a sample is single- or paired-end using the information provided in the samplesheet. The samplesheet can have as many columns as you desire, however, there is a strict requirement for the first 3 columns to match those defined in the table below.
-
-A final samplesheet file consisting of both single- and paired-end data may look something like the one below. This is for 6 samples, where `TREATMENT_REP3` has been sequenced twice.
+`samplesheet.csv`:
 
 ```csv title="samplesheet.csv"
-sample,fastq_1,fastq_2
-CONTROL_REP1,AEG588A1_S1_L002_R1_001.fastq.gz,AEG588A1_S1_L002_R2_001.fastq.gz
-CONTROL_REP2,AEG588A2_S2_L002_R1_001.fastq.gz,AEG588A2_S2_L002_R2_001.fastq.gz
-CONTROL_REP3,AEG588A3_S3_L002_R1_001.fastq.gz,AEG588A3_S3_L002_R2_001.fastq.gz
-TREATMENT_REP1,AEG588A4_S4_L003_R1_001.fastq.gz,
-TREATMENT_REP2,AEG588A5_S5_L003_R1_001.fastq.gz,
-TREATMENT_REP3,AEG588A6_S6_L003_R1_001.fastq.gz,
-TREATMENT_REP3,AEG588A6_S6_L004_R1_001.fastq.gz,
+sample,data_path
+SAMPLE1,/path/to/one/merscope_directory
+SAMPLE2,/path/to/one/merscope_directory
 ```
 
-| Column    | Description                                                                                                                                                                            |
-| --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `sample`  | Custom sample name. This entry will be identical for multiple sequencing libraries/runs from the same sample. Spaces in sample names are automatically converted to underscores (`_`). |
-| `fastq_1` | Full path to FastQ file for Illumina short reads 1. File has to be gzipped and have the extension ".fastq.gz" or ".fq.gz".                                                             |
-| `fastq_2` | Full path to FastQ file for Illumina short reads 2. File has to be gzipped and have the extension ".fastq.gz" or ".fq.gz".                                                             |
+### Visium HD
 
-An [example samplesheet](../assets/samplesheet.csv) has been provided with the pipeline.
+Some extra columns need to be provided specifically for Visium HD. This is because we need to run [Space Ranger](https://www.10xgenomics.com/support/software/space-ranger/latest) before running Sopa.
+
+For each row, you'll need a `sample` name, its corresponding `fastq_dir`, `image`, `cytaimage`, `slide`, and `area`. Note that the `image` is the full-resolution microscopy image (not the cytassist image) and is **required** by Sopa as we'll run cell segmentation on the H&E full-resolution slide.
+For more details, see the [`spaceranger-count` arguments](https://nf-co.re/modules/spaceranger_count).
+
+```csv title="samplesheet.csv"
+sample,fastq_dir,image,cytaimage,slide,area
+Visium_HD_Human_Lung_Cancer_Fixed_Frozen,Visium_HD_Human_Lung_Cancer_Fixed_Frozen_fastqs,Visium_HD_Human_Lung_Cancer_Fixed_Frozen_tissue_image.btf,Visium_HD_Human_Lung_Cancer_Fixed_Frozen_image.tif,H1-TY834G7,D1
+```
+
+The above samplesheet is made for [this public sample](https://www.10xgenomics.com/datasets/visium-hd-cytassist-gene-expression-human-lung-cancer-fixed-frozen) (download all the "Input files" and untar the `fastq` zip file).
+
+## Sopa config file
+
+You'll also need to choose a Sopa config file. You can find existing Sopa config files [here](https://github.com/gustaveroussy/sopa/tree/main/workflow/config), and follow the [corresponding README instructions](https://github.com/gustaveroussy/sopa/blob/main/workflow/config/README.md) of to get your `--configfile` argument.
+
+For instance, if you have Xenium data and want to run Sopa with `proseg`, you can use:
+
+```
+--configfile https://raw.githubusercontent.com/gustaveroussy/sopa/refs/heads/main/workflow/config/xenium/proseg.yaml
+```
 
 ## Running the pipeline
 
-The typical command for running the pipeline is as follows:
+Once you have defined your samplesheet and `configfile`, you'll be able to run `nf-core/sopa`. The typical command for running the pipeline is as follows:
 
 ```bash
-nextflow run nf-core/sopa --input ./samplesheet.csv --outdir ./results  -profile docker
+nextflow run nf-core/sopa --configfile <CONFIGFILE> --input ./samplesheet.csv --outdir ./results  -profile docker
 ```
+
+> [!NOTE]
+> For Visium HD data, you may also need to provide a `--spaceranger_probeset` argument with an official 10X Genomics probe set (see [here](https://www.10xgenomics.com/support/software/space-ranger/downloads)). For instance, you can use:
+>
+> ```
+> --spaceranger_probeset https://cf.10xgenomics.com/supp/spatial-exp/probeset/Visium_Human_Transcriptome_Probe_Set_v2.0_GRCh38-2020-A.csv
+> ```
 
 This will launch the pipeline with the `docker` configuration profile. See below for more information about profiles.
 
