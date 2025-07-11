@@ -284,7 +284,9 @@ process report {
 process publish {
     label "process_single"
 
-    publishDir "${params.outdir}", mode: params.publish_dir_mode
+    publishDir "${params.outdir}", mode: params.publish_dir_mode, saveAs: { fname ->
+        fname.contains('sopa_cache') ? null : fname
+    }
 
     input:
     path sdata_path
@@ -294,6 +296,8 @@ process publish {
 
     script:
     """
+    rm -r ${sdata_path}/.sopa_cache
+
     echo "Publishing ${sdata_path}"
     """
 }
