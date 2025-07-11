@@ -1,6 +1,6 @@
 include { ArgsCLI } from '../../../modules/local/utils'
 
-workflow stardist {
+workflow STARDIST {
     take:
     ch_patches
     config

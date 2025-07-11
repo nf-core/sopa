@@ -1,6 +1,6 @@
 include { ArgsCLI } from '../../../modules/local/utils'
 
-workflow baysor {
+workflow BAYSOR {
     take:
     ch_patches
     config

@@ -76,16 +76,7 @@ def readConfigFile(String configfile) {
 
     def config = new groovy.yaml.YamlSlurper().parse(reader)
 
-    if (config.segmentation.baysor) {
-        if (config.segmentation.cellpose) {
-            config.segmentation.baysor.prior_shapes_key = "cellpose_boundaries"
-        }
-        else if (config.segmentation.baysor.cell_key) {
-            println("Config argument 'cell_key' is deprecated. Use 'prior_shapes_key' instead.")
-            config.segmentation.baysor.prior_shapes_key = config.segmentation.baysor.cell_key
-        }
-    }
-    return config
+    return validate(config)
 }
 
 def deepCopyCollection(object) {
@@ -102,4 +93,46 @@ def deepCopyCollection(object) {
     else {
         object
     }
+}
+
+
+def validate(Map config) {
+    def TRANSCRIPT_BASED_METHODS = ['proseg', 'baysor', 'comseg']
+    def STAINING_BASED_METHODS = ['stardist', 'cellpose']
+
+    // top-level checks
+    assert config.read instanceof Map && config.read.containsKey('technology') : "Provide a 'read.technology' key"
+    assert config.containsKey('segmentation') : "Provide a 'segmentation' section"
+
+    // backward compatibility
+    TRANSCRIPT_BASED_METHODS.each { m ->
+        if (config.segmentation?.get(m)?.containsKey('cell_key')) {
+            println("Deprecated 'cell_key' → using 'prior_shapes_key' instead.")
+            config.segmentation[m].prior_shapes_key = config.segmentation[m].cell_key
+            config.segmentation[m].remove('cell_key')
+        }
+    }
+    if (config.aggregate?.containsKey('average_intensities')) {
+        println("Deprecated 'average_intensities' → using 'aggregate_channels' instead.")
+        config.aggregate.aggregate_channels = config.aggregate.average_intensities
+        config.aggregate.remove('average_intensities')
+    }
+
+    // check segmentation methods
+    assert config.segmentation : "Provide at least one segmentation method"
+    assert TRANSCRIPT_BASED_METHODS.count { config.segmentation.containsKey(it) } <= 1 : "Only one of ${TRANSCRIPT_BASED_METHODS} may be used"
+    assert STAINING_BASED_METHODS.count { config.segmentation.containsKey(it) } <= 1 : "Only one of ${STAINING_BASED_METHODS} may be used"
+    if (config.segmentation.containsKey('stardist')) {
+        assert TRANSCRIPT_BASED_METHODS.every { !config.segmentation.containsKey(it) } : "'stardist' cannot be combined with transcript-based methods"
+    }
+
+    // check prior shapes key
+    TRANSCRIPT_BASED_METHODS.each { m ->
+        if (config.segmentation.containsKey(m) && config.segmentation.containsKey('cellpose')) {
+            config.segmentation[m].prior_shapes_key = 'cellpose_boundaries'
+        }
+    }
+
+
+    return config
 }

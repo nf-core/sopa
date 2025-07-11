@@ -6,10 +6,10 @@
 include { paramsSummaryMap } from 'plugin/nf-schema'
 include { softwareVersionsToYAML } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_sopa_pipeline'
-include { cellpose } from '../subworkflows/local/cellpose'
-include { stardist } from '../subworkflows/local/stardist'
-include { baysor } from '../subworkflows/local/baysor'
-include { proseg } from '../subworkflows/local/proseg'
+include { CELLPOSE } from '../subworkflows/local/cellpose'
+include { STARDIST } from '../subworkflows/local/stardist'
+include { BAYSOR } from '../subworkflows/local/baysor'
+include { PROSEG } from '../subworkflows/local/proseg'
 include { readConfigFile } from '../modules/local/utils'
 include { ArgsCLI } from '../modules/local/utils'
 include { ArgsReaderCLI } from '../modules/local/utils'
@@ -33,7 +33,7 @@ workflow SOPA {
 
     if (config.read.technology == "visium_hd") {
         (ch_input_spatialdata, versions) = SPACERANGER(ch_samplesheet)
-        ch_input_spatialdata = ch_input_spatialdata.map { meta, out -> [meta, [out, meta.image]] }
+        ch_input_spatialdata = ch_input_spatialdata.map { meta, out -> [meta, [out.toString().replaceFirst(/(.*?outs).*/, '$1'), meta.image]] }
 
         ch_versions = ch_versions.mix(versions)
     }
@@ -54,26 +54,26 @@ workflow SOPA {
 
     if (config.segmentation.cellpose) {
         (ch_image_patches, _out) = makeImagePatches(ch_tissue_seg, ArgsCLI(config.patchify, "pixel"))
-        ch_resolved = cellpose(ch_image_patches, config)
+        ch_resolved = CELLPOSE(ch_image_patches, config)
     }
 
     if (config.segmentation.stardist) {
         (ch_image_patches, _out) = makeImagePatches(ch_tissue_seg, ArgsCLI(config.patchify, "pixel"))
-        ch_resolved = stardist(ch_image_patches, config)
+        ch_resolved = STARDIST(ch_image_patches, config)
     }
 
     if (config.segmentation.baysor) {
         ch_input_baysor = config.segmentation.cellpose ? ch_resolved : ch_tissue_seg
 
         ch_transcripts_patches = makeTranscriptPatches(ch_input_baysor, transcriptPatchesArgs(config, "baysor"))
-        ch_resolved = baysor(ch_transcripts_patches, config)
+        ch_resolved = BAYSOR(ch_transcripts_patches, config)
     }
 
     if (config.segmentation.proseg) {
         ch_input_proseg = config.segmentation.cellpose ? ch_resolved : ch_tissue_seg
 
         ch_proseg_patches = makeTranscriptPatches(ch_input_proseg, transcriptPatchesArgs(config, "proseg"))
-        ch_resolved = proseg(ch_proseg_patches.map { meta, sdata_path, _file -> [meta, sdata_path] }, config)
+        ch_resolved = PROSEG(ch_proseg_patches.map { meta, sdata_path, _file -> [meta, sdata_path] }, config)
     }
 
     (ch_aggregated, _out) = aggregate(ch_resolved, ArgsCLI(config.aggregate))
@@ -89,7 +89,7 @@ workflow SOPA {
     //
     softwareVersionsToYAML(ch_versions).collectFile(
         storeDir: "${params.outdir}/pipeline_info",
-        name: 'nf_core_sopa_software_versions.yml',
+        name: 'nf_core_sopa_software_mqc_versions.yml',
         sort: true,
         newLine: true,
     )
@@ -284,7 +284,9 @@ process report {
 process publish {
     label "process_single"
 
-    publishDir "${params.outdir}", mode: params.publish_dir_mode
+    publishDir "${params.outdir}", mode: params.publish_dir_mode, saveAs: { fname ->
+        fname.contains('sopa_cache') ? null : fname
+    }
 
     input:
     path sdata_path
@@ -294,6 +296,8 @@ process publish {
 
     script:
     """
+    rm -r ${sdata_path}/.sopa_cache
+
     echo "Publishing ${sdata_path}"
     """
 }

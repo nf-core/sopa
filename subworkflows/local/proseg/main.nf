@@ -1,6 +1,6 @@
 include { ArgsCLI } from '../../../modules/local/utils'
 
-workflow proseg {
+workflow PROSEG {
     take:
     ch_patches
     config
