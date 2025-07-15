@@ -26,7 +26,15 @@
   <img src="https://raw.githubusercontent.com/gustaveroussy/sopa/main/docs/assets/overview_white.png" alt="sopa_overview" width="100%"/>
 </p>
 
-<!-- TODO nf-core: Fill in short bullet-pointed list of the default steps in the pipeline -->
+0. (Visium HD only) Raw data processing with Space Ranger
+1. (Optional) Tissue segmentation
+2. Cell segmentation with Cellpose, Baysor, Proseg, Comseg, Stardist, ...
+3. Aggregation, i.e. counting the transcripts inside the cells and/or averaging the channel intensities inside cells
+4. (Optional) Cell-type annotation **_- coming soon_**
+5. User-friendly output creation for visualization and quick analysis
+6. Full [SpatialData](https://github.com/scverse/spatialdata) object export as a `.zarr` directory
+
+After running `nf-core/sopa`, you can continue analyzing your `SpatialData` object with [`sopa` as a Python package](https://gustaveroussy.github.io/sopa/).
 
 ## Usage
 
@@ -87,8 +95,6 @@ For further information or help, don't hesitate to get in touch on the [Slack `#
 
 <!-- TODO nf-core: Add citation for pipeline after first release. Uncomment lines below and update Zenodo doi and badge at the top of this file. -->
 <!-- If you use nf-core/sopa for your analysis, please cite it using the following doi: [10.5281/zenodo.XXXXXX](https://doi.org/10.5281/zenodo.XXXXXX) -->
-
-<!-- TODO nf-core: Add bibliography of tools and data used in your pipeline -->
 
 An extensive list of references for the tools used by the pipeline can be found in the [`CITATIONS.md`](CITATIONS.md) file.
 
