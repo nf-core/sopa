@@ -54,8 +54,6 @@ def ArgsReaderCLI(Map args, Map meta) {
             args.kwargs["dataset_id"] = meta.id
         }
 
-        println("meta: ${meta}")
-
         if (meta.image) {
             args.kwargs["fullres_image_file"] = meta.image
         }
