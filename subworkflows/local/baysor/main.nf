@@ -66,7 +66,7 @@ process resolveBaysor {
     """
     sopa resolve baysor ${sdata_path} ${cli_arguments}
 
-    rm -r ${sdata_path}/.sopa_cache/transcript_patches    # cleanup large baysor files
+    rm -r ${sdata_path}/.sopa_cache/transcript_patches  || true    # cleanup large baysor files
     """
 }
 

@@ -296,7 +296,7 @@ process publish {
 
     script:
     """
-    rm -r ${sdata_path}/.sopa_cache
+    rm -r ${sdata_path}/.sopa_cache || true
 
     echo "Publishing ${sdata_path}"
     """
