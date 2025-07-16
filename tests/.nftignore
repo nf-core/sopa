@@ -10,3 +10,6 @@ pipeline_info/*.{html,json,txt,yml}
 **/.zattrs
 **/.zarray
 **/0
+**/1
+**/2
+**/3

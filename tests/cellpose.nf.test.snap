@@ -1,5 +1,5 @@
 {
-    "-profile test": {
+    "-profile test_cellpose": {
         "content": [
             9,
             {
@@ -331,6 +331,6 @@
             "nf-test": "0.9.2",
             "nextflow": "25.04.6"
         },
-        "timestamp": "2025-07-16T10:31:56.790814"
+        "timestamp": "2025-07-16T10:30:21.097962"
     }
 }
