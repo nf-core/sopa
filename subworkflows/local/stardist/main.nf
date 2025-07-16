@@ -27,8 +27,8 @@ process patchSegmentationStardist {
 
     conda "${moduleDir}/environment.yml"
     container "${workflow.containerEngine == 'apptainer' && !task.ext.singularity_pull_docker_container
-        ? 'docker://quentinblampey/sopa:2.0.7-stardist'
-        : 'docker.io/quentinblampey/sopa:2.0.7-stardist'}"
+        ? 'docker://quentinblampey/sopa:latest-stardist'
+        : 'docker.io/quentinblampey/sopa:latest-stardist'}"
 
     input:
     tuple val(meta), path(sdata_path), val(cli_arguments), val(index), val(n_patches)
@@ -47,8 +47,8 @@ process resolveStardist {
 
     conda "${moduleDir}/environment.yml"
     container "${workflow.containerEngine == 'apptainer' && !task.ext.singularity_pull_docker_container
-        ? 'docker://quentinblampey/sopa:2.0.7'
-        : 'docker.io/quentinblampey/sopa:2.0.7'}"
+        ? 'docker://quentinblampey/sopa:latest'
+        : 'docker.io/quentinblampey/sopa:latest'}"
 
     input:
     tuple val(meta), path(sdata_path)
