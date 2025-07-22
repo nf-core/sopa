@@ -1,21 +1,7 @@
 include { ArgsCLI } from '../../../modules/local/utils'
 
-workflow PROSEG {
-    take:
-    ch_patches
-    config
 
-    main:
-    proseg_args = ArgsCLI(config.segmentation.proseg, null, ["command_line_suffix"])
-
-    (ch_segmented, _out) = patchSegmentationProseg(ch_patches, proseg_args)
-
-    emit:
-    ch_segmented
-}
-
-
-process patchSegmentationProseg {
+process PATCH_SEGMENTATION_PROSEG {
     label "process_high"
 
     conda "${moduleDir}/environment.yml"

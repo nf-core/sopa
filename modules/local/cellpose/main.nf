@@ -1,28 +1,7 @@
 include { ArgsCLI } from '../../../modules/local/utils'
 
-workflow CELLPOSE {
-    take:
-    ch_patches
-    config
 
-    main:
-    cellpose_args = ArgsCLI(config.segmentation.cellpose)
-
-    ch_patches
-        .map { meta, sdata_path, patches_file_image -> [meta, sdata_path, patches_file_image.text.trim().toInteger()] }
-        .flatMap { meta, sdata_path, n_patches -> (0..<n_patches).collect { index -> [meta, sdata_path, cellpose_args, index, n_patches] } }
-        .set { ch_cellpose }
-
-    ch_segmented = patchSegmentationCellpose(ch_cellpose).map { meta, sdata_path, _out, n_patches -> [groupKey(meta.sdata_dir, n_patches), [meta, sdata_path]] }.groupTuple().map { it -> it[1][0] }
-
-    (ch_resolved, _out) = resolveCellpose(ch_segmented)
-
-    emit:
-    ch_resolved
-}
-
-
-process patchSegmentationCellpose {
+process PATCH_SEGMENTATION_CELLPOSE {
     label "process_single"
 
     conda "${moduleDir}/environment.yml"
@@ -42,7 +21,7 @@ process patchSegmentationCellpose {
     """
 }
 
-process resolveCellpose {
+process RESOLVE_CELLPOSE {
     label "process_low"
 
     conda "${moduleDir}/environment.yml"

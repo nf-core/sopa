@@ -1,28 +1,7 @@
 include { ArgsCLI } from '../../../modules/local/utils'
 
-workflow STARDIST {
-    take:
-    ch_patches
-    config
 
-    main:
-    stardist_args = ArgsCLI(config.segmentation.stardist)
-
-    ch_patches
-        .map { meta, sdata_path, patches_file_image -> [meta, sdata_path, patches_file_image.text.trim().toInteger()] }
-        .flatMap { meta, sdata_path, n_patches -> (0..<n_patches).collect { index -> [meta, sdata_path, stardist_args, index, n_patches] } }
-        .set { ch_stardist }
-
-    ch_segmented = patchSegmentationStardist(ch_stardist).map { meta, sdata_path, _out, n_patches -> [groupKey(meta.sdata_dir, n_patches), [meta, sdata_path]] }.groupTuple().map { it -> it[1][0] }
-
-    (ch_resolved, _out) = resolveStardist(ch_segmented)
-
-    emit:
-    ch_resolved
-}
-
-
-process patchSegmentationStardist {
+process PATCH_SEGMENTATION_STARDIST {
     label "process_single"
 
     conda "${moduleDir}/environment.yml"
@@ -42,7 +21,7 @@ process patchSegmentationStardist {
     """
 }
 
-process resolveStardist {
+process RESOLVE_STARDIST {
     label "process_low"
 
     conda "${moduleDir}/environment.yml"

@@ -1,8 +1,0 @@
-channels:
-  - conda-forge
-  - bioconda
-dependencies:
-  - python=3.10
-  - pip=24.3.1
-  - pip:
-      - sopa[baysor]>=2.0.2

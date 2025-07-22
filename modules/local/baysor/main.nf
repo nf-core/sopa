@@ -1,28 +1,4 @@
-include { ArgsCLI } from '../../../modules/local/utils'
-
-workflow BAYSOR {
-    take:
-    ch_patches
-    config
-
-    main:
-    baysor_args = ArgsCLI(config.segmentation.baysor, null, ["config"])
-
-    ch_patches
-        .map { meta, sdata_path, patches_file_transcripts -> [meta, sdata_path, patches_file_transcripts.splitText()] }
-        .flatMap { meta, sdata_path, patches_indices -> patches_indices.collect { index -> [meta, sdata_path, baysor_args, index.trim().toInteger(), patches_indices.size] } }
-        .set { ch_baysor }
-
-    ch_segmented = patchSegmentationBaysor(ch_baysor).map { meta, sdata_path, _out, n_patches -> [groupKey(meta.sdata_dir, n_patches), [meta, sdata_path]] }.groupTuple().map { it -> it[1][0] }
-
-    (ch_resolved, _out) = resolveBaysor(ch_segmented, resolveArgs(config))
-
-    emit:
-    ch_resolved
-}
-
-
-process patchSegmentationBaysor {
+process PATCH_SEGMENTATION_BAYSOR {
     label "process_long"
 
     conda "${moduleDir}/environment.yml"
@@ -46,7 +22,7 @@ process patchSegmentationBaysor {
     """
 }
 
-process resolveBaysor {
+process RESOLVE_BAYSOR {
     label "process_low"
 
     conda "${moduleDir}/environment.yml"
@@ -68,11 +44,4 @@ process resolveBaysor {
 
     rm -r ${sdata_path}/.sopa_cache/transcript_patches  || true    # cleanup large baysor files
     """
-}
-
-def resolveArgs(Map config) {
-    def gene_column = config.segmentation.baysor.config.data.gene
-    def min_area = config.segmentation.baysor.min_area ?: 0
-
-    return "--gene-column ${gene_column} --min-area ${min_area}"
 }
