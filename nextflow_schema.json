@@ -29,7 +29,7 @@
                     "exists": true,
                     "pattern": "^\\S+\\.yaml$",
                     "description": "Path to a Sopa config file describing the technology used and the pipeline parameters.",
-                    "help_text": "Choose one existing config file amont public one: https://github.com/gustaveroussy/sopa/tree/master/workflow/config",
+                    "help_text": "Choose one existing config file amont public one: https://github.com/gustaveroussy/sopa/tree/main/workflow/config",
                     "fa_icon": "fas fa-file"
                 },
                 "outdir": {
