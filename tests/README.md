@@ -1,6 +1,7 @@
 # Tests
 
-The `samplesheet.csv` is technology-agnostic, and uses synthetic data generated when running the pipeline.
+> [!NOTE]
+> The `samplesheet.csv` is technology-agnostic, and uses synthetic data generated when running the pipeline. The samplesheet uses a fake data path to make sure the path exists, but then it generates the dataset on-the-fly.
 
 ## Visium HD specific case
 
