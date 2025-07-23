@@ -2,11 +2,6 @@
     "-profile test_cellpose": {
         "content": [
             9,
-            {
-                "Workflow": {
-                    "nf-core/sopa": "v1.0.0"
-                }
-            },
             [
                 "pipeline_info",
                 "pipeline_info/nf_core_sopa_software_mqc_versions.yml",
