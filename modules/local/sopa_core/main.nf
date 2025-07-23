@@ -14,10 +14,19 @@ process TO_SPATIALDATA {
 
     output:
     tuple val(meta), path("${meta.sdata_dir}")
+    path "versions.yml"
 
     script:
     """
     sopa convert ${meta.data_dir} --sdata-path ${meta.sdata_dir} ${ArgsReaderCLI(args, meta)}
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        sopa: \$(sopa --version 2> /dev/null)
+        spatialdata: \$(python -c "import spatialdata; print(spatialdata.__version__)" 2> /dev/null)
+        spatialdata_io: \$(python -c "import spatialdata_io; print(spatialdata_io.__version__)" 2> /dev/null)
+        scanpy: \$(python -c "import scanpy; print(scanpy.__version__)" 2> /dev/null)
+    END_VERSIONS
     """
 }
 

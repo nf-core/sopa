@@ -35,9 +35,16 @@ process RESOLVE_CELLPOSE {
     output:
     tuple val(meta), path(sdata_path)
     path "${sdata_path}/shapes/cellpose_boundaries"
+    path "versions.yml"
 
     script:
     """
     sopa resolve cellpose ${sdata_path}
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        sopa: \$(sopa --version)
+        cellpose: \$(python -c "import cellpose; print(cellpose.version)" 2> /dev/null)
+    END_VERSIONS
     """
 }

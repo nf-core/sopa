@@ -35,9 +35,16 @@ process RESOLVE_STARDIST {
     output:
     tuple val(meta), path(sdata_path)
     path "${sdata_path}/shapes/stardist_boundaries"
+    path "versions.yml"
 
     script:
     """
     sopa resolve stardist ${sdata_path}
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        sopa: \$(sopa --version)
+        stardist: \$(python -c "import stardist; print(stardist.__version__)" 2> /dev/null)
+    END_VERSIONS
     """
 }

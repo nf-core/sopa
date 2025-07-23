@@ -51,7 +51,8 @@ workflow SOPA {
         ch_input_spatialdata = ch_samplesheet.map { meta -> [meta, meta.data_dir] }
     }
 
-    ch_spatialdata = TO_SPATIALDATA(ch_input_spatialdata, config.read)
+    (ch_spatialdata, versions) = TO_SPATIALDATA(ch_input_spatialdata, config.read)
+    ch_versions = ch_versions.mix(versions)
 
     EXPLORER_RAW(ch_spatialdata, ArgsCLI(config.explorer))
 
@@ -64,26 +65,34 @@ workflow SOPA {
 
     if (config.segmentation.cellpose) {
         (ch_image_patches, _out) = MAKE_IMAGE_PATCHES(ch_tissue_seg, ArgsCLI(config.patchify, "pixel"))
-        ch_resolved = CELLPOSE(ch_image_patches, config)
+        (ch_resolved, versions) = CELLPOSE(ch_image_patches, config)
+
+        ch_versions = ch_versions.mix(versions)
     }
 
     if (config.segmentation.stardist) {
         (ch_image_patches, _out) = MAKE_IMAGE_PATCHES(ch_tissue_seg, ArgsCLI(config.patchify, "pixel"))
-        ch_resolved = STARDIST(ch_image_patches, config)
+        (ch_resolved, versions) = STARDIST(ch_image_patches, config)
+
+        ch_versions = ch_versions.mix(versions)
     }
 
     if (config.segmentation.baysor) {
         ch_input_baysor = config.segmentation.cellpose ? ch_resolved : ch_tissue_seg
 
         ch_transcripts_patches = MAKE_TRANSCRIPT_PATCHES(ch_input_baysor, transcriptPatchesArgs(config, "baysor"))
-        ch_resolved = BAYSOR(ch_transcripts_patches, config)
+        (ch_resolved, versions) = BAYSOR(ch_transcripts_patches, config)
+
+        ch_versions = ch_versions.mix(versions)
     }
 
     if (config.segmentation.proseg) {
         ch_input_proseg = config.segmentation.cellpose ? ch_resolved : ch_tissue_seg
 
         ch_proseg_patches = MAKE_TRANSCRIPT_PATCHES(ch_input_proseg, transcriptPatchesArgs(config, "proseg"))
-        ch_resolved = PROSEG(ch_proseg_patches.map { meta, sdata_path, _file -> [meta, sdata_path] }, config)
+        (ch_resolved, versions) = PROSEG(ch_proseg_patches.map { meta, sdata_path, _file -> [meta, sdata_path] }, config)
+
+        ch_versions = ch_versions.mix(versions)
     }
 
     (ch_aggregated, _out) = AGGREGATE(ch_resolved, ArgsCLI(config.aggregate))
@@ -139,6 +148,8 @@ workflow CELLPOSE {
     config
 
     main:
+    ch_versions = Channel.empty()
+
     cellpose_args = ArgsCLI(config.segmentation.cellpose)
 
     ch_patches
@@ -148,10 +159,13 @@ workflow CELLPOSE {
 
     ch_segmented = PATCH_SEGMENTATION_CELLPOSE(ch_cellpose).map { meta, sdata_path, _out, n_patches -> [groupKey(meta.sdata_dir, n_patches), [meta, sdata_path]] }.groupTuple().map { it -> it[1][0] }
 
-    (ch_resolved, _out) = RESOLVE_CELLPOSE(ch_segmented)
+    (ch_resolved, _out, versions) = RESOLVE_CELLPOSE(ch_segmented)
+
+    ch_versions = ch_versions.mix(versions)
 
     emit:
     ch_resolved
+    ch_versions
 }
 
 workflow STARDIST {
@@ -160,6 +174,8 @@ workflow STARDIST {
     config
 
     main:
+    ch_versions = Channel.empty()
+
     stardist_args = ArgsCLI(config.segmentation.stardist)
 
     ch_patches
@@ -169,10 +185,13 @@ workflow STARDIST {
 
     ch_segmented = PATCH_SEGMENTATION_STARDIST(ch_stardist).map { meta, sdata_path, _out, n_patches -> [groupKey(meta.sdata_dir, n_patches), [meta, sdata_path]] }.groupTuple().map { it -> it[1][0] }
 
-    (ch_resolved, _out) = RESOLVE_STARDIST(ch_segmented)
+    (ch_resolved, _out, versions) = RESOLVE_STARDIST(ch_segmented)
+
+    ch_versions = ch_versions.mix(versions)
 
     emit:
     ch_resolved
+    ch_versions
 }
 
 workflow PROSEG {
@@ -181,12 +200,17 @@ workflow PROSEG {
     config
 
     main:
+    ch_versions = Channel.empty()
+
     proseg_args = ArgsCLI(config.segmentation.proseg, null, ["command_line_suffix"])
 
-    (ch_segmented, _out) = PATCH_SEGMENTATION_PROSEG(ch_patches, proseg_args)
+    (ch_segmented, _out, versions) = PATCH_SEGMENTATION_PROSEG(ch_patches, proseg_args)
+
+    ch_versions = ch_versions.mix(versions)
 
     emit:
     ch_segmented
+    ch_versions
 }
 
 
@@ -196,6 +220,8 @@ workflow BAYSOR {
     config
 
     main:
+    ch_versions = Channel.empty()
+
     baysor_args = ArgsCLI(config.segmentation.baysor, null, ["config"])
 
     ch_patches
@@ -205,10 +231,13 @@ workflow BAYSOR {
 
     ch_segmented = PATCH_SEGMENTATION_BAYSOR(ch_baysor).map { meta, sdata_path, _out, n_patches -> [groupKey(meta.sdata_dir, n_patches), [meta, sdata_path]] }.groupTuple().map { it -> it[1][0] }
 
-    (ch_resolved, _out) = RESOLVE_BAYSOR(ch_segmented, resolveArgs(config))
+    (ch_resolved, _out, versions) = RESOLVE_BAYSOR(ch_segmented, resolveArgs(config))
+
+    ch_versions = ch_versions.mix(versions)
 
     emit:
     ch_resolved
+    ch_versions
 }
 
 def transcriptPatchesArgs(Map config, String method) {

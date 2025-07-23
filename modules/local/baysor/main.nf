@@ -37,11 +37,18 @@ process RESOLVE_BAYSOR {
     output:
     tuple val(meta), path(sdata_path)
     path "${sdata_path}/shapes/baysor_boundaries"
+    path "versions.yml"
 
     script:
     """
     sopa resolve baysor ${sdata_path} ${cli_arguments}
 
     rm -r ${sdata_path}/.sopa_cache/transcript_patches  || true    # cleanup large baysor files
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        sopa: \$(sopa --version)
+        baysor: \$(baysor --version)
+    END_VERSIONS
     """
 }
