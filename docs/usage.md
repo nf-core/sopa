@@ -40,20 +40,20 @@ The above samplesheet is made for [this public sample](https://www.10xgenomics.c
 
 ## Sopa config file
 
-You'll also need to choose a Sopa config file. You can find existing Sopa config files [here](https://github.com/gustaveroussy/sopa/tree/main/workflow/config), and follow the [corresponding README instructions](https://github.com/gustaveroussy/sopa/blob/main/workflow/config/README.md) of to get your `--configfile` argument.
+You'll also need to choose a Sopa config file (a.k.a. `-params-file` in Nextflow). You can find existing Sopa config files [here](https://github.com/gustaveroussy/sopa/tree/main/workflow/config), and follow the [corresponding README instructions](https://github.com/gustaveroussy/sopa/blob/main/workflow/config/README.md) of to get your `-params-file` argument.
 
 For instance, if you have Xenium data and want to run Sopa with `proseg`, you can use:
 
 ```
---configfile https://raw.githubusercontent.com/gustaveroussy/sopa/refs/heads/main/workflow/config/xenium/proseg.yaml
+--params-file https://raw.githubusercontent.com/gustaveroussy/sopa/refs/heads/main/workflow/config/xenium/proseg.yaml
 ```
 
 ## Running the pipeline
 
-Once you have defined your samplesheet and `configfile`, you'll be able to run `nf-core/sopa`. The typical command for running the pipeline is as follows:
+Once you have defined your samplesheet and `params-file`, you'll be able to run `nf-core/sopa`. The typical command for running the pipeline is as follows:
 
 ```bash
-nextflow run nf-core/sopa --configfile <CONFIGFILE> --input ./samplesheet.csv --outdir ./results  -profile docker
+nextflow run nf-core/sopa -params-file <PARAMS_FILE> --input ./samplesheet.csv --outdir ./results  -profile docker
 ```
 
 > [!NOTE]

@@ -101,6 +101,11 @@ workflow PIPELINE_INITIALISATION {
         }
         .set { ch_samplesheet }
 
+    //
+    // Sopa params validation
+    //
+    validateParams(params)
+
     emit:
     samplesheet = ch_samplesheet
     versions = ch_versions
@@ -229,4 +234,45 @@ def methodsDescriptionText(mqc_methods_yaml) {
     def description_html = engine.createTemplate(methods_text).make(meta)
 
     return description_html.toString()
+}
+
+def validateParams(params) {
+    def TRANSCRIPT_BASED_METHODS = ['proseg', 'baysor', 'comseg']
+    def STAINING_BASED_METHODS = ['stardist', 'cellpose']
+
+    // top-level checks
+    assert params.read instanceof Map && params.read.containsKey('technology') : "Provide a 'read.technology' key"
+    assert params.containsKey('segmentation') : "Provide a 'segmentation' section"
+
+    // backward compatibility
+    TRANSCRIPT_BASED_METHODS.each { m ->
+        if (params.segmentation?.get(m)?.containsKey('cell_key')) {
+            println("Deprecated 'cell_key' → using 'prior_shapes_key' instead.")
+            params.segmentation[m].prior_shapes_key = params.segmentation[m].cell_key
+            params.segmentation[m].remove('cell_key')
+        }
+    }
+    if (params.aggregate?.containsKey('average_intensities')) {
+        println("Deprecated 'average_intensities' → using 'aggregate_channels' instead.")
+        params.aggregate.aggregate_channels = params.aggregate.average_intensities
+        params.aggregate.remove('average_intensities')
+    }
+
+    // check segmentation methods
+    assert params.segmentation : "Provide at least one segmentation method"
+    assert TRANSCRIPT_BASED_METHODS.count { params.segmentation.containsKey(it) } <= 1 : "Only one of ${TRANSCRIPT_BASED_METHODS} may be used"
+    assert STAINING_BASED_METHODS.count { params.segmentation.containsKey(it) } <= 1 : "Only one of ${STAINING_BASED_METHODS} may be used"
+    if (params.segmentation.containsKey('stardist')) {
+        assert TRANSCRIPT_BASED_METHODS.every { !params.segmentation.containsKey(it) } : "'stardist' cannot be combined with transcript-based methods"
+    }
+
+    // check prior shapes key
+    TRANSCRIPT_BASED_METHODS.each { m ->
+        if (params.segmentation.containsKey(m) && params.segmentation.containsKey('cellpose')) {
+            params.segmentation[m].prior_shapes_key = 'cellpose_boundaries'
+        }
+    }
+
+
+    return params
 }
