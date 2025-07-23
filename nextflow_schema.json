@@ -228,6 +228,9 @@
             "$ref": "#/$defs/input_output_options"
         },
         {
+            "$ref": "#/$defs/sopa_config"
+        },
+        {
             "$ref": "#/$defs/spaceranger_options"
         },
         {
