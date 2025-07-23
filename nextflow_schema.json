@@ -47,33 +47,119 @@
             "properties": {
                 "read": {
                     "type": "object",
-                    "description": "Dictionary of parameters to read the raw spatial inputs, e.g., technology name. See https://github.com/gustaveroussy/sopa/blob/main/workflow/config/example_commented.yaml",
-                    "fa_icon": "fas fa-cog"
+                    "required": ["technology"],
+                    "properties": {
+                        "technology": {
+                            "type": "string",
+                            "description": "Technology used for the spatial data, e.g., 'xenium', 'merscope', ...",
+                            "fa_icon": "fas fa-microscope"
+                        },
+                        "kwargs": {
+                            "type": "object",
+                            "additionalProperties": true,
+                            "fa_icon": "fas fa-gear"
+                        }
+                    },
+                    "additionalProperties": true,
+                    "description": "Dictionary of parameters to read the raw spatial inputs, e.g., technology name.",
+                    "fa_icon": "fas fa-gear"
                 },
                 "segmentation": {
                     "type": "object",
-                    "description": "Dictionary of segmentation parameters. See https://github.com/gustaveroussy/sopa/blob/main/workflow/config/example_commented.yaml",
-                    "fa_icon": "fas fa-cog"
+                    "properties": {
+                        "tissue": {
+                            "type": "object",
+                            "additionalProperties": true,
+                            "description": "Dictionary of tissue segmentation parameters.",
+                            "fa_icon": "fas fa-gear"
+                        },
+                        "baysor": {
+                            "type": "object",
+                            "properties": {
+                                "config": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "description": "Baysor config: data section.",
+                                            "fa_icon": "fas fa-gear",
+                                            "additionalProperties": true
+                                        },
+                                        "segmentation": {
+                                            "type": "object",
+                                            "description": "Baysor config: segmentation section.",
+                                            "fa_icon": "fas fa-gear",
+                                            "additionalProperties": true
+                                        }
+                                    },
+                                    "description": "Baysor configuration parameters.",
+                                    "fa_icon": "fas fa-gear"
+                                }
+                            },
+                            "additionalProperties": true,
+                            "description": "Dictionary of Baysor parameters."
+                        },
+                        "cellpose": {
+                            "type": "object",
+                            "additionalProperties": true,
+                            "description": "Dictionary of Cellpose parameters.",
+                            "fa_icon": "fas fa-gear"
+                        },
+                        "stardist": {
+                            "type": "object",
+                            "additionalProperties": true,
+                            "description": "Dictionary of Stardist parameters.",
+                            "fa_icon": "fas fa-gear"
+                        },
+                        "proseg": {
+                            "type": "object",
+                            "additionalProperties": true,
+                            "description": "Dictionary of Proseg parameters.",
+                            "fa_icon": "fas fa-gear"
+                        }
+                    },
+                    "additionalProperties": true,
+                    "description": "Dictionary of segmentation parameters.",
+                    "fa_icon": "fas fa-gear"
                 },
                 "patchify": {
                     "type": "object",
-                    "description": "Dictionary of patches parameters. See https://github.com/gustaveroussy/sopa/blob/main/workflow/config/example_commented.yaml",
-                    "fa_icon": "fas fa-cog"
+                    "additionalProperties": true,
+                    "description": "Dictionary of patches parameters.",
+                    "fa_icon": "fas fa-gear"
                 },
                 "aggregate": {
                     "type": "object",
-                    "description": "Dictionary of aggregation parameters. See https://github.com/gustaveroussy/sopa/blob/main/workflow/config/example_commented.yaml",
-                    "fa_icon": "fas fa-cog"
+                    "additionalProperties": true,
+                    "description": "Dictionary of aggregation parameters.",
+                    "fa_icon": "fas fa-gear"
                 },
                 "annotation": {
                     "type": "object",
-                    "description": "Dictionary of annotation parameters. See https://github.com/gustaveroussy/sopa/blob/main/workflow/config/example_commented.yaml",
-                    "fa_icon": "fas fa-cog"
+                    "required": ["method", "args"],
+                    "properties": {
+                        "method": {
+                            "type": "string",
+                            "description": "Cell type annotation method, either 'tangram' or 'fluorescence'",
+                            "enum": ["tangram", "fluorescence"],
+                            "fa_icon": "fas fa-gear"
+                        },
+                        "args": {
+                            "type": "object",
+                            "description": "Cell type annotation arguments",
+                            "fa_icon": "fas fa-gear",
+                            "additionalProperties": true
+                        }
+                    },
+                    "additionalProperties": true,
+                    "description": "Dictionary of annotation parameters.",
+                    "fa_icon": "fas fa-gear"
                 },
                 "explorer": {
                     "type": "object",
-                    "description": "Dictionary of Xenium Explorer parameters. See https://github.com/gustaveroussy/sopa/blob/main/workflow/config/example_commented.yaml",
-                    "fa_icon": "fas fa-cog"
+                    "additionalProperties": true,
+                    "description": "Dictionary of Xenium Explorer parameters.",
+                    "fa_icon": "fas fa-gear"
                 }
             }
         },
