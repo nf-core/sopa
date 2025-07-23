@@ -2,6 +2,21 @@
     "-profile test": {
         "content": [
             9,
+            {
+                "RESOLVE_BAYSOR": {
+                    "sopa": "2.1.1",
+                    "baysor": "0.7.1"
+                },
+                "TO_SPATIALDATA": {
+                    "sopa": "2.1.1",
+                    "spatialdata": "0.4.0",
+                    "spatialdata_io": "0.2.0",
+                    "scanpy": "1.11.3"
+                },
+                "Workflow": {
+                    "nf-core/sopa": "v1.0.0"
+                }
+            },
             [
                 "pipeline_info",
                 "pipeline_info/nf_core_sopa_software_mqc_versions.yml",
@@ -326,6 +341,6 @@
             "nf-test": "0.9.2",
             "nextflow": "25.04.6"
         },
-        "timestamp": "2025-07-16T10:31:56.790814"
+        "timestamp": "2025-07-23T14:44:44.09277"
     }
 }
