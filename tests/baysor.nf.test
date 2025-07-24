@@ -2,9 +2,10 @@ nextflow_pipeline {
 
     name "Test pipeline"
     script "../main.nf"
+    profile "test_baysor"
     tag "pipeline"
 
-    test("-profile test_proseg") {
+    test("-profile test_baysor") {
 
         when {
             params {

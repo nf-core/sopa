@@ -2,6 +2,7 @@ nextflow_pipeline {
 
     name "Test pipeline"
     script "../main.nf"
+    profile "test_cellpose"
     tag "pipeline"
 
     test("-profile test_cellpose") {
@@ -14,7 +15,7 @@ nextflow_pipeline {
 
         then {
             // stable_name: All files + folders in ${params.outdir}/ with a stable name
-            def stable_name = getAllFilesFromDir(params.outdir, relative: true, includeDir: true, ignore: ['pipeline_info/*.{html,json,txt}'])
+            def stable_name = getAllFilesFromDir(params.outdir, relative: true, includeDir: true, ignore: ['pipeline_info/*.{html,json,txt}', '**/.sopa_cache', '**/.sopa_cache/**'])
             // stable_path: All files in ${params.outdir}/ with stable content
             def stable_path = getAllFilesFromDir(params.outdir, ignoreFile: 'tests/.nftignore')
             assertAll(

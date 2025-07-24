@@ -13,3 +13,5 @@ pipeline_info/*.{html,json,txt,yml}
 **/1
 **/2
 **/3
+**/.sopa_cache
+**/.sopa_cache/**

@@ -54,7 +54,7 @@ SAMPLE2,/path/to/one/merscope_directory
 > [!WARNING]
 > If you have Visium HD data, the samplesheet will have a different format than the one above. Directly refer to the [usage documentation](https://nf-co.re/sopa/usage) and the [parameter documentation](https://nf-co.re/sopa/parameters).
 
-Then, choose a Sopa config file. You can find existing Sopa config files [here](https://github.com/gustaveroussy/sopa/tree/main/workflow/config), and follow the [corresponding README instructions](https://github.com/gustaveroussy/sopa/blob/main/workflow/config/README.md) of to get your `--configfile` argument.
+Then, choose the Sopa parameters. You can find existing Sopa params files [here](https://github.com/gustaveroussy/sopa/tree/main/workflow/config), and follow the [corresponding README instructions](https://github.com/gustaveroussy/sopa/blob/main/workflow/config/README.md) of to get your `-params-file` argument.
 
 Now, you can run the pipeline using:
 
@@ -62,7 +62,7 @@ Now, you can run the pipeline using:
 nextflow run nf-core/sopa \
    -profile <docker/singularity/.../institute> \
    --input samplesheet.csv \
-   --configfile <CONFIGFILE> \
+   -params-file <PARAMS_FILE> \
    --outdir <OUTDIR>
 ```
 

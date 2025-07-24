@@ -26,8 +26,8 @@ process RESOLVE_CELLPOSE {
 
     conda "${moduleDir}/environment.yml"
     container "${workflow.containerEngine == 'apptainer' && !task.ext.singularity_pull_docker_container
-        ? 'docker://quentinblampey/sopa:latest'
-        : 'docker.io/quentinblampey/sopa:latest'}"
+        ? 'docker://quentinblampey/sopa:latest-cellpose'
+        : 'docker.io/quentinblampey/sopa:latest-cellpose'}"
 
     input:
     tuple val(meta), path(sdata_path)
@@ -44,7 +44,7 @@ process RESOLVE_CELLPOSE {
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         sopa: \$(sopa --version)
-        cellpose: \$(python -c "import cellpose; print(cellpose.version)" 2> /dev/null)
+        cellpose: \$(cellpose --version | grep 'cellpose version:' | head -n1 | awk '{print \$3}')
     END_VERSIONS
     """
 }
