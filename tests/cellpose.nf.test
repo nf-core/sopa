@@ -2,6 +2,7 @@ nextflow_pipeline {
 
     name "Test pipeline"
     script "../main.nf"
+    profile "test_cellpose"
     tag "pipeline"
 
     test("-profile test_cellpose") {

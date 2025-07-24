@@ -44,7 +44,7 @@ process RESOLVE_CELLPOSE {
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         sopa: \$(sopa --version)
-        cellpose: \$(python -c "import cellpose; print(cellpose.version)" 2> /dev/null)
+        cellpose: \$(python -c "import cellpose; print(cellpose.version)" 2> /dev/null | tail -n 1)
     END_VERSIONS
     """
 }

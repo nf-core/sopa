@@ -1,5 +1,5 @@
 {
-    "-profile test_proseg": {
+    "-profile test_baysor": {
         "content": [
             9,
             {
@@ -341,6 +341,6 @@
             "nf-test": "0.9.2",
             "nextflow": "25.04.6"
         },
-        "timestamp": "2025-07-23T14:45:57.514099"
+        "timestamp": "2025-07-24T11:26:13.853161"
     }
 }
