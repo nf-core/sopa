@@ -5,7 +5,7 @@
             {
                 "RESOLVE_CELLPOSE": {
                     "sopa": "2.1.1",
-                    "cellpose": "4.0.6"
+                    "cellpose": null
                 },
                 "TO_SPATIALDATA": {
                     "sopa": "2.1.1",
