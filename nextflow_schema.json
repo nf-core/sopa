@@ -148,6 +148,15 @@
                             "type": "object",
                             "description": "Cell type annotation arguments",
                             "fa_icon": "fas fa-gear",
+                            "properties": {
+                                "marker_cell_dict": {
+                                    "type": "object",
+                                    "description": "Dictionary mapping cell type markers to their descriptions",
+                                    "additionalProperties": {
+                                        "type": "string"
+                                    }
+                                }
+                            },
                             "additionalProperties": true
                         }
                     },

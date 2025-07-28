@@ -22,19 +22,22 @@
 
 **nf-core/sopa** is the Nextflow version of [Sopa](https://github.com/gustaveroussy/sopa). Built on top of [SpatialData](https://github.com/scverse/spatialdata), Sopa enables processing and analyses of spatial omics data with single-cell resolution (spatial transcriptomics or multiplex imaging data) using a standard data structure and output. We currently support the following technologies: Xenium, Visium HD, MERSCOPE, CosMX, PhenoCycler, MACSima, Molecural Cartography, and others. It outputs a `.zarr` directory containing a processed [SpatialData](https://github.com/scverse/spatialdata) object, and a `.explorer` directory for visualization.
 
+> [!WARNING]
+> If you are interested in the main Sopa python package, refer to [this Sopa repository](https://github.com/gustaveroussy/sopa). Else, if you want to use Nextflow, you are in the good place.
+
 <p align="center">
   <img src="https://raw.githubusercontent.com/gustaveroussy/sopa/main/docs/assets/overview_white.png" alt="sopa_overview" width="100%"/>
 </p>
 
-0. (Visium HD only) Raw data processing with Space Ranger
-1. (Optional) Tissue segmentation
-2. Cell segmentation with Cellpose, Baysor, Proseg, Comseg, Stardist, ...
-3. Aggregation, i.e. counting the transcripts inside the cells and/or averaging the channel intensities inside cells
-4. (Optional) Cell-type annotation **_- coming soon_**
-5. User-friendly output creation for visualization and quick analysis
-6. Full [SpatialData](https://github.com/scverse/spatialdata) object export as a `.zarr` directory
+1. (Visium HD only) Raw data processing with Space Ranger
+2. (Optional) Tissue segmentation
+3. Cell segmentation with Cellpose, Baysor, Proseg, Comseg, Stardist, ...
+4. Aggregation, i.e. counting the transcripts inside the cells and/or averaging the channel intensities inside cells
+5. (Optional) Cell-type annotation
+6. User-friendly output creation for visualization and quick analysis
+7. Full [SpatialData](https://github.com/scverse/spatialdata) object export as a `.zarr` directory
 
-After running `nf-core/sopa`, you can continue analyzing your `SpatialData` object with [`sopa` as a Python package](https://gustaveroussy.github.io/sopa/).
+After running `nf-core/sopa`, you can continue analyzing your `SpatialData` object with [`sopa` as a Python package](https://github.com/gustaveroussy/sopa).
 
 ## Usage
 

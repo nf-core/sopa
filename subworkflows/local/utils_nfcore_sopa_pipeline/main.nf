@@ -273,6 +273,10 @@ def validateParams(params) {
         }
     }
 
+    // check annotation method
+    if (params.annotation && params.annotation.method == "tangram") {
+        assert params.annotation.args.containsKey('sc_reference_path') : "Provide 'annotation.args.sc_reference_path' for the tangram annotation method"
+    }
 
     return params
 }

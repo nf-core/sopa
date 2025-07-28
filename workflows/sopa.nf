@@ -20,6 +20,7 @@ include {
     EXPLORER_RAW ;
     REPORT
 } from '../modules/local/sopa_core'
+include { TANGRAM_ANNOTATION ; FLUO_ANNOTATION } from '../modules/local/annotation'
 include { ArgsCLI ; ArgsReaderCLI } from '../modules/local/utils'
 include { SPACERANGER } from '../subworkflows/local/spaceranger'
 /*
@@ -92,10 +93,25 @@ workflow SOPA {
 
     (ch_aggregated, _out) = AGGREGATE(ch_resolved, ArgsCLI(params.aggregate))
 
-    EXPLORER(ch_aggregated, ArgsCLI(params.explorer))
-    REPORT(ch_aggregated)
+    if (params.annotation && params.annotation.method == "tangram") {
+        sc_reference = file(params.annotation.args.sc_reference_path)
+        params.annotation.args.remove('sc_reference_path')
 
-    PUBLISH(ch_aggregated.map { it[1] })
+        (ch_annotated, _out, versions) = TANGRAM_ANNOTATION(ch_aggregated, sc_reference, ArgsCLI(params.annotation.args))
+        ch_versions = ch_versions.mix(versions)
+    }
+    else if (params.annotation && params.annotation.method == "fluorescence") {
+        (ch_annotated, _out, versions) = FLUO_ANNOTATION(ch_aggregated, ArgsCLI(params.annotation.args))
+        ch_versions = ch_versions.mix(versions)
+    }
+    else {
+        ch_annotated = ch_aggregated
+    }
+
+    EXPLORER(ch_annotated, ArgsCLI(params.explorer))
+    REPORT(ch_annotated)
+
+    PUBLISH(ch_annotated.map { it[1] })
 
 
     //
