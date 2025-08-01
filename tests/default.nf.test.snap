@@ -1,8 +1,11 @@
 {
     "-profile test": {
         "content": [
-            8,
+            9,
             {
+                "FLUO_ANNOTATION": {
+                    "sopa": "2.1.1"
+                },
                 "PATCH_SEGMENTATION_PROSEG": {
                     "sopa": "2.1.1",
                     "proseg": "2.0.4"
@@ -164,6 +167,10 @@
                 "sample_name.zarr/tables/table/obs/cell_id/.zarray",
                 "sample_name.zarr/tables/table/obs/cell_id/.zattrs",
                 "sample_name.zarr/tables/table/obs/cell_id/0",
+                "sample_name.zarr/tables/table/obs/cell_type",
+                "sample_name.zarr/tables/table/obs/cell_type/.zarray",
+                "sample_name.zarr/tables/table/obs/cell_type/.zattrs",
+                "sample_name.zarr/tables/table/obs/cell_type/0",
                 "sample_name.zarr/tables/table/obs/centroid_x",
                 "sample_name.zarr/tables/table/obs/centroid_x/.zarray",
                 "sample_name.zarr/tables/table/obs/centroid_x/.zattrs",
@@ -253,6 +260,29 @@
                 "sample_name.zarr/tables/table/obsm/spatial/.zattrs",
                 "sample_name.zarr/tables/table/obsm/spatial/0",
                 "sample_name.zarr/tables/table/obsm/spatial/0/0",
+                "sample_name.zarr/tables/table/obsm/z_scores",
+                "sample_name.zarr/tables/table/obsm/z_scores/.zattrs",
+                "sample_name.zarr/tables/table/obsm/z_scores/.zgroup",
+                "sample_name.zarr/tables/table/obsm/z_scores/CD20",
+                "sample_name.zarr/tables/table/obsm/z_scores/CD20/.zarray",
+                "sample_name.zarr/tables/table/obsm/z_scores/CD20/.zattrs",
+                "sample_name.zarr/tables/table/obsm/z_scores/CD20/0",
+                "sample_name.zarr/tables/table/obsm/z_scores/CD3",
+                "sample_name.zarr/tables/table/obsm/z_scores/CD3/.zarray",
+                "sample_name.zarr/tables/table/obsm/z_scores/CD3/.zattrs",
+                "sample_name.zarr/tables/table/obsm/z_scores/CD3/0",
+                "sample_name.zarr/tables/table/obsm/z_scores/CK",
+                "sample_name.zarr/tables/table/obsm/z_scores/CK/.zarray",
+                "sample_name.zarr/tables/table/obsm/z_scores/CK/.zattrs",
+                "sample_name.zarr/tables/table/obsm/z_scores/CK/0",
+                "sample_name.zarr/tables/table/obsm/z_scores/DAPI",
+                "sample_name.zarr/tables/table/obsm/z_scores/DAPI/.zarray",
+                "sample_name.zarr/tables/table/obsm/z_scores/DAPI/.zattrs",
+                "sample_name.zarr/tables/table/obsm/z_scores/DAPI/0",
+                "sample_name.zarr/tables/table/obsm/z_scores/_index",
+                "sample_name.zarr/tables/table/obsm/z_scores/_index/.zarray",
+                "sample_name.zarr/tables/table/obsm/z_scores/_index/.zattrs",
+                "sample_name.zarr/tables/table/obsm/z_scores/_index/0",
                 "sample_name.zarr/tables/table/obsp",
                 "sample_name.zarr/tables/table/obsp/.zattrs",
                 "sample_name.zarr/tables/table/obsp/.zgroup",
@@ -262,6 +292,10 @@
                 "sample_name.zarr/tables/table/uns/sopa_attrs",
                 "sample_name.zarr/tables/table/uns/sopa_attrs/.zattrs",
                 "sample_name.zarr/tables/table/uns/sopa_attrs/.zgroup",
+                "sample_name.zarr/tables/table/uns/sopa_attrs/cell_types",
+                "sample_name.zarr/tables/table/uns/sopa_attrs/cell_types/.zarray",
+                "sample_name.zarr/tables/table/uns/sopa_attrs/cell_types/.zattrs",
+                "sample_name.zarr/tables/table/uns/sopa_attrs/cell_types/0",
                 "sample_name.zarr/tables/table/uns/sopa_attrs/intensities",
                 "sample_name.zarr/tables/table/uns/sopa_attrs/intensities/.zarray",
                 "sample_name.zarr/tables/table/uns/sopa_attrs/intensities/.zattrs",
@@ -326,6 +360,7 @@
                 ".zgroup:md5,e20297935e73dd0154104d4ea53040ab",
                 ".zgroup:md5,e20297935e73dd0154104d4ea53040ab",
                 ".zgroup:md5,e20297935e73dd0154104d4ea53040ab",
+                ".zgroup:md5,e20297935e73dd0154104d4ea53040ab",
                 "zmetadata:md5,06fd879a23253fd69801595600ff95e3"
             ]
         ],
@@ -333,6 +368,6 @@
             "nf-test": "0.9.2",
             "nextflow": "25.04.6"
         },
-        "timestamp": "2025-07-24T11:40:11.148096"
+        "timestamp": "2025-08-01T16:12:05.246211"
     }
 }
