@@ -50,7 +50,7 @@ workflow SOPA {
     (ch_spatialdata, versions) = TO_SPATIALDATA(ch_input_spatialdata, params.read)
     ch_versions = ch_versions.mix(versions)
 
-    EXPLORER_RAW(ch_spatialdata, ArgsCLI(params.explorer))
+    EXPLORER_RAW(ch_spatialdata.map { meta, sdata_path -> [meta, sdata_path, meta.data_dir] }, ArgsCLI(params.explorer))
 
     if (params.segmentation.tissue) {
         (ch_tissue_seg, _out) = TISSUE_SEGMENTATION(ch_spatialdata, ArgsCLI(params.segmentation.tissue))

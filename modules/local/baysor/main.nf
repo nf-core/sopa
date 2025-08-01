@@ -14,9 +14,7 @@ process PATCH_SEGMENTATION_BAYSOR {
 
     script:
     """
-    if command -v module &> /dev/null; then
-        module purge
-    fi
+    export JULIA_NUM_THREADS=${task.cpus} # parallelize within each patch for Baysor >= v0.7
 
     sopa segmentation baysor ${sdata_path} --patch-index ${index} ${cli_arguments}
     """

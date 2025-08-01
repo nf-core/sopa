@@ -128,7 +128,7 @@ process EXPLORER_RAW {
     publishDir "${params.outdir}", mode: params.publish_dir_mode
 
     input:
-    tuple val(meta), path(sdata_path)
+    tuple val(meta), path(sdata_path), path(data_dir)
     val cli_arguments
 
     output:
