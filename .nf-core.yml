@@ -1,14 +1,4 @@
-repository_type: pipeline
-
-nf_core_version: 3.1.1
-
 lint:
-  files_unchanged:
-    - .github/CONTRIBUTING.md
-    - assets/sendmail_template.txt
-    - .github/CONTRIBUTING.md
-    - assets/sendmail_template.txt
-  multiqc_config: false
   files_exist:
     - conf/igenomes.config
     - conf/igenomes_ignored.config
@@ -16,18 +6,25 @@ lint:
     - conf/igenomes.config
     - conf/igenomes_ignored.config
     - assets/multiqc_config.yml
-
+  files_unchanged:
+    - .github/CONTRIBUTING.md
+    - assets/sendmail_template.txt
+    - .github/CONTRIBUTING.md
+    - assets/sendmail_template.txt
+  multiqc_config: false
+nf_core_version: 3.3.2
+repository_type: pipeline
 template:
-  org: nf-core
-  name: sopa
+  author: Quentin Blampey
   description: Technology-invariant pipeline for spatial omics analysis that scales
     to millions of cells
-  author: Quentin Blampey
-  version: 1.0.0dev
-  force: true
+  force: false
+  is_nfcore: true
+  name: sopa
+  org: nf-core
   outdir: .
   skip_features:
     - igenomes
     - multiqc
     - fastqc
-  is_nfcore: true
+  version: 1.0.0dev
