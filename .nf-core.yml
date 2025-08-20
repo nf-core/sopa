@@ -9,8 +9,9 @@ lint:
   files_unchanged:
     - .github/CONTRIBUTING.md
     - assets/sendmail_template.txt
-    - .github/CONTRIBUTING.md
-    - assets/sendmail_template.txt
+    - assets/nf-core-sopa_logo_light.png
+    - docs/images/nf-core-sopa_logo_light.png
+    - docs/images/nf-core-sopa_logo_dark.png
   multiqc_config: false
 nf_core_version: 3.3.2
 repository_type: pipeline
@@ -27,4 +28,4 @@ template:
     - igenomes
     - multiqc
     - fastqc
-  version: 1.0.0dev
+  version: 1.0.0

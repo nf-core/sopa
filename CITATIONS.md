@@ -1,5 +1,9 @@
 # nf-core/sopa: Citations
 
+## [sopa](https://www.nature.com/articles/s41467-024-48981-z)
+
+> Blampey, Q., Mulder, K., Gardet, M. et al. Sopa: a technology-invariant pipeline for analyses of image-based spatial omics. Nat Commun 15, 4981 (2024). https://doi.org/10.1038/s41467-024-48981-z
+
 ## [nf-core](https://pubmed.ncbi.nlm.nih.gov/32055031/)
 
 > Ewels PA, Peltzer A, Fillinger S, Patel H, Alneberg J, Wilm A, Garcia MU, Di Tommaso P, Nahnsen S. The nf-core framework for community-curated bioinformatics pipelines. Nat Biotechnol. 2020 Mar;38(3):276-278. doi: 10.1038/s41587-020-0439-x. PubMed PMID: 32055031.
@@ -9,6 +13,22 @@
 > Di Tommaso P, Chatzou M, Floden EW, Barja PP, Palumbo E, Notredame C. Nextflow enables reproducible computational workflows. Nat Biotechnol. 2017 Apr 11;35(4):316-319. doi: 10.1038/nbt.3820. PubMed PMID: 28398311.
 
 ## Pipeline tools
+
+- [AnnData](https://github.com/scverse/anndata)
+
+  > Virshup I, Rybakov S, Theis FJ, Angerer P, Wolf FA. bioRxiv 2021.12.16.473007; doi: https://doi.org/10.1101/2021.12.16.473007
+
+- [Scanpy](https://github.com/theislab/scanpy)
+
+  > Wolf F, Angerer P, Theis F. SCANPY: large-scale single-cell gene expression data analysis. Genome Biol 19, 15 (2018). doi: https://doi.org/10.1186/s13059-017-1382-0
+
+- [Space Ranger](https://www.10xgenomics.com/support/software/space-ranger)
+
+  > 10x Genomics Space Ranger 2.1.0 [Online]
+
+- [SpatialData](https://www.biorxiv.org/content/10.1101/2023.05.05.539647v1)
+
+  > Marconato L, Palla G, Yamauchi K, Virshup I, Heidari E, Treis T, Toth M, Shrestha R, Vöhringer H, Huber W, Gerstung M, Moore J, Theis F, Stegle O. SpatialData: an open and universal data framework for spatial omics. bioRxiv 2023.05.05.539647; doi: https://doi.org/10.1101/2023.05.05.539647
 
 ## Software packaging/containerisation tools
 

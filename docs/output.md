@@ -6,7 +6,9 @@ This document describes the output produced by the pipeline.
 
 The directories listed below will be created in the results directory after the pipeline has finished. All paths are relative to the top-level results directory.
 
-<!-- TODO nf-core: Write this documentation describing your workflow's output -->
+1. A `{sample}.zarr` directory containing a [SpatialData](https://spatialdata.scverse.org/en/stable/) object, where the `sample` name is either (i) specified by the samplesheet, or (ii) based on the name of the corresponding input directory. Refer to the [SpatialData docs](https://spatialdata.scverse.org/en/stable/) for usage details, or to the [documentation of `sopa` as a Python package](https://gustaveroussy.github.io/sopa/). If you are not familiar with `SpatialData`, you can also use directly the extracted `AnnData` object (see below).
+2. A `{sample}.explorer` for visualization and quick analysis. It contains a `report.html` with Sopa quality controls, `adata.h5ad` the AnnData object (extracted from the above SpatialData object), and `experiment.xenium` (double-click on it to open it on the Xenium Explorer ; you can download the software [here](https://www.10xgenomics.com/support/software/xenium-explorer/downloads)). The other files are data files related and required by the Xenium Explorer.
+3. **(Only for Visium HD)** a `{sample}_spaceranger/outs` directory with the outputs of Space Ranger.
 
 ## Pipeline overview
 
