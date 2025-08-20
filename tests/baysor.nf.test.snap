@@ -334,7 +334,8 @@
                 "sample_name.zarr/tables/table/varm/.zgroup",
                 "sample_name.zarr/tables/table/varp",
                 "sample_name.zarr/tables/table/varp/.zattrs",
-                "sample_name.zarr/tables/table/varp/.zgroup"
+                "sample_name.zarr/tables/table/varp/.zgroup",
+                "sample_name.zarr/zmetadata"
             ],
             [
                 ".zgroup:md5,e20297935e73dd0154104d4ea53040ab",

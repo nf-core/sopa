@@ -7,7 +7,7 @@
                     "sopa": "2.1.2"
                 },
                 "PATCH_SEGMENTATION_PROSEG": {
-                    "sopa": "2.1.2",
+                    "sopa": "2.1.1",
                     "proseg": "2.0.4"
                 },
                 "TO_SPATIALDATA": {
@@ -330,7 +330,8 @@
                 "sample_name.zarr/tables/table/varm/.zgroup",
                 "sample_name.zarr/tables/table/varp",
                 "sample_name.zarr/tables/table/varp/.zattrs",
-                "sample_name.zarr/tables/table/varp/.zgroup"
+                "sample_name.zarr/tables/table/varp/.zgroup",
+                "sample_name.zarr/zmetadata"
             ],
             [
                 ".zgroup:md5,e20297935e73dd0154104d4ea53040ab",
