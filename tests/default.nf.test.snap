@@ -13,8 +13,7 @@
                 "TO_SPATIALDATA": {
                     "sopa": "2.1.2",
                     "spatialdata": "0.5.0",
-                    "spatialdata_io": "0.3.0",
-                    "scanpy": "1.11.3"
+                    "spatialdata_io": "0.3.0"
                 },
                 "Workflow": {
                     "nf-core/sopa": "v1.0.0"
@@ -331,8 +330,7 @@
                 "sample_name.zarr/tables/table/varm/.zgroup",
                 "sample_name.zarr/tables/table/varp",
                 "sample_name.zarr/tables/table/varp/.zattrs",
-                "sample_name.zarr/tables/table/varp/.zgroup",
-                "sample_name.zarr/zmetadata"
+                "sample_name.zarr/tables/table/varp/.zgroup"
             ],
             [
                 ".zgroup:md5,e20297935e73dd0154104d4ea53040ab",
@@ -360,8 +358,7 @@
                 ".zgroup:md5,e20297935e73dd0154104d4ea53040ab",
                 ".zgroup:md5,e20297935e73dd0154104d4ea53040ab",
                 ".zgroup:md5,e20297935e73dd0154104d4ea53040ab",
-                ".zgroup:md5,e20297935e73dd0154104d4ea53040ab",
-                "zmetadata:md5,06fd879a23253fd69801595600ff95e3"
+                ".zgroup:md5,e20297935e73dd0154104d4ea53040ab"
             ]
         ],
         "meta": {

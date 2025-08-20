@@ -25,7 +25,6 @@ process TO_SPATIALDATA {
         sopa: \$(sopa --version 2> /dev/null)
         spatialdata: \$(python -c "import spatialdata; print(spatialdata.__version__)" 2> /dev/null)
         spatialdata_io: \$(python -c "import spatialdata_io; print(spatialdata_io.__version__)" 2> /dev/null)
-        scanpy: \$(python -c "import scanpy; print(scanpy.__version__)" 2> /dev/null)
     END_VERSIONS
     """
 }
