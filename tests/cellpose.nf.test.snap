@@ -4,13 +4,13 @@
             9,
             {
                 "RESOLVE_CELLPOSE": {
-                    "sopa": "2.1.1",
+                    "sopa": "2.1.2",
                     "cellpose": "4.0.6"
                 },
                 "TO_SPATIALDATA": {
-                    "sopa": "2.1.1",
-                    "spatialdata": "0.4.0",
-                    "spatialdata_io": "0.2.0",
+                    "sopa": "2.1.2",
+                    "spatialdata": "0.5.0",
+                    "spatialdata_io": "0.3.0",
                     "scanpy": "1.11.3"
                 },
                 "Workflow": {
