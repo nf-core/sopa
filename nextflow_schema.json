@@ -38,6 +38,187 @@
                 }
             }
         },
+        "sopa_config": {
+            "title": "Sopa config (a.k.a. params file)",
+            "type": "object",
+            "fa_icon": "fas fa-rocket",
+            "description": "Parameters related to Sopa",
+            "required": ["read", "segmentation"],
+            "properties": {
+                "read": {
+                    "type": "object",
+                    "required": ["technology"],
+                    "properties": {
+                        "technology": {
+                            "type": "string",
+                            "description": "Technology used for the spatial data, e.g., 'xenium', 'merscope', ...",
+                            "fa_icon": "fas fa-microscope"
+                        },
+                        "kwargs": {
+                            "type": "object",
+                            "additionalProperties": true,
+                            "fa_icon": "fas fa-gear"
+                        }
+                    },
+                    "additionalProperties": true,
+                    "description": "Dictionary of parameters to read the raw spatial inputs, e.g., technology name.",
+                    "fa_icon": "fas fa-gear"
+                },
+                "segmentation": {
+                    "type": "object",
+                    "properties": {
+                        "tissue": {
+                            "type": "object",
+                            "additionalProperties": true,
+                            "description": "Dictionary of tissue segmentation parameters.",
+                            "fa_icon": "fas fa-gear"
+                        },
+                        "baysor": {
+                            "type": "object",
+                            "properties": {
+                                "config": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "description": "Baysor config: data section.",
+                                            "fa_icon": "fas fa-gear",
+                                            "additionalProperties": true
+                                        },
+                                        "segmentation": {
+                                            "type": "object",
+                                            "description": "Baysor config: segmentation section.",
+                                            "fa_icon": "fas fa-gear",
+                                            "additionalProperties": true
+                                        }
+                                    },
+                                    "description": "Baysor configuration parameters.",
+                                    "fa_icon": "fas fa-gear"
+                                }
+                            },
+                            "additionalProperties": true,
+                            "description": "Dictionary of Baysor parameters."
+                        },
+                        "comseg": {
+                            "type": "object",
+                            "properties": {
+                                "config": {
+                                    "type": "object",
+                                    "properties": {
+                                        "dict_scale": {
+                                            "type": "object",
+                                            "description": "Comseg dict scale section.",
+                                            "fa_icon": "fas fa-gear",
+                                            "additionalProperties": true
+                                        }
+                                    },
+                                    "additionalProperties": true,
+                                    "description": "Comseg configuration parameters.",
+                                    "fa_icon": "fas fa-gear"
+                                }
+                            },
+                            "additionalProperties": true,
+                            "description": "Dictionary of Comseg parameters."
+                        },
+                        "cellpose": {
+                            "type": "object",
+                            "additionalProperties": true,
+                            "description": "Dictionary of Cellpose parameters.",
+                            "fa_icon": "fas fa-gear"
+                        },
+                        "stardist": {
+                            "type": "object",
+                            "additionalProperties": true,
+                            "description": "Dictionary of Stardist parameters.",
+                            "fa_icon": "fas fa-gear"
+                        },
+                        "proseg": {
+                            "type": "object",
+                            "additionalProperties": true,
+                            "description": "Dictionary of Proseg parameters.",
+                            "fa_icon": "fas fa-gear"
+                        }
+                    },
+                    "additionalProperties": true,
+                    "description": "Dictionary of segmentation parameters.",
+                    "fa_icon": "fas fa-gear"
+                },
+                "patchify": {
+                    "type": "object",
+                    "additionalProperties": true,
+                    "description": "Dictionary of patches parameters.",
+                    "fa_icon": "fas fa-gear"
+                },
+                "aggregate": {
+                    "type": "object",
+                    "additionalProperties": true,
+                    "description": "Dictionary of aggregation parameters.",
+                    "fa_icon": "fas fa-gear"
+                },
+                "annotation": {
+                    "type": "object",
+                    "required": ["method", "args"],
+                    "properties": {
+                        "method": {
+                            "type": "string",
+                            "description": "Cell type annotation method, either 'tangram' or 'fluorescence'",
+                            "enum": ["tangram", "fluorescence"],
+                            "fa_icon": "fas fa-gear"
+                        },
+                        "args": {
+                            "type": "object",
+                            "description": "Cell type annotation arguments",
+                            "fa_icon": "fas fa-gear",
+                            "properties": {
+                                "marker_cell_dict": {
+                                    "type": "object",
+                                    "description": "Dictionary mapping cell type markers to their descriptions",
+                                    "additionalProperties": {
+                                        "type": "string"
+                                    }
+                                }
+                            },
+                            "additionalProperties": true
+                        }
+                    },
+                    "additionalProperties": true,
+                    "description": "Dictionary of annotation parameters.",
+                    "fa_icon": "fas fa-gear"
+                },
+                "explorer": {
+                    "type": "object",
+                    "additionalProperties": true,
+                    "description": "Dictionary of Xenium Explorer parameters.",
+                    "fa_icon": "fas fa-gear"
+                }
+            }
+        },
+        "spaceranger_options": {
+            "title": "Space Ranger options",
+            "type": "object",
+            "fa_icon": "fas fa-rocket",
+            "description": "Options related to Space Ranger execution and raw spatial data processing",
+            "properties": {
+                "spaceranger_probeset": {
+                    "type": "string",
+                    "format": "file-path",
+                    "mimetype": "text/csv",
+                    "pattern": "^\\S+\\.csv$",
+                    "description": "Location of Space Ranger probeset file.",
+                    "fa_icon": "fas fa-file-csv",
+                    "exists": true
+                },
+                "spaceranger_reference": {
+                    "type": "string",
+                    "format": "path",
+                    "description": "Location of Space Ranger reference directory. May be packed as `tar.gz` file.",
+                    "help_text": "Please see the [10x website](https://support.10xgenomics.com/spatial-gene-expression/software/downloads/latest) to download either of the supported human or mouse references. If not specified the GRCh38 human reference is automatically downladed and used.",
+                    "fa_icon": "fas fa-folder-open",
+                    "default": "https://cf.10xgenomics.com/supp/spatial-exp/refdata-gex-GRCh38-2020-A.tar.gz",
+                    "exists": true
+                }
+            }
+        },
         "institutional_config_options": {
             "title": "Institutional config options",
             "type": "object",
@@ -161,6 +342,12 @@
     "allOf": [
         {
             "$ref": "#/$defs/input_output_options"
+        },
+        {
+            "$ref": "#/$defs/sopa_config"
+        },
+        {
+            "$ref": "#/$defs/spaceranger_options"
         },
         {
             "$ref": "#/$defs/institutional_config_options"
