@@ -7,6 +7,7 @@ include { paramsSummaryMap } from 'plugin/nf-schema'
 include { softwareVersionsToYAML } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_sopa_pipeline'
 include { PATCH_SEGMENTATION_BAYSOR ; RESOLVE_BAYSOR } from '../modules/local/baysor'
+include { PATCH_SEGMENTATION_COMSEG ; RESOLVE_COMSEG } from '../modules/local/comseg'
 include { PATCH_SEGMENTATION_CELLPOSE ; RESOLVE_CELLPOSE } from '../modules/local/cellpose'
 include { PATCH_SEGMENTATION_STARDIST ; RESOLVE_STARDIST } from '../modules/local/stardist'
 include { PATCH_SEGMENTATION_PROSEG } from '../modules/local/proseg'
@@ -78,6 +79,15 @@ workflow SOPA {
 
         ch_transcripts_patches = MAKE_TRANSCRIPT_PATCHES(ch_input_baysor, transcriptPatchesArgs(params, "baysor"))
         (ch_resolved, versions) = BAYSOR(ch_transcripts_patches, params)
+
+        ch_versions = ch_versions.mix(versions)
+    }
+
+    if (params.segmentation.comseg) {
+        ch_input_comseg = params.segmentation.cellpose ? ch_resolved : ch_tissue_seg
+
+        ch_transcripts_patches = MAKE_TRANSCRIPT_PATCHES(ch_input_comseg, transcriptPatchesArgs(params, "comseg"))
+        (ch_resolved, versions) = COMSEG(ch_transcripts_patches, params)
 
         ch_versions = ch_versions.mix(versions)
     }
@@ -251,15 +261,53 @@ workflow BAYSOR {
     ch_versions
 }
 
+workflow COMSEG {
+    take:
+    ch_patches
+    config
+
+    main:
+    ch_versions = Channel.empty()
+
+    comseg_args = ArgsCLI(config.segmentation.comseg, null, ["config"])
+
+    ch_patches
+        .map { meta, sdata_path, patches_file_transcripts -> [meta, sdata_path, patches_file_transcripts.splitText()] }
+        .flatMap { meta, sdata_path, patches_indices -> patches_indices.collect { index -> [meta, sdata_path, comseg_args, index.trim().toInteger(), patches_indices.size] } }
+        .set { ch_comseg }
+
+    ch_segmented = PATCH_SEGMENTATION_COMSEG(ch_comseg).map { meta, sdata_path, _out1, _out2, n_patches -> [groupKey(meta.sdata_dir, n_patches), [meta, sdata_path]] }.groupTuple().map { it -> it[1][0] }
+
+    (ch_resolved, _out, versions) = RESOLVE_COMSEG(ch_segmented, resolveArgs(config))
+
+    ch_versions = ch_versions.mix(versions)
+
+    emit:
+    ch_resolved
+    ch_versions
+}
+
 def transcriptPatchesArgs(Map config, String method) {
     def prior_args = ArgsCLI(config.segmentation[method], null, ["prior_shapes_key", "unassigned_value"])
 
-    return ArgsCLI(config.patchify, "micron") + " " + prior_args
+    return ArgsCLI(config.patchify, "micron") + ("comseg" in config.segmentation ? " --write-cells-centroids " : " ") + prior_args
 }
 
 def resolveArgs(Map config) {
-    def gene_column = config.segmentation.baysor.config.data.gene
-    def min_area = config.segmentation.baysor.min_area ?: 0
+    def gene_column
+    def min_area
+
+    if ("comseg" in config.segmentation) {
+        gene_column = config.segmentation.comseg.config.gene_column
+        min_area = config.segmentation.comseg.min_area ?: 0
+    }
+    else if ("baysor" in config.segmentation) {
+        gene_column = config.segmentation.baysor.config.data.gene
+        min_area = config.segmentation.baysor.min_area ?: 0
+    }
+    else {
+        throw new IllegalArgumentException("Unknown segmentation method in config for resolveArgs")
+    }
 
     return "--gene-column ${gene_column} --min-area ${min_area}"
 }

@@ -22,7 +22,7 @@ process TO_SPATIALDATA {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        sopa: \$(sopa --version 2> /dev/null)
+        sopa: \$(sopa --version)
         spatialdata: \$(python -c "import spatialdata; print(spatialdata.__version__)" 2> /dev/null)
         spatialdata_io: \$(python -c "import spatialdata_io; print(spatialdata_io.__version__)" 2> /dev/null)
     END_VERSIONS

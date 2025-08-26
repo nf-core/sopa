@@ -99,6 +99,27 @@
                             "additionalProperties": true,
                             "description": "Dictionary of Baysor parameters."
                         },
+                        "comseg": {
+                            "type": "object",
+                            "properties": {
+                                "config": {
+                                    "type": "object",
+                                    "properties": {
+                                        "dict_scale": {
+                                            "type": "object",
+                                            "description": "Comseg dict scale section.",
+                                            "fa_icon": "fas fa-gear",
+                                            "additionalProperties": true
+                                        }
+                                    },
+                                    "additionalProperties": true,
+                                    "description": "Comseg configuration parameters.",
+                                    "fa_icon": "fas fa-gear"
+                                }
+                            },
+                            "additionalProperties": true,
+                            "description": "Dictionary of Comseg parameters."
+                        },
                         "cellpose": {
                             "type": "object",
                             "additionalProperties": true,
