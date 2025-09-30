@@ -30,34 +30,34 @@
             },
             "cytaimage": {
                 "type": "string",
-                "pattern": "^\\S+$",
+                "pattern": "^\\S+(tif|tiff)$",
                 "format": "path",
                 "exists": true,
-                "errorMessage": "Path to the cytaimage file must exist and not contain spaces",
+                "errorMessage": "Path to the cytaimage file must exist, not contain spaces, and be a .tif or .tiff file",
                 "meta": ["cytaimage"]
             },
             "colorizedimage": {
                 "type": "string",
-                "pattern": "^\\S+$",
+                "pattern": "^\\S+(tif|tiff|jpg|jpeg)$",
                 "format": "path",
                 "exists": true,
-                "errorMessage": "Path to the colorizedimage file must exist and not contain spaces",
+                "errorMessage": "Path to the colorizedimage file must exist, not contain spaces, and be a .tif, .tiff, .jpg or .jpeg file",
                 "meta": ["colorizedimage"]
             },
             "darkimage": {
                 "type": "string",
-                "pattern": "^\\S+$",
+                "pattern": "^\\S+(tif|tiff|jpg|jpeg)$",
                 "format": "path",
                 "exists": true,
-                "errorMessage": "Path to the darkimage file must exist and not contain spaces",
+                "errorMessage": "Path to the darkimage file must exist, not contain spaces, and be a .tif, .tiff, .jpg or .jpeg file",
                 "meta": ["darkimage"]
             },
             "image": {
                 "type": "string",
-                "pattern": "^\\S+$",
+                "pattern": "^\\S+(tif|tiff|jpg|jpeg)$",
                 "format": "path",
                 "exists": true,
-                "errorMessage": "Path to the image must exist and not contain spaces",
+                "errorMessage": "Path to the image must exist, not contain spaces, and be a .tif, .tiff, .jpg or .jpeg file",
                 "meta": ["image"]
             },
             "slide": {
@@ -74,18 +74,18 @@
             },
             "manual_alignment": {
                 "type": "string",
-                "pattern": "^\\S+$",
+                "pattern": "^\\S+json$",
                 "format": "path",
                 "exists": true,
-                "errorMessage": "Path to the manual_alignment file must exist and not contain spaces",
+                "errorMessage": "Path to the manual_alignment must exist, not contain spaces, and be a .json file",
                 "meta": ["manual_alignment"]
             },
             "slidefile": {
                 "type": "string",
-                "pattern": "^\\S+$",
+                "pattern": "^\\S+json$",
                 "format": "path",
                 "exists": true,
-                "errorMessage": "Path to the slidefile must exist and not contain spaces",
+                "errorMessage": "Path to the slidefile must exist, not contain spaces, and be a .json file",
                 "meta": ["slidefile"]
             }
         }

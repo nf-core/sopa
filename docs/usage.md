@@ -14,29 +14,48 @@ You will need to create a samplesheet with information about the samples you wou
 
 ### Main technologies
 
-For most technologies (i.e., all technologies supported by Sopa except Visium HD), the samplesheet lists the `data_path` to each sample data directory (typically, the per-sample output of the Xenium/MERSCOPE/etc, see more info [here](https://gustaveroussy.github.io/sopa/faq/#what-are-the-inputs-or-sopa)). You can optionally add `sample` to provide a name to your output directory, else it will be named based on `data_path`. Here is a samplesheet example:
+For most technologies (i.e., all technologies supported by Sopa except Visium HD), the samplesheet lists the `data_path` to each sample data directory, and optionally a `sample` column to choose the name of the output directories.
+
+| Column      | Description                                                                                                                                                                                                                                                                                                                                                                                |
+| ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `data_path` | **Path to the raw data**; a directory containing the output of the Xenium/MERSCOPE/etc with the data of a single sample or region. Typically, this directory contains one or multiple image(s), and a transcript file (`.csv` or `.parquet`) for transcriptomics technologies. See more details [here](https://gustaveroussy.github.io/sopa/faq/#what-are-the-inputs-of-sopa)). _Required_ |
+| `sample`    | **Custom sample ID (optional)**; designates the sample ID; must be unique for each patient. It will be used in the output directories names: `{sample}.zarr` and `{sample}.explorer`. _Optional, Default: the basename of `data_path` (i.e., the last directory component of `data_path`)_                                                                                                 |
+
+Here is a samplesheet example for two samples:
 
 `samplesheet.csv`:
 
 ```csv title="samplesheet.csv"
 sample,data_path
 SAMPLE1,/path/to/one/merscope_directory
-SAMPLE2,/path/to/one/merscope_directory
+SAMPLE2,/path/to/another/merscope_directory
 ```
 
 ### Visium HD
 
-Some extra columns need to be provided specifically for Visium HD. This is because we need to run [Space Ranger](https://www.10xgenomics.com/support/software/space-ranger/latest) before running Sopa.
+Some extra columns need to be provided specifically for Visium HD. This is because we need to run [Space Ranger](https://www.10xgenomics.com/support/software/space-ranger/latest) before running Sopa. Note that the `image` is the full-resolution microscopy image (not the cytassist image) and is **required** by Sopa as we'll run cell segmentation on the H&E full-resolution slide. For more details, see the [`spaceranger-count` arguments](https://nf-co.re/modules/spaceranger_count).
 
-For each row, you'll need a `sample` name, its corresponding `fastq_dir`, `image`, `cytaimage`, `slide`, and `area`. Note that the `image` is the full-resolution microscopy image (not the cytassist image) and is **required** by Sopa as we'll run cell segmentation on the H&E full-resolution slide.
-For more details, see the [`spaceranger-count` arguments](https://nf-co.re/modules/spaceranger_count).
+| Column             | Description                                                                                                                                                                       |
+| ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `sample`           | **Sample ID name**; designates the sample ID; must be unique for each slide. It will be used in the output directories names: `{sample}.zarr` and `{sample}.explorer`. _Required_ |
+| `fastq_dir`        | Path to directory where the sample FASTQ files are stored. May be a `.tar.gz` file instead of a directory. _Required_                                                             |
+| `image`            | Brightfield microscopy image. _Required_                                                                                                                                          |
+| `cytaimage`        | Brightfield tissue image captured with Cytassist device. _Required_                                                                                                               |
+| `slide`            | The Visium slide ID used for the sequencing. _Required_                                                                                                                           |
+| `area`             | Which slide area contains the tissue sample. _Required_                                                                                                                           |
+| `manual_alignment` | Path to the manual alignment file. _Optional_                                                                                                                                     |
+| `slidefile`        | Slide specification as JSON. Overrides `slide` and `area` if specified. _Optional_                                                                                                |
+| `colorizedimage`   | A colour composite of one or more fluorescence image channels saved as a single-page, single-file colour TIFF or JPEG. _Optional_                                                 |
+| `darkimage`        | Dark background fluorescence microscopy image. _Optional_                                                                                                                         |
+
+Here is a samplesheet example for one sample:
 
 ```csv title="samplesheet.csv"
 sample,fastq_dir,image,cytaimage,slide,area
 Visium_HD_Human_Lung_Cancer_Fixed_Frozen,Visium_HD_Human_Lung_Cancer_Fixed_Frozen_fastqs,Visium_HD_Human_Lung_Cancer_Fixed_Frozen_tissue_image.btf,Visium_HD_Human_Lung_Cancer_Fixed_Frozen_image.tif,H1-TY834G7,D1
 ```
 
-The above samplesheet is made for [this public sample](https://www.10xgenomics.com/datasets/visium-hd-cytassist-gene-expression-human-lung-cancer-fixed-frozen) (download all the "Input files" and untar the `fastq` zip file).
+This samplesheet was made for [this public sample](https://www.10xgenomics.com/datasets/visium-hd-cytassist-gene-expression-human-lung-cancer-fixed-frozen) (download all the "Input files" and untar the `fastq` zip file to test it).
 
 ## Sopa parameters
 

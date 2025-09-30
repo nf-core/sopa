@@ -21,7 +21,8 @@ include {
     EXPLORER_RAW ;
     REPORT
 } from '../modules/local/sopa_core'
-include { TANGRAM_ANNOTATION ; FLUO_ANNOTATION } from '../modules/local/annotation'
+include { TANGRAM_ANNOTATION } from '../modules/local/tangram_annotation'
+include { FLUO_ANNOTATION } from '../modules/local/fluo_annotation'
 include { ArgsCLI ; ArgsReaderCLI } from '../modules/local/utils'
 include { SPACERANGER } from '../subworkflows/local/spaceranger'
 /*
