@@ -40,12 +40,12 @@ workflow SOPA {
 
     if (params.read.technology == "visium_hd") {
         (ch_input_spatialdata, versions) = SPACERANGER(ch_samplesheet)
-        ch_input_spatialdata = ch_input_spatialdata.map { meta, out -> [meta, [out[0].toString().replaceFirst(/(.*?outs).*/, '$1'), meta.image]] }
+        ch_input_spatialdata = ch_input_spatialdata.map { meta, out -> [meta, meta.data_dir, [out[0].toString().replaceFirst(/(.*?outs).*/, '$1'), meta.image]] }
 
         ch_versions = ch_versions.mix(versions)
     }
     else {
-        ch_input_spatialdata = ch_samplesheet.map { meta -> [meta, meta.data_dir] }
+        ch_input_spatialdata = ch_samplesheet.map { meta -> [meta, meta.data_dir, []] }
     }
 
     (ch_spatialdata, versions) = TO_SPATIALDATA(ch_input_spatialdata, params.read)
@@ -96,7 +96,7 @@ workflow SOPA {
         ch_input_proseg = params.segmentation.cellpose ? ch_resolved : ch_tissue_seg
 
         ch_proseg_patches = MAKE_TRANSCRIPT_PATCHES(ch_input_proseg, transcriptPatchesArgs(params, "proseg"))
-        (ch_resolved, versions) = PROSEG(ch_proseg_patches.map { meta, sdata_path, _file -> [meta, sdata_path] }, params)
+        (ch_resolved, versions) = PROSEG(ch_proseg_patches.map { meta, sdata_path, _file, _patches -> [meta, sdata_path] }, params)
 
         ch_versions = ch_versions.mix(versions)
     }
@@ -246,7 +246,7 @@ workflow BAYSOR {
     baysor_args = ArgsCLI(config.segmentation.baysor, null, ["config"])
 
     ch_patches
-        .map { meta, sdata_path, patches_file_transcripts -> [meta, sdata_path, patches_file_transcripts.splitText()] }
+        .map { meta, sdata_path, patches_file_transcripts, _patches -> [meta, sdata_path, patches_file_transcripts.splitText()] }
         .flatMap { meta, sdata_path, patches_indices -> patches_indices.collect { index -> [meta, sdata_path, baysor_args, index.trim().toInteger(), patches_indices.size] } }
         .set { ch_baysor }
 
@@ -272,7 +272,7 @@ workflow COMSEG {
     comseg_args = ArgsCLI(config.segmentation.comseg, null, ["config"])
 
     ch_patches
-        .map { meta, sdata_path, patches_file_transcripts -> [meta, sdata_path, patches_file_transcripts.splitText()] }
+        .map { meta, sdata_path, patches_file_transcripts, _patches -> [meta, sdata_path, patches_file_transcripts.splitText()] }
         .flatMap { meta, sdata_path, patches_indices -> patches_indices.collect { index -> [meta, sdata_path, comseg_args, index.trim().toInteger(), patches_indices.size] } }
         .set { ch_comseg }
 

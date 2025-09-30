@@ -9,7 +9,7 @@ process TO_SPATIALDATA {
         : 'docker.io/quentinblampey/sopa:latest'}"
 
     input:
-    tuple val(meta), path(input_files)
+    tuple val(meta), path(data_dir), path(other_input_files)
     val args
 
     output:
@@ -18,7 +18,7 @@ process TO_SPATIALDATA {
 
     script:
     """
-    sopa convert ${meta.data_dir} --sdata-path ${meta.sdata_dir} ${ArgsReaderCLI(args, meta)}
+    sopa convert ${data_dir} --sdata-path ${meta.sdata_dir} ${ArgsReaderCLI(args, meta)}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
@@ -86,7 +86,7 @@ process MAKE_TRANSCRIPT_PATCHES {
     val cli_arguments
 
     output:
-    tuple val(meta), path(sdata_path), path("${sdata_path}/.sopa_cache/patches_file_transcripts")
+    tuple val(meta), path(sdata_path), path("${sdata_path}/.sopa_cache/patches_file_transcripts"), path("${sdata_path}/.sopa_cache/transcript_patches")
 
     script:
     """
