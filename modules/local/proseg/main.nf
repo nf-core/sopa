@@ -10,7 +10,7 @@ process PATCH_SEGMENTATION_PROSEG {
         : 'docker.io/quentinblampey/sopa:latest-proseg'}"
 
     input:
-    tuple val(meta), path(sdata_path)
+    tuple val(meta), path(sdata_path), path(patches_file_transcripts), path(transcript_patches)
     val cli_arguments
 
     output:

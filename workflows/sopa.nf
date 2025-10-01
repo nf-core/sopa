@@ -97,7 +97,7 @@ workflow SOPA {
         ch_input_proseg = params.segmentation.cellpose ? ch_resolved : ch_tissue_seg
 
         ch_proseg_patches = MAKE_TRANSCRIPT_PATCHES(ch_input_proseg, transcriptPatchesArgs(params, "proseg"))
-        (ch_resolved, versions) = PROSEG(ch_proseg_patches.map { meta, sdata_path, _file, _patches -> [meta, sdata_path] }, params)
+        (ch_resolved, versions) = PROSEG(ch_proseg_patches, params)
 
         ch_versions = ch_versions.mix(versions)
     }
