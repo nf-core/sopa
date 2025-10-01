@@ -17,6 +17,9 @@ process PATCH_SEGMENTATION_CELLPOSE {
 
     script:
     """
+    mkdir ./cellpose_cache
+    export CELLPOSE_LOCAL_MODELS_PATH=./cellpose_cache
+
     sopa segmentation cellpose ${sdata_path} --patch-index ${index} ${cli_arguments}
     """
 }
