@@ -39,7 +39,7 @@
             }
         },
         "sopa_config": {
-            "title": "Sopa config (a.k.a. params file)",
+            "title": "Sopa config (or params file)",
             "type": "object",
             "fa_icon": "fas fa-rocket",
             "description": "Parameters related to Sopa",
@@ -52,7 +52,19 @@
                         "technology": {
                             "type": "string",
                             "description": "Technology used for the spatial data, e.g., 'xenium', 'merscope', ...",
-                            "fa_icon": "fas fa-microscope"
+                            "fa_icon": "fas fa-microscope",
+                            "enum": [
+                                "xenium",
+                                "merscope",
+                                "cosmx",
+                                "visium_hd",
+                                "molecular_cartography",
+                                "macsima",
+                                "phenocycler",
+                                "hyperion",
+                                "ome_tif",
+                                "toy_dataset"
+                            ]
                         },
                         "kwargs": {
                             "type": "object",

@@ -6,25 +6,28 @@
 include { paramsSummaryMap } from 'plugin/nf-schema'
 include { softwareVersionsToYAML } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_sopa_pipeline'
-include { PATCH_SEGMENTATION_BAYSOR ; RESOLVE_BAYSOR } from '../modules/local/baysor'
-include { PATCH_SEGMENTATION_COMSEG ; RESOLVE_COMSEG } from '../modules/local/comseg'
-include { PATCH_SEGMENTATION_CELLPOSE ; RESOLVE_CELLPOSE } from '../modules/local/cellpose'
-include { PATCH_SEGMENTATION_STARDIST ; RESOLVE_STARDIST } from '../modules/local/stardist'
-include { PATCH_SEGMENTATION_PROSEG } from '../modules/local/proseg'
-include {
-    TO_SPATIALDATA ;
-    TISSUE_SEGMENTATION ;
-    MAKE_IMAGE_PATCHES ;
-    MAKE_TRANSCRIPT_PATCHES ;
-    AGGREGATE ;
-    EXPLORER ;
-    EXPLORER_RAW ;
-    REPORT
-} from '../modules/local/sopa_core'
+
+include { TO_SPATIALDATA } from '../modules/local/to_spatialdata'
+include { MAKE_IMAGE_PATCHES } from '../modules/local/make_image_patches'
+include { MAKE_TRANSCRIPT_PATCHES } from '../modules/local/make_transcript_patches'
+include { TISSUE_SEGMENTATION } from '../modules/local/tissue_segmentation'
+include { PATCH_SEGMENTATION_BAYSOR } from '../modules/local/patch_segmentation_baysor'
+include { PATCH_SEGMENTATION_COMSEG } from '../modules/local/patch_segmentation_comseg'
+include { PATCH_SEGMENTATION_CELLPOSE } from '../modules/local/patch_segmentation_cellpose'
+include { PATCH_SEGMENTATION_STARDIST } from '../modules/local/patch_segmentation_stardist'
+include { PATCH_SEGMENTATION_PROSEG } from '../modules/local/patch_segmentation_proseg'
+include { RESOLVE_BAYSOR } from '../modules/local/resolve_baysor'
+include { RESOLVE_COMSEG } from '../modules/local/resolve_comseg'
+include { RESOLVE_CELLPOSE } from '../modules/local/resolve_cellpose'
+include { RESOLVE_STARDIST } from '../modules/local/resolve_stardist'
+include { AGGREGATE } from '../modules/local/aggregate'
+include { EXPLORER } from '../modules/local/explorer'
+include { EXPLORER_RAW } from '../modules/local/explorer_raw'
+include { REPORT } from '../modules/local/report'
 include { TANGRAM_ANNOTATION } from '../modules/local/tangram_annotation'
 include { FLUO_ANNOTATION } from '../modules/local/fluo_annotation'
-include { ArgsCLI ; ArgsReaderCLI } from '../modules/local/utils'
 include { SPACERANGER } from '../subworkflows/local/spaceranger'
+include { ArgsCLI ; ArgsReaderCLI } from '../modules/local/utils'
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     RUN MAIN WORKFLOW

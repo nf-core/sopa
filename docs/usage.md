@@ -14,12 +14,17 @@ You will need to create a samplesheet with information about the samples you wou
 
 ### Main technologies
 
-For most technologies (i.e., all technologies supported by Sopa except Visium HD), the samplesheet lists the `data_path` to each sample data directory, and optionally a `sample` column to choose the name of the output directories.
+For all technologies supported by Sopa, the samplesheet lists the `data_path` to each sample data directory, and optionally a `sample` column to choose the name of the output directories.
 
-| Column      | Description                                                                                                                                                                                                                                                                                                                                                                                |
-| ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `data_path` | **Path to the raw data**; a directory containing the output of the Xenium/MERSCOPE/etc with the data of a single sample or region. Typically, this directory contains one or multiple image(s), and a transcript file (`.csv` or `.parquet`) for transcriptomics technologies. See more details [here](https://gustaveroussy.github.io/sopa/faq/#what-are-the-inputs-of-sopa)). _Required_ |
-| `sample`    | **Custom sample ID (optional)**; designates the sample ID; must be unique for each patient. It will be used in the output directories names: `{sample}.zarr` and `{sample}.explorer`. _Optional, Default: the basename of `data_path` (i.e., the last directory component of `data_path`)_                                                                                                 |
+> [!NOTE]
+> For **Visium HD only**, the samplesheet is different, please refer to the next section instead.
+
+The concerned technologies are: `xenium`, `merscope`, `cosmx`, `molecular_cartography`, `macsima`, `phenocycler`, `ome_tif`, and `hyperion`.
+
+| Column      | Description                                                                                                                                                                                                                                                                                                                                                                    |
+| ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `data_path` | **Path to the raw data**; a directory containing the output of the machine with the data of a single sample or region. Typically, this directory contains one or multiple image(s), and a transcript file (`.csv` or `.parquet`) for transcriptomics technologies. See more details [here](https://gustaveroussy.github.io/sopa/faq/#what-are-the-inputs-of-sopa)). _Required_ |
+| `sample`    | **Custom sample ID (optional)**; designates the sample ID; must be unique for each patient. It will be used in the output directories names: `{sample}.zarr` and `{sample}.explorer`. _Optional, Default: the basename of `data_path` (i.e., the last directory component of `data_path`)_                                                                                     |
 
 Here is a samplesheet example for two samples:
 
