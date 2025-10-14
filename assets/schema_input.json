@@ -38,26 +38,26 @@
             },
             "colorizedimage": {
                 "type": "string",
-                "pattern": "^\\S+(tif|tiff|jpg|jpeg)$",
+                "pattern": "^\\S+(tif|tiff|jpg|jpeg|btf)$",
                 "format": "path",
                 "exists": true,
-                "errorMessage": "Path to the colorizedimage file must exist, not contain spaces, and be a .tif, .tiff, .jpg or .jpeg file",
+                "errorMessage": "Path to the colorizedimage file must exist, not contain spaces, and be a .tif, .tiff, .btf, .jpg or .jpeg file",
                 "meta": ["colorizedimage"]
             },
             "darkimage": {
                 "type": "string",
-                "pattern": "^\\S+(tif|tiff|jpg|jpeg)$",
+                "pattern": "^\\S+(tif|tiff|jpg|jpeg|btf)$",
                 "format": "path",
                 "exists": true,
-                "errorMessage": "Path to the darkimage file must exist, not contain spaces, and be a .tif, .tiff, .jpg or .jpeg file",
+                "errorMessage": "Path to the darkimage file must exist, not contain spaces, and be a .tif, .tiff, .btf, .jpg or .jpeg file",
                 "meta": ["darkimage"]
             },
             "image": {
                 "type": "string",
-                "pattern": "^\\S+(tif|tiff|jpg|jpeg)$",
+                "pattern": "^\\S+(tif|tiff|jpg|jpeg|btf)$",
                 "format": "path",
                 "exists": true,
-                "errorMessage": "Path to the image must exist, not contain spaces, and be a .tif, .tiff, .jpg or .jpeg file",
+                "errorMessage": "Path to the image must exist, not contain spaces, and be a .tif, .tiff, .btf, .jpg or .jpeg file",
                 "meta": ["image"]
             },
             "slide": {
