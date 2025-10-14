@@ -123,7 +123,7 @@ workflow SOPA {
         ch_annotated = ch_aggregated
     }
 
-    if (params?.containsKey('scanpy_preprocess')) {
+    if (params.scanpy_preprocess) {
         (ch_preprocessed, _out, versions) = SCANPY_PREPROCESS(ch_annotated, ArgsCLI(params.scanpy_preprocess))
         ch_versions = ch_versions.mix(versions)
     }
