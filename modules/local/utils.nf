@@ -45,7 +45,7 @@ def ArgsCLI(Map params, String contains = null, List keys = null) {
         .join(" ")
 }
 
-def ArgsReaderCLI(Map args, Map meta) {
+def ArgsReaderCLI(Map args, Map meta, String fullres_image_file) {
     if (args.technology == "visium_hd") {
         args = deepCopyCollection(args)
 
@@ -56,9 +56,7 @@ def ArgsReaderCLI(Map args, Map meta) {
             args.kwargs["dataset_id"] = meta.id
         }
 
-        if (meta.image) {
-            args.kwargs["fullres_image_file"] = meta.image
-        }
+        args.kwargs["fullres_image_file"] = fullres_image_file
     }
 
     return ArgsCLI(args)

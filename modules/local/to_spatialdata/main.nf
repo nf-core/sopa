@@ -9,8 +9,8 @@ process TO_SPATIALDATA {
         : 'docker.io/quentinblampey/sopa:2.1.5'}"
 
     input:
-    tuple val(meta), path(data_dir), path(other_input_files)
-    val args
+    tuple val(meta), path(data_dir), path(fullres_image_file)
+    val read_params
 
     output:
     tuple val(meta), path("${meta.sdata_dir}")
@@ -18,7 +18,7 @@ process TO_SPATIALDATA {
 
     script:
     """
-    sopa convert ${data_dir} --sdata-path ${meta.sdata_dir} ${ArgsReaderCLI(args, meta)}
+    sopa convert ${data_dir} --sdata-path ${meta.sdata_dir} ${ArgsReaderCLI(read_params, meta, fullres_image_file.toString())}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
