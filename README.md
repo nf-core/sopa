@@ -82,11 +82,12 @@ For more details about the output files and reports, please refer to the
 
 ## Credits
 
-nf-core/sopa was originally written by Quentin Blampey during his work at the following institutions: CentraleSupélec, Gustave Roussy Institute, and Université Paris-Saclay.
+nf-core/sopa was originally written by [Quentin Blampey](https://github.com/quentinblampey) during his work at the following institutions: CentraleSupélec, Gustave Roussy Institute, Université Paris-Saclay, and Cure51.
 
 We thank the following people for their extensive assistance in the development of this pipeline:
 
-<!-- TODO nf-core: If applicable, make list of people who have also contributed -->
+- [Matthias Hörtenhuber](https://github.com/mashehu)
+- [Kevin Weiss](https://github.com/kweisscure51)
 
 ## Contributions and Support
 
