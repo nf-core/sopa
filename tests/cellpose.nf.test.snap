@@ -1,11 +1,11 @@
 {
     "-profile test_cellpose": {
         "content": [
-            9,
+            8,
             {
                 "RESOLVE_CELLPOSE": {
                     "sopa": "2.1.5",
-                    "cellpose": "4.0.6"
+                    "cellpose": "4.0.7"
                 },
                 "TO_SPATIALDATA": {
                     "sopa": "2.1.5",

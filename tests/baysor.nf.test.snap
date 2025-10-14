@@ -1,7 +1,7 @@
 {
     "-profile test_baysor": {
         "content": [
-            10,
+            9,
             {
                 "RESOLVE_BAYSOR": {
                     "sopa": "2.1.5",
