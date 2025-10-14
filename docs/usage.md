@@ -21,10 +21,10 @@ For all technologies supported by Sopa, the samplesheet lists the `data_path` to
 
 The concerned technologies are: `xenium`, `merscope`, `cosmx`, `molecular_cartography`, `macsima`, `phenocycler`, `ome_tif`, and `hyperion`.
 
-| Column      | Description                                                                                                                                                                                                                                                                                                                                                                    |
-| ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `data_path` | **Path to the raw data**; a directory containing the output of the machine with the data of a single sample or region. Typically, this directory contains one or multiple image(s), and a transcript file (`.csv` or `.parquet`) for transcriptomics technologies. See more details [here](https://gustaveroussy.github.io/sopa/faq/#what-are-the-inputs-of-sopa)). _Required_ |
-| `sample`    | **Custom sample ID (optional)**; designates the sample ID; must be unique for each patient. It will be used in the output directories names: `{sample}.zarr` and `{sample}.explorer`. _Optional, Default: the basename of `data_path` (i.e., the last directory component of `data_path`)_                                                                                     |
+| Column      | Description                                                                                                                                                                                                                                                                                           |
+| ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `data_path` | **Path to the raw data**; a directory containing the output of the machine with the data of a single sample or region. Typically, this directory contains one or multiple image(s), and a transcript file (`.csv` or `.parquet`) for transcriptomics technologies. See more details below. _Required_ |
+| `sample`    | **Custom sample ID (optional)**; designates the sample ID; must be unique for each patient. It will be used in the output directories names: `{sample}.zarr` and `{sample}.explorer`. _Optional, Default: the basename of `data_path` (i.e., the last directory component of `data_path`)_            |
 
 Here is a samplesheet example for two samples:
 
@@ -35,6 +35,19 @@ sample,data_path
 SAMPLE1,/path/to/one/merscope_directory
 SAMPLE2,/path/to/another/merscope_directory
 ```
+
+We also provide a detailed description of what `data_path` should contain, depending on the technologies:
+
+| Technology            | `data_path` directory content                                                                                                                                                                                          |
+| --------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| xenium                | `transcripts.parquet`, `experiment.xenium`, and `morphology_focus.ome.tif` or a morphology directory.                                                                                                                  |
+| merscope              | `detected_transcripts.csv`, all the images under the `images` subdirectory, and `images/micron_to_mosaic_pixel_transform.csv` (affine transformation)                                                                  |
+| cosmx                 | `*_fov_positions_file.csv` or `*_fov_positions_file.csv.gz` (FOV locations),`Morphology2D` (directory with all the FOVs morphology images), and `*_tx_file.csv.gz` or `*_tx_file.csv` (transcripts location and names) |
+| molecular_cartography | Multiple `.tiff` images and `_results.txt` files.                                                                                                                                                                      |
+| macsima               | Multiple `.tif` images                                                                                                                                                                                                 |
+| phenocycler           | For this technology, `data_path` is not a directory, but a `.qptiff` or `.tif` file containing all channels for a given sample.                                                                                        |
+| hyperion              | Multiple `.tif` images                                                                                                                                                                                                 |
+| ome_tif               | Generic reader for which `data_path` is not a directory, but a `.ome.tif` file containing all channels for a given sample.                                                                                             |
 
 ### Visium HD
 
