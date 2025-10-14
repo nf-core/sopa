@@ -23,6 +23,7 @@ include { RESOLVE_STARDIST } from '../modules/local/resolve_stardist'
 include { AGGREGATE } from '../modules/local/aggregate'
 include { EXPLORER } from '../modules/local/explorer'
 include { EXPLORER_RAW } from '../modules/local/explorer_raw'
+include { SCANPY_PREPROCESS } from '../modules/local/scanpy_preprocess'
 include { REPORT } from '../modules/local/report'
 include { TANGRAM_ANNOTATION } from '../modules/local/tangram_annotation'
 include { FLUO_ANNOTATION } from '../modules/local/fluo_annotation'
@@ -122,11 +123,17 @@ workflow SOPA {
         ch_annotated = ch_aggregated
     }
 
-    EXPLORER(ch_annotated, ArgsCLI(params.explorer))
-    REPORT(ch_annotated)
+    if (params?.containsKey('scanpy_preprocess')) {
+        (ch_preprocessed, _out, versions) = SCANPY_PREPROCESS(ch_annotated, ArgsCLI(params.scanpy_preprocess))
+        ch_versions = ch_versions.mix(versions)
+    }
+    else {
+        ch_preprocessed = ch_annotated
+    }
 
-    PUBLISH(ch_annotated.map { it[1] })
+    EXPLORER(ch_preprocessed, ArgsCLI(params.explorer))
 
+    REPORT(ch_preprocessed)
 
     //
     // Collate and save software versions
@@ -140,25 +147,6 @@ workflow SOPA {
 
     emit:
     versions = ch_versions // channel: [ path(versions.yml) ]
-}
-
-process PUBLISH {
-    label "process_single"
-
-    publishDir "${params.outdir}", mode: params.publish_dir_mode
-
-    input:
-    path sdata_path
-
-    output:
-    path sdata_path
-
-    script:
-    """
-    rm -r ${sdata_path}/.sopa_cache || true
-
-    echo "Publishing ${sdata_path}"
-    """
 }
 
 /*

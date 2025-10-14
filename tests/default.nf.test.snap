@@ -4,14 +4,14 @@
             9,
             {
                 "FLUO_ANNOTATION": {
-                    "sopa": "2.1.4"
+                    "sopa": "2.1.5"
                 },
                 "PATCH_SEGMENTATION_PROSEG": {
-                    "sopa": "2.1.4",
+                    "sopa": "2.1.5",
                     "proseg": "3.0.8"
                 },
                 "TO_SPATIALDATA": {
-                    "sopa": "2.1.4",
+                    "sopa": "2.1.5",
                     "spatialdata": "0.5.0",
                     "spatialdata_io": "0.3.0"
                 },

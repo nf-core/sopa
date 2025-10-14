@@ -197,6 +197,24 @@
                     "description": "Dictionary of annotation parameters.",
                     "fa_icon": "fas fa-gear"
                 },
+                "scanpy_preprocess": {
+                    "type": "object",
+                    "properties": {
+                        "resolution": {
+                            "type": "number",
+                            "description": "Resolution parameter for the Leiden clustering algorithm.",
+                            "fa_icon": "fas fa-sliders-h"
+                        },
+                        "check_counts": {
+                            "type": "boolean",
+                            "description": "Whether to check counts in Scanpy preprocessing.",
+                            "fa_icon": "fas fa-check"
+                        }
+                    },
+                    "additionalProperties": true,
+                    "description": "Dictionary of Scanpy preprocessing parameters.",
+                    "fa_icon": "fas fa-gear"
+                },
                 "explorer": {
                     "type": "object",
                     "additionalProperties": true,

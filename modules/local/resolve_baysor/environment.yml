@@ -5,4 +5,4 @@ dependencies:
   - python=3.11
   - pip=24.3.1
   - pip:
-      - sopa[baysor]==2.1.4
+      - sopa[baysor]==2.1.5
