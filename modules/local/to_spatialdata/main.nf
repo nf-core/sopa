@@ -5,8 +5,8 @@ process TO_SPATIALDATA {
 
     conda "${moduleDir}/environment.yml"
     container "${workflow.containerEngine == 'apptainer' && !task.ext.singularity_pull_docker_container
-        ? 'docker://quentinblampey/sopa:2.1.5'
-        : 'docker.io/quentinblampey/sopa:2.1.5'}"
+        ? 'docker://quentinblampey/sopa:2.1.6'
+        : 'docker.io/quentinblampey/sopa:2.1.6'}"
 
     input:
     tuple val(meta), path(data_dir), path(fullres_image_file)

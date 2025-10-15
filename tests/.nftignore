@@ -16,3 +16,4 @@ pipeline_info/*.{html,json,txt,yml}
 **/zmetadata
 **/.sopa_cache
 **/.sopa_cache/**
+**/table/**
