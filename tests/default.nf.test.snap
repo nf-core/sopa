@@ -1,14 +1,14 @@
 {
     "-profile test": {
         "content": [
-            8,
+            9,
             {
                 "FLUO_ANNOTATION": {
                     "sopa": "2.1.6"
                 },
                 "PATCH_SEGMENTATION_PROSEG": {
                     "sopa": "2.1.6",
-                    "proseg": "3.0.8"
+                    "proseg": "3.0.10"
                 },
                 "SCANPY_PREPROCESS": {
                     "sopa": "2.1.6",
