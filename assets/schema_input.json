@@ -11,6 +11,12 @@
                 "type": "string",
                 "pattern": "^\\S+$",
                 "errorMessage": "Sample name cannot contain spaces",
+                "meta": ["sample"]
+            },
+            "id": {
+                "type": "string",
+                "pattern": "^\\S+$",
+                "errorMessage": "ID cannot contain spaces",
                 "meta": ["id"]
             },
             "data_path": {

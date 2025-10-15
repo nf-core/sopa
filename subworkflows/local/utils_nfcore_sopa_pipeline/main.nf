@@ -70,11 +70,11 @@ workflow PIPELINE_INITIALISATION {
         .map { meta, data_path ->
             if (!meta.fastq_dir) {
                 if (!data_path) {
-                    error("The data_path must be provided (path to the raw inputs)")
+                    error("The `data_path` must be provided (path to the raw inputs), except when running on Visium HD data (in that case, the `fastq_dir` is required)")
                 }
 
-                if (!meta.id) {
-                    meta.id = file(data_path).baseName
+                if (!meta.sample) {
+                    meta.sample = file(data_path).baseName
                 }
 
                 meta.data_dir = data_path
@@ -83,16 +83,20 @@ workflow PIPELINE_INITIALISATION {
                 // spaceranger output directory
                 meta.data_dir = "outs"
 
+                if (!meta.sample) {
+                    error("The `sample` column must be provided when running on Visium HD data")
+                }
+
                 if (!meta.id) {
-                    error("The id must be provided when running on Visium HD data")
+                    meta.id = meta.sample
                 }
 
                 if (!meta.image) {
-                    error("The image (full resolution image) must be provided when running Sopa on Visium HD data - it is required for the cell segmentation")
+                    error("The `image` column (full resolution image) must be provided when running Sopa on Visium HD data - it is required for the cell segmentation")
                 }
             }
-            meta.sdata_dir = "${meta.id}.zarr"
-            meta.explorer_dir = "${meta.id}.explorer"
+            meta.sdata_dir = "${meta.sample}.zarr"
+            meta.explorer_dir = "${meta.sample}.explorer"
 
             return meta
         }
