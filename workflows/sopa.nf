@@ -28,7 +28,7 @@ include { REPORT } from '../modules/local/report'
 include { TANGRAM_ANNOTATION } from '../modules/local/tangram_annotation'
 include { FLUO_ANNOTATION } from '../modules/local/fluo_annotation'
 include { SPACERANGER } from '../subworkflows/local/spaceranger'
-include { ArgsCLI ; ArgsReaderCLI } from '../modules/local/utils'
+include { ArgsCLI } from '../modules/local/utils'
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     RUN MAIN WORKFLOW
@@ -53,11 +53,11 @@ workflow SOPA {
         ch_input_spatialdata = ch_samplesheet.map { meta -> [meta, meta.data_dir, []] }
     }
 
-    (ch_spatialdata, versions) = TO_SPATIALDATA(ch_input_spatialdata, params.read)
+    (ch_spatialdata, versions) = TO_SPATIALDATA(ch_input_spatialdata)
     ch_versions = ch_versions.mix(versions)
 
     ch_explorer_raw = ch_spatialdata.map { meta, sdata_path -> [meta, sdata_path, params.read.technology == "xenium" ? meta.data_dir : []] }
-    EXPLORER_RAW(ch_explorer_raw, ArgsCLI(params.explorer))
+    EXPLORER_RAW(ch_explorer_raw)
 
     if (params.segmentation.tissue) {
         (ch_tissue_seg, _out) = TISSUE_SEGMENTATION(ch_spatialdata, ArgsCLI(params.segmentation.tissue))

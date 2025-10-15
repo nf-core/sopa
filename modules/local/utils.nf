@@ -45,10 +45,10 @@ def ArgsCLI(Map params, String contains = null, List keys = null) {
         .join(" ")
 }
 
-def ArgsReaderCLI(Map args, Map meta, String fullres_image_file) {
-    if (args.technology == "visium_hd") {
-        args = deepCopyCollection(args)
+def ArgsToSpatialData(Map params, Map meta, String fullres_image_file) {
+    def args = deepCopyCollection(params.read)
 
+    if (args.technology == "visium_hd") {
         if (!args.kwargs) {
             args.kwargs = ["dataset_id": meta.id]
         }
@@ -57,6 +57,16 @@ def ArgsReaderCLI(Map args, Map meta, String fullres_image_file) {
         }
 
         args.kwargs["fullres_image_file"] = fullres_image_file
+    }
+
+    return ArgsCLI(args)
+}
+
+def ArgsExplorerRaw(Map params, String raw_data_path) {
+    def args = deepCopyCollection(params.explorer ?: [:])
+
+    if (params.read.technology == "xenium") {
+        args["raw_data_path"] = raw_data_path
     }
 
     return ArgsCLI(args)

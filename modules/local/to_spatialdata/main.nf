@@ -1,4 +1,4 @@
-include { ArgsReaderCLI } from '../utils'
+include { ArgsToSpatialData } from '../utils'
 
 process TO_SPATIALDATA {
     label "process_high"
@@ -10,7 +10,6 @@ process TO_SPATIALDATA {
 
     input:
     tuple val(meta), path(data_dir), path(fullres_image_file)
-    val read_params
 
     output:
     tuple val(meta), path("${meta.sdata_dir}")
@@ -18,7 +17,7 @@ process TO_SPATIALDATA {
 
     script:
     """
-    sopa convert ${data_dir} --sdata-path ${meta.sdata_dir} ${ArgsReaderCLI(read_params, meta, fullres_image_file.toString())}
+    sopa convert ${data_dir} --sdata-path ${meta.sdata_dir} ${ArgsToSpatialData(params, meta, fullres_image_file.toString())}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

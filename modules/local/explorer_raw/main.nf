@@ -1,3 +1,5 @@
+include { ArgsExplorerRaw } from '../utils'
+
 process EXPLORER_RAW {
     label "process_high"
 
@@ -10,7 +12,6 @@ process EXPLORER_RAW {
 
     input:
     tuple val(meta), path(sdata_path), path(data_dir)
-    val cli_arguments
 
     output:
     path "${meta.explorer_dir}/morphology*"
@@ -18,6 +19,6 @@ process EXPLORER_RAW {
 
     script:
     """
-    sopa explorer write ${sdata_path} --output-path ${meta.explorer_dir} ${cli_arguments} --mode "+it" --no-save-h5ad
+    sopa explorer write ${sdata_path} --output-path ${meta.explorer_dir} ${ArgsExplorerRaw(params, data_dir.toString())} --mode "+it" --no-save-h5ad
     """
 }
