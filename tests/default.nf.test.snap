@@ -1,7 +1,6 @@
 {
     "-profile test": {
         "content": [
-            9,
             {
                 "FLUO_ANNOTATION": {
                     "sopa": "2.1.6"
