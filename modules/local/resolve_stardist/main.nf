@@ -3,8 +3,8 @@ process RESOLVE_STARDIST {
 
     conda "${moduleDir}/environment.yml"
     container "${workflow.containerEngine == 'apptainer' && !task.ext.singularity_pull_docker_container
-        ? 'docker://quentinblampey/sopa:2.1.6-stardist'
-        : 'docker.io/quentinblampey/sopa:2.1.6-stardist'}"
+        ? 'docker://quentinblampey/sopa:2.1.7-stardist'
+        : 'docker.io/quentinblampey/sopa:2.1.7-stardist'}"
 
     input:
     tuple val(meta), path(sdata_path)

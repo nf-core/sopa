@@ -4,15 +4,15 @@
             9,
             {
                 "RESOLVE_BAYSOR": {
-                    "sopa": "2.1.6",
+                    "sopa": "2.1.7",
                     "baysor": "0.7.1"
                 },
                 "TANGRAM_ANNOTATION": {
-                    "sopa": "2.1.6",
+                    "sopa": "2.1.7",
                     "tangram": "1.0.4"
                 },
                 "TO_SPATIALDATA": {
-                    "sopa": "2.1.6",
+                    "sopa": "2.1.7",
                     "spatialdata": "0.5.0",
                     "spatialdata_io": "0.3.0"
                 },

@@ -3,8 +3,8 @@ process EXPLORER {
 
     conda "${moduleDir}/environment.yml"
     container "${workflow.containerEngine == 'apptainer' && !task.ext.singularity_pull_docker_container
-        ? 'docker://quentinblampey/sopa:2.1.6'
-        : 'docker.io/quentinblampey/sopa:2.1.6'}"
+        ? 'docker://quentinblampey/sopa:2.1.7'
+        : 'docker.io/quentinblampey/sopa:2.1.7'}"
 
     publishDir "${params.outdir}", mode: params.publish_dir_mode
 
