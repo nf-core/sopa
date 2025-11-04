@@ -3,8 +3,8 @@ process PATCH_SEGMENTATION_BAYSOR {
 
     conda "${moduleDir}/environment.yml"
     container "${workflow.containerEngine == 'apptainer' && !task.ext.singularity_pull_docker_container
-        ? 'docker://quentinblampey/sopa:2.1.7-baysor'
-        : 'docker.io/quentinblampey/sopa:2.1.7-baysor'}"
+        ? 'docker://quentinblampey/sopa:2.1.8-baysor'
+        : 'docker.io/quentinblampey/sopa:2.1.8-baysor'}"
 
     input:
     tuple val(meta), path(sdata_path), val(cli_arguments), val(index), val(n_patches)
