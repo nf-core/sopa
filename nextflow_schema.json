@@ -39,7 +39,7 @@
             }
         },
         "sopa_config": {
-            "title": "Sopa config (or params file) - we recommend providing an existing `-params-file` as detailed in the usage section",
+            "title": "Sopa config - can be provided via a technology-specific `profile` or `-params-file`, as detailed in the usage section",
             "type": "object",
             "fa_icon": "fas fa-rocket",
             "description": "Parameters related to Sopa",

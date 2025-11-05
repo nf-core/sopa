@@ -78,7 +78,11 @@ This samplesheet was made for [this public sample](https://www.10xgenomics.com/d
 
 ## Sopa parameters
 
-You'll also need to choose some Sopa parameters that you'll provide to Nextflow via the `-params-file` option. You can find existing Sopa parameter files [here](https://github.com/gustaveroussy/sopa/tree/main/workflow/config), and follow the [corresponding README instructions](https://github.com/gustaveroussy/sopa/blob/main/workflow/config/README.md) of to get your `-params-file` argument.
+You'll also need to choose some Sopa parameters.
+
+The first option (recommended) is to use an existing `-profile` (see the existing profiles further).
+
+The second option is to provide the parameters to Nextflow via the `-params-file` option. You can find existing Sopa parameter files [here](https://github.com/gustaveroussy/sopa/tree/main/workflow/config), and follow the [corresponding README instructions](https://github.com/gustaveroussy/sopa/blob/main/workflow/config/README.md) of to get your `-params-file` argument.
 
 For instance, if you have Xenium data and want to run Sopa with `proseg`, you can use:
 
@@ -199,6 +203,8 @@ If `-profile` is not specified, the pipeline will run locally and expect all sof
   - A generic configuration profile to enable [Wave](https://seqera.io/wave/) containers. Use together with one of the above (requires Nextflow ` 24.03.0-edge` or later).
 - `conda`
   - A generic configuration profile to be used with [Conda](https://conda.io/docs/). Please only use Conda as a last resort i.e. when it's not possible to run the pipeline with Docker, Singularity, Podman, Shifter, Charliecloud, or Apptainer.
+- `xenium_proseg`
+  - A profile with Sopa parameters to run Proseg on Xenium data
 
 ### `-resume`
 

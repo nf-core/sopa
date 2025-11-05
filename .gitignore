@@ -11,3 +11,4 @@ sandbox
 samplesheets
 lint_*
 .nf-test*
+conf/predefined/convert*
