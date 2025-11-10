@@ -1,3 +1,5 @@
+// Copyright (c) The nf-core/sopa team
+
 def convert(v) {
     if (v instanceof Map) {
         return '[\n' + v.collect { k, val -> "${k}: ${convert(val)}" }.join(', ') + '\n]'

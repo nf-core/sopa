@@ -59,6 +59,25 @@ These tests are run both with the latest available version of `Nextflow` and als
 - Fix the bug, and bump version (X.Y.Z+1).
 - Open a pull-request from `patch` to `main`/`master` with the changes.
 
+## Updating the Sopa parameters profiles
+
+Some Sopa parameters profiles are stored in the [Python Sopa repository](https://github.com/gustaveroussy/sopa). They have to be synchronized with the profiles in `conf/predefined`.
+To do that, we can convert each config from `gustavroussy/sopa` to a nextflow profile as follows:
+
+```sh
+# clone the python repo wherever you want
+git clone https://github.com/gustaveroussy/sopa.git
+
+# now, inside the nf-core/sopa repo:
+cd conf/predefined
+
+# set SOPA_DIR depending on where you cloned gustaveroussy/sopa.git
+SOPA_DIR=/path/to/gustaveroussy/sopa sh convert.sh
+sh convert_list.sh # showing all profile imports, to be added to nextflow.config
+```
+
+Submit only the non-toy configs, and run file formatting before pushing the changes (if any).
+
 ## Getting help
 
 For further information/help, please consult the [nf-core/sopa documentation](https://nf-co.re/sopa/usage) and don't hesitate to get in touch on the nf-core Slack [#sopa](https://nfcore.slack.com/channels/sopa) channel ([join our Slack here](https://nf-co.re/join/slack)).
