@@ -78,20 +78,48 @@ This samplesheet was made for [this public sample](https://www.10xgenomics.com/d
 
 ## Sopa parameters
 
-You'll also need to choose some Sopa parameters.
+You'll also need to choose some Sopa parameters to decide which reader/segmentation tool to use. To do that, provide an existing `-profile` containing all the dedicated Sopa parameters, depending on your technology:
 
-The first option (recommended) is to use an existing `-profile` (see the existing profiles further).
-
-The second option is to provide the parameters to Nextflow via the `-params-file` option. You can find existing Sopa parameter files [here](https://github.com/gustaveroussy/sopa/tree/main/workflow/config), and follow the [corresponding README instructions](https://github.com/gustaveroussy/sopa/blob/main/workflow/config/README.md) of to get your `-params-file` argument.
-
-For instance, if you have Xenium data and want to run Sopa with `proseg`, you can use:
-
-```
--params-file https://raw.githubusercontent.com/gustaveroussy/sopa/refs/heads/main/workflow/config/xenium/proseg.yaml
-```
-
-> [!NOTE]
-> This `-params-file` option is **not** specific to Sopa - you can list other Nextflow params inside it. In that case, make your own local params-file.
+- `xenium_proseg`
+  - A profile with Sopa parameters to run Proseg on Xenium data
+- `xenium_baysor`
+  - A profile with Sopa parameters to run Baysor on Xenium data
+- `xenium_baysor_prior_small_cells`
+  - Same as above, but with a smaller Baysor scale for the cell diameter
+- `xenium_baysor_prior`
+  - A profile with Sopa parameters to run Baysor on Xenium data with the 10X Genomics segmentation as a prior
+- `xenium_cellpose_baysor`
+  - A profile with Sopa parameters to run Cellpose as a prior for Baysor on Xenium data
+- `xenium_cellpose`
+  - A profile with Sopa parameters to run Cellpose on Xenium data
+- `merscope_baysor_cellpose`
+  - A profile with Sopa parameters to run Cellpose as a prior for Baysor on MERSCOPE data
+- `merscope_baysor_vizgen`
+  - A profile with Sopa parameters to run Baysor on MERSCOPE data with the Vizgen segmentation as a prior
+- `merscope_proseg`
+  - A profile with Sopa parameters to run Proseg on MERSCOPE data
+- `merscope_cellpose`
+  - A profile with Sopa parameters to run Cellpose on MERSCOPE data
+- `cosmx_cellpose`
+  - A profile with Sopa parameters to run Cellpose on CosMx data
+- `cosmx_proseg`
+  - A profile with Sopa parameters to run Proseg on CosMx data
+- `cosmx_baysor`
+  - A profile with Sopa parameters to run Baysor on Xenium data
+- `cosmx_cellpose_baysor`
+  - A profile with Sopa parameters to run Cellpose as a prior for Baysor on CosMx data
+- `visium_hd_stardist`
+  - A profile with Sopa parameters to run Stardist on Visium HD data
+- `phenocycler_base_10X`
+  - A profile with Sopa parameters to run Cellpose on Phenocycler data at 10X resolution
+- `phenocycler_base_20X`
+  - A profile with Sopa parameters to run Cellpose on Phenocycler data at 20X resolution
+- `phenocycler_base_40X`
+  - A profile with Sopa parameters to run Cellpose on Phenocycler data at 40X resolution
+- `hyperion_base`
+  - A profile with Sopa parameters to run Cellpose on Hyperion data
+- `macsima_base`
+  - A profile with Sopa parameters to run Cellpose on MACSima data
 
 ## Running the pipeline
 
@@ -203,46 +231,7 @@ If `-profile` is not specified, the pipeline will run locally and expect all sof
   - A generic configuration profile to enable [Wave](https://seqera.io/wave/) containers. Use together with one of the above (requires Nextflow ` 24.03.0-edge` or later).
 - `conda`
   - A generic configuration profile to be used with [Conda](https://conda.io/docs/). Please only use Conda as a last resort i.e. when it's not possible to run the pipeline with Docker, Singularity, Podman, Shifter, Charliecloud, or Apptainer.
-- `xenium_proseg`
-  - A profile with Sopa parameters to run Proseg on Xenium data
-- `xenium_baysor`
-  - A profile with Sopa parameters to run Baysor on Xenium data
-- `xenium_baysor_prior_small_cells`
-  - Same as above, but with a smaller Baysor scale for the cell diameter
-- `xenium_baysor_prior`
-  - A profile with Sopa parameters to run Baysor on Xenium data with the 10X Genomics segmentation as a prior
-- `xenium_cellpose_baysor`
-  - A profile with Sopa parameters to run Cellpose as a prior for Baysor on Xenium data
-- `xenium_cellpose`
-  - A profile with Sopa parameters to run Cellpose on Xenium data
-- `merscope_baysor_cellpose`
-  - A profile with Sopa parameters to run Cellpose as a prior for Baysor on MERSCOPE data
-- `merscope_baysor_vizgen`
-  - A profile with Sopa parameters to run Baysor on MERSCOPE data with the Vizgen segmentation as a prior
-- `merscope_proseg`
-  - A profile with Sopa parameters to run Proseg on MERSCOPE data
-- `merscope_cellpose`
-  - A profile with Sopa parameters to run Cellpose on MERSCOPE data
-- `cosmx_cellpose`
-  - A profile with Sopa parameters to run Cellpose on CosMx data
-- `cosmx_proseg`
-  - A profile with Sopa parameters to run Proseg on CosMx data
-- `cosmx_baysor`
-  - A profile with Sopa parameters to run Baysor on Xenium data
-- `cosmx_cellpose_baysor`
-  - A profile with Sopa parameters to run Cellpose as a prior for Baysor on CosMx data
-- `visium_hd_stardist`
-  - A profile with Sopa parameters to run Stardist on Visium HD data
-- `phenocycler_base_10X`
-  - A profile with Sopa parameters to run Cellpose on Phenocycler data at 10X resolution
-- `phenocycler_base_20X`
-  - A profile with Sopa parameters to run Cellpose on Phenocycler data at 20X resolution
-- `phenocycler_base_40X`
-  - A profile with Sopa parameters to run Cellpose on Phenocycler data at 40X resolution
-- `hyperion_base`
-  - A profile with Sopa parameters to run Cellpose on Hyperion data
-- `macsima_base`
-  - A profile with Sopa parameters to run Cellpose on MACSima data
+- Some Sopa-specific profiles are listed in the above "Sopa parameters" section.
 
 ### `-resume`
 
