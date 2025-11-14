@@ -13,6 +13,8 @@ pipeline_info/*.{html,json,txt,yml}
 **/1
 **/2
 **/3
+**/uns
+**/uns/**
 **/zmetadata
 **/.sopa_cache
 **/.sopa_cache/**

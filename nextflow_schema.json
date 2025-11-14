@@ -39,10 +39,10 @@
             }
         },
         "sopa_config": {
-            "title": "The Sopa config, provided via a `-profile` (see the usage section)",
+            "title": "The Sopa config",
             "type": "object",
             "fa_icon": "fas fa-rocket",
-            "description": "Parameters related to Sopa",
+            "description": "Parameters related to Sopa, provided via a `-profile` (see the [usage](../usage) section).",
             "required": ["read", "segmentation"],
             "properties": {
                 "read": {
