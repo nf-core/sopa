@@ -3,18 +3,18 @@
         "content": [
             {
                 "FLUO_ANNOTATION": {
-                    "sopa": "2.1.9"
+                    "sopa": "2.1.10"
                 },
                 "PATCH_SEGMENTATION_PROSEG": {
-                    "sopa": "2.1.9",
+                    "sopa": "2.1.10",
                     "proseg": "3.0.11"
                 },
                 "SCANPY_PREPROCESS": {
-                    "sopa": "2.1.9",
+                    "sopa": "2.1.10",
                     "scanpy": "1.11.5"
                 },
                 "TO_SPATIALDATA": {
-                    "sopa": "2.1.9",
+                    "sopa": "2.1.10",
                     "spatialdata": "0.5.0",
                     "spatialdata_io": "0.5.1"
                 },
@@ -24,7 +24,7 @@
             },
             [
                 "pipeline_info",
-                "pipeline_info/nf_core_sopa_software_mqc_versions.yml",
+                "pipeline_info/nf_core_sopa_software_versions.yml",
                 "sample_name.explorer",
                 "sample_name.explorer/adata.h5ad",
                 "sample_name.explorer/analysis.zarr.zip",

@@ -4,11 +4,11 @@
             8,
             {
                 "RESOLVE_CELLPOSE": {
-                    "sopa": "2.1.9",
-                    "cellpose": "4.0.7"
+                    "sopa": "2.1.10",
+                    "cellpose": "4.0.8"
                 },
                 "TO_SPATIALDATA": {
-                    "sopa": "2.1.9",
+                    "sopa": "2.1.10",
                     "spatialdata": "0.5.0",
                     "spatialdata_io": "0.5.1"
                 },
@@ -18,7 +18,7 @@
             },
             [
                 "pipeline_info",
-                "pipeline_info/nf_core_sopa_software_mqc_versions.yml",
+                "pipeline_info/nf_core_sopa_software_versions.yml",
                 "sample_name.explorer",
                 "sample_name.explorer/adata.h5ad",
                 "sample_name.explorer/analysis.zarr.zip",

@@ -3,8 +3,8 @@ process RESOLVE_CELLPOSE {
 
     conda "${moduleDir}/environment.yml"
     container "${workflow.containerEngine == 'apptainer' && !task.ext.singularity_pull_docker_container
-        ? 'docker://quentinblampey/sopa:2.1.9-cellpose'
-        : 'docker.io/quentinblampey/sopa:2.1.9-cellpose'}"
+        ? 'docker://quentinblampey/sopa:2.1.10-cellpose'
+        : 'docker.io/quentinblampey/sopa:2.1.10-cellpose'}"
 
     input:
     tuple val(meta), path(sdata_path)

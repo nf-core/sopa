@@ -160,7 +160,7 @@ workflow SOPA {
         .mix(topic_versions_string)
         .collectFile(
             storeDir: "${params.outdir}/pipeline_info",
-            name: 'nf_core_'  +  'sopa_software_'  + 'versions.yml',
+            name: 'nf_core_sopa_software_versions.yml',
             sort: true,
             newLine: true
         ).set { ch_collated_versions }
