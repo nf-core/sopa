@@ -9,8 +9,4 @@ Initial release of nf-core/sopa, created with the [nf-core](https://nf-co.re/) t
 
 ### `Added`
 
-### `Fixed`
-
-### `Dependencies`
-
-### `Deprecated`
+Sopa can be run with all the technologies currently supported - including Visium HD.

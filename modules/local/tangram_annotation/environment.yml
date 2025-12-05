@@ -1,0 +1,9 @@
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - python=3.11
+  - pip=24.3.1
+  - pip:
+      - sopa==2.1.6
+      - tangram-sc==1.0.4

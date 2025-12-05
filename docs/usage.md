@@ -4,61 +4,137 @@
 
 > _Documentation of pipeline parameters is generated automatically from the pipeline schema and can no longer be found in markdown files._
 
-## Introduction
-
-<!-- TODO nf-core: Add documentation about anything specific to running your pipeline. For general topics, please point to (and add to) the main nf-core website. -->
-
 ## Samplesheet input
 
-You will need to create a samplesheet with information about the samples you would like to analyse before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 3 columns, and a header row as shown in the examples below.
+You will need to create a samplesheet with information about the samples you would like to analyse before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 2 columns, and a header row as shown in the examples below.
 
 ```bash
 --input '[path to samplesheet file]'
 ```
 
-### Multiple runs of the same sample
+### Main technologies
 
-The `sample` identifiers have to be the same when you have re-sequenced the same sample more than once e.g. to increase sequencing depth. The pipeline will concatenate the raw reads before performing any downstream analysis. Below is an example for the same sample sequenced across 3 lanes:
+For all technologies supported by Sopa, the samplesheet lists the `data_path` to each sample data directory, and optionally a `sample` column to choose the name of the output directories.
+
+> [!NOTE]
+> For **Visium HD only**, the samplesheet is different, please refer to the next section instead.
+
+The concerned technologies are: `xenium`, `merscope`, `cosmx`, `molecular_cartography`, `macsima`, `phenocycler`, `ome_tif`, and `hyperion`.
+
+| Column      | Description                                                                                                                                                                                                                                                                                           |
+| ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `data_path` | **Path to the raw data**; a directory containing the output of the machine with the data of a single sample or region. Typically, this directory contains one or multiple image(s), and a transcript file (`.csv` or `.parquet`) for transcriptomics technologies. See more details below. _Required_ |
+| `sample`    | **Custom sample ID (optional)**; designates the sample ID; must be unique for each patient. It will be used in the output directories names: `{sample}.zarr` and `{sample}.explorer`. _Optional, Default: the basename of `data_path` (i.e., the last directory component of `data_path`)_            |
+
+Here is a samplesheet example for two samples:
+
+`samplesheet.csv`:
 
 ```csv title="samplesheet.csv"
-sample,fastq_1,fastq_2
-CONTROL_REP1,AEG588A1_S1_L002_R1_001.fastq.gz,AEG588A1_S1_L002_R2_001.fastq.gz
-CONTROL_REP1,AEG588A1_S1_L003_R1_001.fastq.gz,AEG588A1_S1_L003_R2_001.fastq.gz
-CONTROL_REP1,AEG588A1_S1_L004_R1_001.fastq.gz,AEG588A1_S1_L004_R2_001.fastq.gz
+sample,data_path
+SAMPLE1,/path/to/one/merscope_directory
+SAMPLE2,/path/to/another/merscope_directory
 ```
 
-### Full samplesheet
+We also provide a detailed description of what `data_path` should contain, depending on the technologies:
 
-The pipeline will auto-detect whether a sample is single- or paired-end using the information provided in the samplesheet. The samplesheet can have as many columns as you desire, however, there is a strict requirement for the first 3 columns to match those defined in the table below.
+| Technology            | `data_path` directory content                                                                                                                                                                                          |
+| --------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| xenium                | `transcripts.parquet`, `experiment.xenium`, and `morphology_focus.ome.tif` or a morphology directory.                                                                                                                  |
+| merscope              | `detected_transcripts.csv`, all the images under the `images` subdirectory, and `images/micron_to_mosaic_pixel_transform.csv` (affine transformation)                                                                  |
+| cosmx                 | `*_fov_positions_file.csv` or `*_fov_positions_file.csv.gz` (FOV locations),`Morphology2D` (directory with all the FOVs morphology images), and `*_tx_file.csv.gz` or `*_tx_file.csv` (transcripts location and names) |
+| molecular_cartography | Multiple `.tiff` images and `_results.txt` files.                                                                                                                                                                      |
+| macsima               | Multiple `.tif` images                                                                                                                                                                                                 |
+| phenocycler           | For this technology, `data_path` is not a directory, but a `.qptiff` or `.tif` file containing all channels for a given sample.                                                                                        |
+| hyperion              | Multiple `.tif` images                                                                                                                                                                                                 |
+| ome_tif               | Generic reader for which `data_path` is not a directory, but a `.ome.tif` file containing all channels for a given sample.                                                                                             |
 
-A final samplesheet file consisting of both single- and paired-end data may look something like the one below. This is for 6 samples, where `TREATMENT_REP3` has been sequenced twice.
+### Visium HD
+
+Some extra columns need to be provided specifically for Visium HD. This is because we need to run [Space Ranger](https://www.10xgenomics.com/support/software/space-ranger/latest) before running Sopa. Note that the `image` is the full-resolution microscopy image (not the cytassist image) and is **required** by Sopa as we'll run cell segmentation on the H&E full-resolution slide. For more details, see the [`spaceranger-count` arguments](https://nf-co.re/modules/spaceranger_count).
+
+| Column             | Description                                                                                                                                                                                                                                                                            |
+| ------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `sample`           | **Sample ID name**; designates the sample ID; must be unique for each slide. It will be used in the output directories names: `{sample}.zarr` and `{sample}.explorer`. _Required_                                                                                                      |
+| `id`               | Name of the slide to be provided to Space Ranger. The sample can be deduced from the fastq*dir, as the fastq files should have the format `<SAMPLE>\_S<N>\_L001*<XX>_001.fastq.gz`(where N is a number, and XX can be R1, R2, I1 or I2). By default, use the`sample` name. \_Optional_ |
+| `fastq_dir`        | Path to directory where the sample FASTQ files are stored. May be a `.tar.gz` file instead of a directory. _Required_                                                                                                                                                                  |
+| `image`            | Brightfield microscopy image. _Required_                                                                                                                                                                                                                                               |
+| `cytaimage`        | Brightfield tissue image captured with Cytassist device. _Required_                                                                                                                                                                                                                    |
+| `slide`            | The Visium slide ID used for the sequencing. _Required_                                                                                                                                                                                                                                |
+| `area`             | Which slide area contains the tissue sample. _Required_                                                                                                                                                                                                                                |
+| `manual_alignment` | Path to the manual alignment file. _Optional_                                                                                                                                                                                                                                          |
+| `slidefile`        | Slide specification as JSON. Overrides `slide` and `area` if specified. _Optional_                                                                                                                                                                                                     |
+| `colorizedimage`   | A colour composite of one or more fluorescence image channels saved as a single-page, single-file colour TIFF or JPEG. _Optional_                                                                                                                                                      |
+| `darkimage`        | Dark background fluorescence microscopy image. _Optional_                                                                                                                                                                                                                              |
+
+Here is a samplesheet example for one sample:
 
 ```csv title="samplesheet.csv"
-sample,fastq_1,fastq_2
-CONTROL_REP1,AEG588A1_S1_L002_R1_001.fastq.gz,AEG588A1_S1_L002_R2_001.fastq.gz
-CONTROL_REP2,AEG588A2_S2_L002_R1_001.fastq.gz,AEG588A2_S2_L002_R2_001.fastq.gz
-CONTROL_REP3,AEG588A3_S3_L002_R1_001.fastq.gz,AEG588A3_S3_L002_R2_001.fastq.gz
-TREATMENT_REP1,AEG588A4_S4_L003_R1_001.fastq.gz,
-TREATMENT_REP2,AEG588A5_S5_L003_R1_001.fastq.gz,
-TREATMENT_REP3,AEG588A6_S6_L003_R1_001.fastq.gz,
-TREATMENT_REP3,AEG588A6_S6_L004_R1_001.fastq.gz,
+sample,fastq_dir,image,cytaimage,slide,area
+Visium_HD_Human_Lung_Cancer_Fixed_Frozen,Visium_HD_Human_Lung_Cancer_Fixed_Frozen_fastqs,Visium_HD_Human_Lung_Cancer_Fixed_Frozen_tissue_image.btf,Visium_HD_Human_Lung_Cancer_Fixed_Frozen_image.tif,H1-TY834G7,D1
 ```
 
-| Column    | Description                                                                                                                                                                            |
-| --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `sample`  | Custom sample name. This entry will be identical for multiple sequencing libraries/runs from the same sample. Spaces in sample names are automatically converted to underscores (`_`). |
-| `fastq_1` | Full path to FastQ file for Illumina short reads 1. File has to be gzipped and have the extension ".fastq.gz" or ".fq.gz".                                                             |
-| `fastq_2` | Full path to FastQ file for Illumina short reads 2. File has to be gzipped and have the extension ".fastq.gz" or ".fq.gz".                                                             |
+This samplesheet was made for [this public sample](https://www.10xgenomics.com/datasets/visium-hd-cytassist-gene-expression-human-lung-cancer-fixed-frozen) (download all the "Input files" and untar the `fastq` zip file to test it).
 
-An [example samplesheet](../assets/samplesheet.csv) has been provided with the pipeline.
+## Sopa parameters
+
+You'll also need to choose some Sopa parameters to decide which reader/segmentation tool to use. To do that, provide an existing `-profile` containing all the dedicated Sopa parameters, depending on your technology:
+
+- `xenium_proseg`
+  - A profile with Sopa parameters to run Proseg on Xenium data
+- `xenium_baysor`
+  - A profile with Sopa parameters to run Baysor on Xenium data
+- `xenium_baysor_prior_small_cells`
+  - Same as above, but with a smaller Baysor scale for the cell diameter
+- `xenium_baysor_prior`
+  - A profile with Sopa parameters to run Baysor on Xenium data with the 10X Genomics segmentation as a prior
+- `xenium_cellpose_baysor`
+  - A profile with Sopa parameters to run Cellpose as a prior for Baysor on Xenium data
+- `xenium_cellpose`
+  - A profile with Sopa parameters to run Cellpose on Xenium data
+- `merscope_baysor_cellpose`
+  - A profile with Sopa parameters to run Cellpose as a prior for Baysor on MERSCOPE data
+- `merscope_baysor_vizgen`
+  - A profile with Sopa parameters to run Baysor on MERSCOPE data with the Vizgen segmentation as a prior
+- `merscope_proseg`
+  - A profile with Sopa parameters to run Proseg on MERSCOPE data
+- `merscope_cellpose`
+  - A profile with Sopa parameters to run Cellpose on MERSCOPE data
+- `cosmx_cellpose`
+  - A profile with Sopa parameters to run Cellpose on CosMx data
+- `cosmx_proseg`
+  - A profile with Sopa parameters to run Proseg on CosMx data
+- `cosmx_baysor`
+  - A profile with Sopa parameters to run Baysor on Xenium data
+- `cosmx_cellpose_baysor`
+  - A profile with Sopa parameters to run Cellpose as a prior for Baysor on CosMx data
+- `visium_hd_stardist`
+  - A profile with Sopa parameters to run Stardist on Visium HD data
+- `phenocycler_base_10X`
+  - A profile with Sopa parameters to run Cellpose on Phenocycler data at 10X resolution
+- `phenocycler_base_20X`
+  - A profile with Sopa parameters to run Cellpose on Phenocycler data at 20X resolution
+- `phenocycler_base_40X`
+  - A profile with Sopa parameters to run Cellpose on Phenocycler data at 40X resolution
+- `hyperion_base`
+  - A profile with Sopa parameters to run Cellpose on Hyperion data
+- `macsima_base`
+  - A profile with Sopa parameters to run Cellpose on MACSima data
 
 ## Running the pipeline
 
-The typical command for running the pipeline is as follows:
+Once you have defined your samplesheet and `params-file`, you'll be able to run `nf-core/sopa`. The typical command for running the pipeline is as follows:
 
 ```bash
-nextflow run nf-core/sopa --input ./samplesheet.csv --outdir ./results  -profile docker
+nextflow run nf-core/sopa --input ./samplesheet.csv -params-file <PARAMS_FILE> --outdir ./results  -profile docker
 ```
+
+> [!NOTE]
+> For Visium HD data, you may also need to provide a `--spaceranger_probeset` argument with an official 10X Genomics probe set (see [here](https://www.10xgenomics.com/support/software/space-ranger/downloads)). For instance, you can use:
+>
+> ```
+> --spaceranger_probeset https://cf.10xgenomics.com/supp/spatial-exp/probeset/Visium_Human_Transcriptome_Probe_Set_v2.0_GRCh38-2020-A.csv
+> ```
 
 This will launch the pipeline with the `docker` configuration profile. See below for more information about profiles.
 
@@ -155,6 +231,7 @@ If `-profile` is not specified, the pipeline will run locally and expect all sof
   - A generic configuration profile to enable [Wave](https://seqera.io/wave/) containers. Use together with one of the above (requires Nextflow ` 24.03.0-edge` or later).
 - `conda`
   - A generic configuration profile to be used with [Conda](https://conda.io/docs/). Please only use Conda as a last resort i.e. when it's not possible to run the pipeline with Docker, Singularity, Podman, Shifter, Charliecloud, or Apptainer.
+- Some Sopa-specific profiles are listed in the above "Sopa parameters" section.
 
 ### `-resume`
 
