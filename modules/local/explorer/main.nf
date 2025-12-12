@@ -10,6 +10,7 @@ process EXPLORER {
 
     input:
     tuple val(meta), path(sdata_path)
+    val cli_arguments
 
     output:
     path "${meta.explorer_dir}/experiment.xenium"
@@ -20,6 +21,6 @@ process EXPLORER {
 
     script:
     """
-    sopa explorer write ${sdata_path} --output-path ${meta.explorer_dir} --mode "-it"
+    sopa explorer write ${sdata_path} --output-path ${meta.explorer_dir} ${cli_arguments} --mode "-it"
     """
 }

@@ -220,10 +220,6 @@
                 "visium_hd_imread_page": {
                     "type": "number",
                     "description": "Optional page for the imageio reader"
-                },
-                "toy_dataset_genes": {
-                    "type": "number",
-                    "description": "Used on toy dataset for testing purpose"
                 }
             },
             "required": ["technology"]

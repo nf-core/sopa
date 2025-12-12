@@ -41,6 +41,18 @@ def extractSubArgs(Map args, String group) {
             infer_presets: args.infer_presets,
             prior_shapes_key: args.visium_hd_prior_shapes_key,
         ]
+    } else if (group == "cellpose") {
+        return [ // TODO
+        ]
+    } else if (group == "baysor") {
+        return [ // TODO
+        ]
+    } else if (group == "comseg") {
+        return [ // TODO
+        ]
+    } else if (group == "stardist") {
+        return [ // TODO
+        ]
     } else if (group == "aggregate") {
         return [
             aggregate_genes: args.aggregate_genes,
@@ -78,7 +90,7 @@ def extractSubArgs(Map args, String group) {
             resolution: args.resolution,
             hvg: args.hvg,
         ]
-    } else if (group == "explorer_raw") {
+    } else if (group == "explorer") {
         return [
             pixel_size: args.pixel_size,
             ram_threshold_gb: args.ram_threshold_gb,
@@ -89,7 +101,7 @@ def extractSubArgs(Map args, String group) {
     }
 }
 
-def argsCLI(Map args = null, String group = null) {
+def argsCLI(String group = null, Map args = null) {
     args = args ?: params
 
     if (group != null) {
@@ -121,15 +133,15 @@ def argsToSpatialData(Map meta, String fullres_image_file) {
         args.kwargs["fullres_image_file"] = fullres_image_file
     }
 
-    return argsCLI(args)
+    return argsCLI(null, args)
 }
 
 def argsExplorerRaw(String raw_data_path) {
-    def args = extractSubArgs(params, "explorer_raw")
+    def args = extractSubArgs(params, "explorer")
 
     if (params.technology == "xenium") {
         args["raw_data_path"] = raw_data_path
     }
 
-    return argsCLI(args)
+    return argsCLI(null, args)
 }
