@@ -271,46 +271,20 @@ def methodsDescriptionText(mqc_methods_yaml) {
 }
 
 def validateParams(params) {
-    // def TRANSCRIPT_BASED_METHODS = ['proseg', 'baysor', 'comseg']
-    // def STAINING_BASED_METHODS = ['stardist', 'cellpose']
+    def TRANSCRIPT_BASED_METHODS = ['use_proseg', 'use_baysor', 'use_comseg']
+    def STAINING_BASED_METHODS = ['use_stardist', 'use_cellpose']
 
-    // // top-level checks
-    // assert params.read instanceof Map && params.read.containsKey('technology') : "Provide a 'read.technology' key"
-    // assert params.containsKey('segmentation') : "Provide a 'segmentation' section"
+    // check segmentation methods
+    assert TRANSCRIPT_BASED_METHODS.count { params[it] } <= 1 : "Only one of ${TRANSCRIPT_BASED_METHODS} may be used"
+    assert STAINING_BASED_METHODS.count { params[it] } <= 1 : "Only one of ${STAINING_BASED_METHODS} may be used"
+    if (params.use_stardist) {
+        assert TRANSCRIPT_BASED_METHODS.every { !params[it] } : "'stardist' cannot be combined with transcript-based methods"
+    }
 
-    // // backward compatibility
-    // TRANSCRIPT_BASED_METHODS.each { m ->
-    //     if (params.segmentation?.get(m)?.containsKey('cell_key')) {
-    //         println("Deprecated 'cell_key' → using 'prior_shapes_key' instead.")
-    //         params.segmentation[m].prior_shapes_key = params.segmentation[m].cell_key
-    //         params.segmentation[m].remove('cell_key')
-    //     }
-    // }
-    // if (params.aggregate?.containsKey('average_intensities')) {
-    //     println("Deprecated 'average_intensities' → using 'aggregate_channels' instead.")
-    //     params.aggregate.aggregate_channels = params.aggregate.average_intensities
-    //     params.aggregate.remove('average_intensities')
-    // }
-
-    // // check segmentation methods
-    // assert params.segmentation : "Provide at least one segmentation method"
-    // assert TRANSCRIPT_BASED_METHODS.count { params.segmentation.containsKey(it) } <= 1 : "Only one of ${TRANSCRIPT_BASED_METHODS} may be used"
-    // assert STAINING_BASED_METHODS.count { params.segmentation.containsKey(it) } <= 1 : "Only one of ${STAINING_BASED_METHODS} may be used"
-    // if (params.segmentation.containsKey('stardist')) {
-    //     assert TRANSCRIPT_BASED_METHODS.every { !params.segmentation.containsKey(it) } : "'stardist' cannot be combined with transcript-based methods"
-    // }
-
-    // // check prior shapes key
-    // TRANSCRIPT_BASED_METHODS.each { m ->
-    //     if (params.segmentation.containsKey(m) && params.segmentation.containsKey('cellpose')) {
-    //         params.segmentation[m].prior_shapes_key = 'cellpose_boundaries'
-    //     }
-    // }
-
-    // // check annotation method
-    // if (params.annotation && params.annotation.method == "tangram") {
-    //     assert params.annotation.args.containsKey('sc_reference_path') : "Provide 'annotation.args.sc_reference_path' for the tangram annotation method"
-    // }
+    // check prior shapes key
+    if (params.use_cellpose) {
+        params.prior_shapes_key = "cellpose_boundaries"
+    }
 
     return params
 }

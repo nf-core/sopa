@@ -1,4 +1,4 @@
-include { ArgsToSpatialData } from '../utils'
+include { argsToSpatialData } from '../utils'
 
 process TO_SPATIALDATA {
     label "process_high"
@@ -17,7 +17,7 @@ process TO_SPATIALDATA {
 
     script:
     """
-    sopa convert ${data_dir} --sdata-path ${meta.sdata_dir} ${ArgsToSpatialData(params, meta, fullres_image_file.toString())}
+    sopa convert ${data_dir} --sdata-path ${meta.sdata_dir} ${argsToSpatialData(meta, fullres_image_file.toString())}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

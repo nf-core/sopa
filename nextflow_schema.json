@@ -203,10 +203,27 @@
             "properties": {
                 "technology": {
                     "type": "string",
-                    "description": "Technology used for the spatial data, e.g., 'xenium', 'merscope', ..."
+                    "description": "Technology used for the spatial data, e.g., 'xenium', 'merscope', ...",
+                    "enum": [
+                        "xenium",
+                        "merscope",
+                        "cosmx",
+                        "visium_hd",
+                        "molecular_cartography",
+                        "macsima",
+                        "phenocycler",
+                        "hyperion",
+                        "ome_tif",
+                        "toy_dataset"
+                    ]
                 },
-                "convert_kwargs": {
-                    "type": "string"
+                "visium_hd_imread_page": {
+                    "type": "number",
+                    "description": "Optional page for the imageio reader"
+                },
+                "toy_dataset_genes": {
+                    "type": "number",
+                    "description": "Used on toy dataset for testing purpose"
                 }
             },
             "required": ["technology"]
@@ -231,6 +248,31 @@
                 },
                 "prior_shapes_key": {
                     "type": "string"
+                },
+                "unassigned_value": {
+                    "type": "string"
+                }
+            }
+        },
+        "tissue_segmentation": {
+            "title": "Tissue segmentation",
+            "type": "object",
+            "description": "Parameters related to tissue segmentation",
+            "default": "",
+            "properties": {
+                "use_tissue_segmentation": {
+                    "type": "boolean",
+                    "description": "Whether to run tissue segmentation",
+                    "default": false
+                },
+                "level": {
+                    "type": "number",
+                    "description": "Level of the image pyramid to use for tissue segmentation"
+                },
+                "mode": {
+                    "type": "string",
+                    "description": "Mode for the tissue segmentation: 'staining' or 'saturation' (for H&E images).",
+                    "enum": ["staining", "saturation"]
                 }
             }
         },
@@ -270,7 +312,8 @@
             "properties": {
                 "use_scanpy_preprocessing": {
                     "type": "boolean",
-                    "description": "Whether to run scanpy preprocessing"
+                    "description": "Whether to run scanpy preprocessing",
+                    "default": false
                 },
                 "resolution": {
                     "type": "number",
@@ -318,7 +361,33 @@
             "properties": {
                 "use_proseg": {
                     "type": "boolean",
-                    "description": "Whether to run proseg segmentation"
+                    "description": "Whether to run proseg segmentation",
+                    "default": false
+                },
+                "command_line_suffix": {
+                    "type": "string",
+                    "description": "String suffix to add to the proseg command line. This can be used to add extra parameters to the proseg command line."
+                },
+                "infer_presets": {
+                    "type": "boolean",
+                    "description": "Whether to infer the proseg presets based on the columns of the transcripts dataframe."
+                },
+                "visium_hd_prior_shapes_key": {
+                    "type": "string",
+                    "description": "**Only for Visium HD data.** Key of `sdata` containing the prior cell boundaries. If `'auto'`, use the latest performed segmentation (e.g., stardist or the 10X Genomics segmentation)."
+                }
+            }
+        },
+        "comseg": {
+            "title": "Comseg",
+            "type": "object",
+            "description": "",
+            "default": "",
+            "properties": {
+                "use_comseg": {
+                    "type": "boolean",
+                    "description": "Whether to run comseg segmentation",
+                    "default": false
                 }
             }
         },
@@ -330,7 +399,8 @@
             "properties": {
                 "use_tangram": {
                     "type": "boolean",
-                    "description": "Whether to run tangram cell-type annotation"
+                    "description": "Whether to run tangram cell-type annotation",
+                    "default": false
                 },
                 "sc_reference_path": {
                     "type": "string",
@@ -377,6 +447,12 @@
         },
         {
             "$ref": "#/$defs/proseg"
+        },
+        {
+            "$ref": "#/$defs/tissue_segmentation"
+        },
+        {
+            "$ref": "#/$defs/comseg"
         },
         {
             "$ref": "#/$defs/tangram"

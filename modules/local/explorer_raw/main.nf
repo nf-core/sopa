@@ -1,4 +1,4 @@
-include { ArgsExplorerRaw } from '../utils'
+include { argsExplorerRaw } from '../utils'
 
 process EXPLORER_RAW {
     label "process_high"
@@ -19,6 +19,6 @@ process EXPLORER_RAW {
 
     script:
     """
-    sopa explorer write ${sdata_path} --output-path ${meta.explorer_dir} ${ArgsExplorerRaw(params, data_dir.toString())} --mode "+it" --no-save-h5ad
+    sopa explorer write ${sdata_path} --output-path ${meta.explorer_dir} ${argsExplorerRaw(data_dir.toString())} --mode "+it" --no-save-h5ad
     """
 }
