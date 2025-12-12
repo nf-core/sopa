@@ -249,12 +249,12 @@
                     "default": true
                 },
                 "min_transcripts": {
-                    "type": "string",
-                    "default": "0"
+                    "type": "number",
+                    "default": 0
                 },
                 "min_intensity_ratio": {
-                    "type": "string",
-                    "default": "0"
+                    "type": "number",
+                    "default": 0
                 },
                 "expand_radius_ratio": {
                     "type": "string",

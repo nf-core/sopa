@@ -39,51 +39,45 @@ def ArgsCLI(Map params, String contains = null, List keys = null) {
 
     return params
         .findAll { key, _value ->
-            (contains == null || key.contains(contains)) && (keys == null || key in keys)
+            (contains == null || key.contains(contains)) && (keys == null || key in keys) && (_value != null)
         }
         .collect { key, value -> stringifyItem(key, value) }
         .join(" ")
 }
 
 def ArgsToSpatialData(Map params, Map meta, String fullres_image_file) {
-    def args = deepCopyCollection(params.read)
+    def args = [
+        technology: params.technology,
+        kwargs: params.convert_kwargs,
+    ]
 
-    if (args.technology == "visium_hd") {
-        if (!args.kwargs) {
-            args.kwargs = ["dataset_id": meta.id]
-        }
-        else {
-            args.kwargs["dataset_id"] = meta.id
-        }
+    // if (args.technology == "visium_hd") {
+    //     if (!args.kwargs) {
+    //         args.kwargs = ["dataset_id": meta.id]
+    //     }
+    //     else {
+    //         args.kwargs["dataset_id"] = meta.id
+    //     }
 
-        args.kwargs["fullres_image_file"] = fullres_image_file
-    }
+    //     args.kwargs["fullres_image_file"] = fullres_image_file
+    // }
 
     return ArgsCLI(args)
 }
 
 def ArgsExplorerRaw(Map params, String raw_data_path) {
-    def args = deepCopyCollection(params.explorer ?: [:])
+    def args = [
+        pixel_size: params.pixel_size,
+        ram_threshold_gb: params.ram_threshold_gb,
+        lazy: params.get('lazy', null),
+    ]
 
-    if (params.read.technology == "xenium") {
+    if (params.technology == "xenium") {
         args["raw_data_path"] = raw_data_path
     }
 
-    return ArgsCLI(args)
-}
+    println(args)
+    println(ArgsCLI(args))
 
-def deepCopyCollection(object) {
-    if (object instanceof Map) {
-        object.collectEntries { key, value ->
-            [key, deepCopyCollection(value)]
-        }
-    }
-    else if (object instanceof List) {
-        object.collect { item ->
-            deepCopyCollection(item)
-        }
-    }
-    else {
-        object
-    }
+    return ArgsCLI(args)
 }

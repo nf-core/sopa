@@ -43,7 +43,7 @@ workflow SOPA {
 
     ch_versions = Channel.empty()
 
-    if (params.read.technology == "visium_hd") {
+    if (params.technology == "visium_hd") {
         (ch_input_spatialdata, versions) = SPACERANGER(ch_samplesheet)
         ch_input_spatialdata = ch_input_spatialdata.map { meta, out -> [meta, out[0].toString().replaceFirst(/(.*?outs).*/, '$1'), meta.image] }
 
@@ -56,85 +56,85 @@ workflow SOPA {
     (ch_spatialdata, versions) = TO_SPATIALDATA(ch_input_spatialdata)
     ch_versions = ch_versions.mix(versions)
 
-    ch_explorer_raw = ch_spatialdata.map { meta, sdata_path -> [meta, sdata_path, params.read.technology == "xenium" ? meta.data_dir : []] }
+    ch_explorer_raw = ch_spatialdata.map { meta, sdata_path -> [meta, sdata_path, params.technology == "xenium" ? meta.data_dir : []] }
     EXPLORER_RAW(ch_explorer_raw)
 
-    if (params.segmentation.tissue) {
-        (ch_tissue_seg, _out) = TISSUE_SEGMENTATION(ch_spatialdata, ArgsCLI(params.segmentation.tissue))
-    }
-    else {
-        ch_tissue_seg = ch_spatialdata
-    }
+    // if (params.segmentation.tissue) {
+    //     (ch_tissue_seg, _out) = TISSUE_SEGMENTATION(ch_spatialdata, ArgsCLI(params.segmentation.tissue))
+    // }
+    // else {
+    //     ch_tissue_seg = ch_spatialdata
+    // }
 
-    if (params.segmentation.cellpose) {
-        (ch_image_patches, _out) = MAKE_IMAGE_PATCHES(ch_tissue_seg, ArgsCLI(params.patchify, "pixel"))
-        (ch_resolved, versions) = CELLPOSE(ch_image_patches, params)
+    // if (params.segmentation.cellpose) {
+    //     (ch_image_patches, _out) = MAKE_IMAGE_PATCHES(ch_tissue_seg, ArgsCLI(params.patchify, "pixel"))
+    //     (ch_resolved, versions) = CELLPOSE(ch_image_patches, params)
 
-        ch_versions = ch_versions.mix(versions)
-    }
+    //     ch_versions = ch_versions.mix(versions)
+    // }
 
-    if (params.segmentation.stardist) {
-        (ch_image_patches, _out) = MAKE_IMAGE_PATCHES(ch_tissue_seg, ArgsCLI(params.patchify, "pixel"))
-        (ch_resolved, versions) = STARDIST(ch_image_patches, params)
+    // if (params.segmentation.stardist) {
+    //     (ch_image_patches, _out) = MAKE_IMAGE_PATCHES(ch_tissue_seg, ArgsCLI(params.patchify, "pixel"))
+    //     (ch_resolved, versions) = STARDIST(ch_image_patches, params)
 
-        ch_versions = ch_versions.mix(versions)
-    }
+    //     ch_versions = ch_versions.mix(versions)
+    // }
 
-    if (params.segmentation.baysor) {
-        ch_input_baysor = params.segmentation.cellpose ? ch_resolved : ch_tissue_seg
+    // if (params.segmentation.baysor) {
+    //     ch_input_baysor = params.segmentation.cellpose ? ch_resolved : ch_tissue_seg
 
-        ch_transcripts_patches = MAKE_TRANSCRIPT_PATCHES(ch_input_baysor, transcriptPatchesArgs(params, "baysor"))
-        (ch_resolved, versions) = BAYSOR(ch_transcripts_patches, params)
+    //     ch_transcripts_patches = MAKE_TRANSCRIPT_PATCHES(ch_input_baysor, transcriptPatchesArgs(params, "baysor"))
+    //     (ch_resolved, versions) = BAYSOR(ch_transcripts_patches, params)
 
-        ch_versions = ch_versions.mix(versions)
-    }
+    //     ch_versions = ch_versions.mix(versions)
+    // }
 
-    if (params.segmentation.comseg) {
-        ch_input_comseg = params.segmentation.cellpose ? ch_resolved : ch_tissue_seg
+    // if (params.segmentation.comseg) {
+    //     ch_input_comseg = params.segmentation.cellpose ? ch_resolved : ch_tissue_seg
 
-        ch_transcripts_patches = MAKE_TRANSCRIPT_PATCHES(ch_input_comseg, transcriptPatchesArgs(params, "comseg"))
-        (ch_resolved, versions) = COMSEG(ch_transcripts_patches, params)
+    //     ch_transcripts_patches = MAKE_TRANSCRIPT_PATCHES(ch_input_comseg, transcriptPatchesArgs(params, "comseg"))
+    //     (ch_resolved, versions) = COMSEG(ch_transcripts_patches, params)
 
-        ch_versions = ch_versions.mix(versions)
-    }
+    //     ch_versions = ch_versions.mix(versions)
+    // }
 
-    if (params.segmentation.proseg) {
-        ch_input_proseg = params.segmentation.cellpose ? ch_resolved : ch_tissue_seg
+    // if (params.use_proseg) {
+    //     ch_input_proseg = params.segmentation.cellpose ? ch_resolved : ch_tissue_seg
 
-        ch_proseg_patches = MAKE_TRANSCRIPT_PATCHES(ch_input_proseg, transcriptPatchesArgs(params, "proseg"))
-        (ch_resolved, versions) = PROSEG(ch_proseg_patches, params)
+    //     ch_proseg_patches = MAKE_TRANSCRIPT_PATCHES(ch_input_proseg, transcriptPatchesArgs(params, "proseg"))
+    //     (ch_resolved, versions) = PROSEG(ch_proseg_patches, params)
 
-        ch_versions = ch_versions.mix(versions)
-    }
+    //     ch_versions = ch_versions.mix(versions)
+    // }
 
-    (ch_aggregated, _out) = AGGREGATE(ch_resolved, ArgsCLI(params.aggregate))
+    // (ch_aggregated, _out) = AGGREGATE(ch_resolved, ArgsCLI(params.aggregate))
 
-    if (params.annotation && params.annotation.method == "tangram") {
-        sc_reference = file(params.annotation.args.sc_reference_path)
-        params.annotation.args.remove('sc_reference_path')
+    // if (params.annotation && params.annotation.method == "tangram") {
+    //     sc_reference = file(params.annotation.args.sc_reference_path)
+    //     params.annotation.args.remove('sc_reference_path')
 
-        (ch_annotated, _out, versions) = TANGRAM_ANNOTATION(ch_aggregated, sc_reference, ArgsCLI(params.annotation.args))
-        ch_versions = ch_versions.mix(versions)
-    }
-    else if (params.annotation && params.annotation.method == "fluorescence") {
-        (ch_annotated, _out, versions) = FLUO_ANNOTATION(ch_aggregated, ArgsCLI(params.annotation.args))
-        ch_versions = ch_versions.mix(versions)
-    }
-    else {
-        ch_annotated = ch_aggregated
-    }
+    //     (ch_annotated, _out, versions) = TANGRAM_ANNOTATION(ch_aggregated, sc_reference, ArgsCLI(params.annotation.args))
+    //     ch_versions = ch_versions.mix(versions)
+    // }
+    // else if (params.annotation && params.annotation.method == "fluorescence") {
+    //     (ch_annotated, _out, versions) = FLUO_ANNOTATION(ch_aggregated, ArgsCLI(params.annotation.args))
+    //     ch_versions = ch_versions.mix(versions)
+    // }
+    // else {
+    //     ch_annotated = ch_aggregated
+    // }
 
-    if (params.scanpy_preprocess) {
-        (ch_preprocessed, _out, versions) = SCANPY_PREPROCESS(ch_annotated, ArgsCLI(params.scanpy_preprocess))
-        ch_versions = ch_versions.mix(versions)
-    }
-    else {
-        ch_preprocessed = ch_annotated
-    }
+    // if (params.scanpy_preprocess) {
+    //     (ch_preprocessed, _out, versions) = SCANPY_PREPROCESS(ch_annotated, ArgsCLI(params.scanpy_preprocess))
+    //     ch_versions = ch_versions.mix(versions)
+    // }
+    // else {
+    //     ch_preprocessed = ch_annotated
+    // }
 
-    EXPLORER(ch_preprocessed, ArgsCLI(params.explorer))
+    // EXPLORER(ch_preprocessed, ArgsCLI(params.explorer))
 
-    REPORT(ch_preprocessed)
+    // REPORT(ch_preprocessed)
 
     //
     // Collate and save software versions
