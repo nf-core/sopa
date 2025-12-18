@@ -174,7 +174,7 @@ def getPriorShapesKey() {
 
 def getChannels(String channels, Boolean allow_null = false) {
     if (channels instanceof String) {
-        return channels.split(/[ ,|]+/)
+        return channels.split(/[ ,|]+/).findAll { it }
     } else {
         if (allow_null && channels == null) {
             return null
