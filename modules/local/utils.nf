@@ -117,6 +117,7 @@ def extractSubArgs(Map args, String group) {
         return [
             level: args.level,
             mode: args.mode,
+            kwargs: args.tissue_segmentation_kwargs,
         ]
     } else if (group == "resolve") {
         return [
@@ -137,14 +138,14 @@ def extractSubArgs(Map args, String group) {
     } else if (group == "tangram") {
         return [
             sc_reference_path: args.sc_reference_path,
-            cell_type_key: args.cell_type_key,
+            cell_type_key: args.tangram_cell_type_key,
             reference_preprocessing: args.reference_preprocessing,
             bag_size: args.bag_size,
             max_obs_reference: args.max_obs_reference,
         ]
     } else if (group == "fluorescence_annotation") {
         return [
-            cell_type_key: args.cell_type_key,
+            cell_type_key: args.fluorescence_cell_type_key,
             marker_cell_dict: args.marker_cell_dict,
         ]
     } else if (group == "scanpy_preprocessing") {

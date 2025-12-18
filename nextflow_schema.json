@@ -269,6 +269,10 @@
                     "type": "string",
                     "description": "Mode for the tissue segmentation: 'staining' or 'saturation' (for H&E images).",
                     "enum": ["staining", "saturation"]
+                },
+                "tissue_segmentation_kwargs": {
+                    "type": "string",
+                    "description": "Additional tissue segmentation parameters as a python dict string"
                 }
             }
         },
@@ -281,15 +285,15 @@
                 "min_area": {
                     "type": "number",
                     "description": "Cells with an area less than this value will be filtered. The unit is in microns^2 for Baysor/Comseg, and in pixels^2 for Stardist/Cellpose. Not used for Proseg.",
-                    "default": 0
+                    "default": 0.0
                 },
                 "min_transcripts": {
                     "type": "number",
-                    "default": 0
+                    "default": 0.0
                 },
                 "min_intensity_ratio": {
                     "type": "number",
-                    "default": 0
+                    "default": 0.0
                 }
             }
         },
@@ -300,12 +304,10 @@
             "default": "",
             "properties": {
                 "aggregate_genes": {
-                    "type": "boolean",
-                    "default": true
+                    "type": "boolean"
                 },
                 "aggregate_channels": {
-                    "type": "boolean",
-                    "default": true
+                    "type": "boolean"
                 },
                 "expand_radius_ratio": {
                     "type": "string",
@@ -327,7 +329,7 @@
                 "resolution": {
                     "type": "number",
                     "description": "Resolution parameter for the leiden clustering",
-                    "default": 1
+                    "default": 1.0
                 },
                 "check_counts": {
                     "type": "boolean",
@@ -358,7 +360,7 @@
                 "ram_threshold_gb": {
                     "type": "number",
                     "description": "Threshold (in gygabytes) from which image can be loaded in memory.",
-                    "default": 4
+                    "default": 4.0
                 }
             }
         },
@@ -401,12 +403,12 @@
                 "mean_cell_diameter": {
                     "type": "number",
                     "description": "Comseg `mean_cell_diameter` parameter",
-                    "default": 30
+                    "default": 30.0
                 },
                 "max_cell_radius": {
                     "type": "number",
                     "description": "Comseg `max_cell_radius` parameter",
-                    "default": 15
+                    "default": 15.0
                 },
                 "alpha": {
                     "type": "number",
@@ -416,7 +418,7 @@
                 "min_rna_per_cell": {
                     "type": "number",
                     "description": "Comseg `min_rna_per_cell` parameter",
-                    "default": 10
+                    "default": 10.0
                 },
                 "allow_disconnected_polygon": {
                     "type": "boolean",
@@ -444,37 +446,37 @@
                 "baysor_scale": {
                     "type": "number",
                     "description": "Baysor `scale` parameter",
-                    "default": 20
+                    "default": 20.0
                 },
                 "baysor_scale_std": {
                     "type": "number",
                     "description": "Baysor `scale_std` parameter",
-                    "default": 4
+                    "default": 4.0
                 },
                 "prior_segmentation_confidence": {
                     "type": "number",
                     "description": "Baysor `prior_segmentation_confidence` parameter",
-                    "default": 0
+                    "default": 0.0
                 },
                 "min_molecules_per_cell": {
                     "type": "number",
                     "description": "Baysor `min_molecules_per_cell` parameter",
-                    "default": 20
+                    "default": 20.0
                 },
                 "min_molecules_per_gene": {
                     "type": "number",
                     "description": "Baysor `min_molecules_per_gene` parameter",
-                    "default": 5
+                    "default": 5.0
                 },
                 "min_molecules_per_segment": {
                     "type": "number",
                     "description": "Baysor `min_molecules_per_segment` parameter",
-                    "default": 0
+                    "default": 0.0
                 },
                 "confidence_nn_id": {
                     "type": "number",
                     "description": "Baysor `confidence_nn_id` parameter",
-                    "default": 10
+                    "default": 10.0
                 },
                 "force_2d": {
                     "type": "boolean",
@@ -540,13 +542,13 @@
                     "type": "string",
                     "description": "Name of stardist model to use"
                 },
-                "prob_thres": {
+                "prob_thresh": {
                     "type": "number",
-                    "description": "Stardist `prob_thres` parameter"
+                    "description": "Stardist `prob_thresh` parameter"
                 },
-                "nms_thres": {
+                "nms_thresh": {
                     "type": "number",
-                    "description": "Stardist `nms_thres` parameter"
+                    "description": "Stardist `nms_thresh` parameter"
                 },
                 "stardist_channels": {
                     "type": "string",
@@ -593,7 +595,7 @@
                     "type": "string",
                     "description": "Path to the scRNAseq annotated reference, as a `.h5ad` file"
                 },
-                "cell_type_key": {
+                "tangram_cell_type_key": {
                     "type": "string",
                     "description": "Key of `adata_ref.obs` containing the cell-types"
                 },
@@ -622,7 +624,7 @@
                     "description": "Whether to run cell-type annotation based on a marker-to-cell dictionary",
                     "default": false
                 },
-                "cell_type_key": {
+                "fluorescence_cell_type_key": {
                     "type": "string",
                     "description": "Key of `sdata.obs` containing the cell-types"
                 },
