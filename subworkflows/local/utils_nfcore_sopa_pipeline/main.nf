@@ -277,17 +277,13 @@ def validateParams(params) {
 
     def TRANSCRIPT_BASED_METHODS = ['use_proseg', 'use_baysor', 'use_comseg']
     def STAINING_BASED_METHODS = ['use_stardist', 'use_cellpose']
+    def NON_VALID_STARDIST_METHODS = ['use_baysor', 'use_comseg']
 
     // check segmentation methods
     assert TRANSCRIPT_BASED_METHODS.count { params[it] } <= 1 : "Only one of ${TRANSCRIPT_BASED_METHODS} may be used"
     assert STAINING_BASED_METHODS.count { params[it] } <= 1 : "Only one of ${STAINING_BASED_METHODS} may be used"
     if (params.use_stardist) {
-        assert TRANSCRIPT_BASED_METHODS.every { !params[it] } : "'stardist' cannot be combined with transcript-based methods"
-    }
-
-    // check prior shapes key
-    if (params.use_cellpose) {
-        params.prior_shapes_key = "cellpose_boundaries"
+        assert NON_VALID_STARDIST_METHODS.every { !params[it] } : "'stardist' cannot be combined with transcript-based methods, except proseg."
     }
 
     return params

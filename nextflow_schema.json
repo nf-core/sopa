@@ -223,38 +223,46 @@
                     "description": "Optional page for the imageio reader"
                 }
             },
-            "required": ["technology"]
+            "required": ["technology"],
+            "fa_icon": "fas fa-arrows-alt-h"
         },
         "patches": {
             "title": "Patches",
             "type": "object",
-            "description": "",
+            "description": "Creation of the image and transcript patches before segmentation",
             "default": "",
             "properties": {
                 "patch_width_pixel": {
-                    "type": "number"
+                    "type": "number",
+                    "description": "Width (and height) of each patch in pixels"
                 },
                 "patch_overlap_pixel": {
-                    "type": "number"
+                    "type": "number",
+                    "description": "Number of overlapping pixels between the patches. We advise to choose approximately twice the diameter of a cell"
                 },
                 "patch_width_microns": {
-                    "type": "number"
+                    "type": "number",
+                    "description": "Width (and height) of each patch in microns"
                 },
                 "patch_overlap_microns": {
-                    "type": "number"
+                    "type": "number",
+                    "description": "Number of overlapping microns between the patches. We advise to choose approximately twice the diameter of a cell"
                 },
                 "prior_shapes_key": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Optional name of the boundaries element to use as a segmentation prior. Either a column name for the transcript dataframe, or a key of `sdata` containing the shapes names."
                 },
                 "unassigned_value": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "If `prior_shapes_key` is provided, this is the value given to transcripts that are not inside any cell (if it's already 0, don't provide this argument)"
                 }
-            }
+            },
+            "fa_icon": "far fa-square"
         },
         "tissue_segmentation": {
             "title": "Tissue segmentation",
             "type": "object",
-            "description": "Parameters related to tissue segmentation",
+            "description": "Parameters related to the tissue segmentation",
             "default": "",
             "properties": {
                 "use_tissue_segmentation": {
@@ -275,12 +283,12 @@
                     "description": "Additional tissue segmentation parameters as a python dict string"
                 }
             },
-            "required": ["use_tissue_segmentation"]
+            "fa_icon": "fab fa-bitbucket"
         },
         "filtering": {
             "title": "Cell filtering",
             "type": "object",
-            "description": "",
+            "description": "Filtering low-quality cells during and after segmentation",
             "default": "",
             "properties": {
                 "min_area": {
@@ -289,30 +297,36 @@
                     "default": 0.0
                 },
                 "min_transcripts": {
-                    "type": "number"
+                    "type": "number",
+                    "description": "Cells with less transcripts than this value will be filtered."
                 },
                 "min_intensity_ratio": {
-                    "type": "number"
+                    "type": "number",
+                    "description": "Cells whose mean channel intensity is less than `min_intensity_ratio * quantile_90` will be filtered."
                 }
-            }
+            },
+            "fa_icon": "fas fa-filter"
         },
         "aggregation": {
             "title": "Aggregation",
             "type": "object",
-            "description": "",
+            "description": "Aggregation of genes and channels inside each cell",
             "default": "",
             "properties": {
                 "aggregate_genes": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "Whether to aggregate the genes (counts) inside each cell"
                 },
                 "aggregate_channels": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "Whether to aggregate the channels (intensity) inside each cell"
                 },
                 "expand_radius_ratio": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Cells polygons will be expanded by `expand_radius_ratio * mean_radius` for channels averaging **only**. This help better aggregate boundary stainings"
                 }
             },
-            "required": ["aggregate_genes", "aggregate_channels"]
+            "fa_icon": "fas fa-calculator"
         },
         "scanpy_preprocessing": {
             "title": "Scanpy preprocessing",
@@ -337,12 +351,12 @@
                     "description": "Whether to compute highly variable genes before computing the UMAP and clustering"
                 }
             },
-            "required": ["use_scanpy_preprocessing"]
+            "fa_icon": "fas fa-tools"
         },
         "explorer": {
             "title": "Explorer",
             "type": "object",
-            "description": "",
+            "description": "Parameters related to the Xenium Explorer visualization tool",
             "default": "",
             "properties": {
                 "pixel_size": {
@@ -361,12 +375,33 @@
                     "default": 4.0
                 }
             },
-            "required": ["pixel_size"]
+            "fa_icon": "fas fa-tools"
+        },
+        "image_preprocessing": {
+            "title": "Image preprocessing",
+            "type": "object",
+            "description": "Image preprocessing applied before channel-based segmentation methods (cellpose, stardist)",
+            "default": "",
+            "properties": {
+                "gaussian_sigma": {
+                    "type": "number",
+                    "description": "Parameter for scipy gaussian_filter (applied before running the segmentation method)"
+                },
+                "clip_limit": {
+                    "type": "number",
+                    "description": "Parameter for skimage.exposure.equalize_adapthist (applied before running the segmentation method)"
+                },
+                "clahe_kernel_size": {
+                    "type": "number",
+                    "description": "Parameter for skimage.exposure.equalize_adapthist (applied before running the segmentation method)"
+                }
+            },
+            "fa_icon": "fas fa-file-image"
         },
         "proseg": {
             "title": "Proseg",
             "type": "object",
-            "description": "",
+            "description": "Parameters related to the proseg segmentation method",
             "default": "",
             "properties": {
                 "use_proseg": {
@@ -386,12 +421,12 @@
                     "description": "**Only for Visium HD data.** Key of `sdata` containing the prior cell boundaries. If `'auto'`, use the latest performed segmentation (e.g., stardist or the 10X Genomics segmentation)."
                 }
             },
-            "required": ["use_proseg"]
+            "fa_icon": "fas fa-tools"
         },
         "comseg": {
             "title": "Comseg",
             "type": "object",
-            "description": "",
+            "description": "Parameters related to the comseg segmentation method",
             "default": "",
             "properties": {
                 "use_comseg": {
@@ -400,19 +435,23 @@
                 },
                 "mean_cell_diameter": {
                     "type": "number",
-                    "description": "Comseg `mean_cell_diameter` parameter"
+                    "description": "Comseg `mean_cell_diameter` parameter",
+                    "default": 10.0
                 },
                 "max_cell_radius": {
                     "type": "number",
-                    "description": "Comseg `max_cell_radius` parameter"
+                    "description": "Comseg `max_cell_radius` parameter",
+                    "default": 15.0
                 },
                 "alpha": {
                     "type": "number",
-                    "description": "Comseg `alpha` parameter"
+                    "description": "Comseg `alpha` parameter",
+                    "default": 0.5
                 },
                 "min_rna_per_cell": {
                     "type": "number",
-                    "description": "Comseg `min_rna_per_cell` parameter"
+                    "description": "Comseg `min_rna_per_cell` parameter",
+                    "default": 1.0
                 },
                 "allow_disconnected_polygon": {
                     "type": "boolean",
@@ -423,12 +462,12 @@
                     "description": "Comseg `norm_vector` parameter"
                 }
             },
-            "required": ["use_comseg"]
+            "fa_icon": "fas fa-tools"
         },
         "baysor": {
             "title": "Baysor",
             "type": "object",
-            "description": "",
+            "description": "Parameters related to the baysor segmentation method",
             "default": "",
             "properties": {
                 "use_baysor": {
@@ -437,23 +476,28 @@
                 },
                 "baysor_scale": {
                     "type": "number",
-                    "description": "Baysor `scale` parameter"
+                    "description": "Baysor `scale` parameter",
+                    "default": -1.0
                 },
                 "baysor_scale_std": {
-                    "type": "number",
-                    "description": "Baysor `scale_std` parameter"
+                    "type": "string",
+                    "description": "Baysor `scale_std` parameter",
+                    "default": "25%"
                 },
                 "prior_segmentation_confidence": {
                     "type": "number",
-                    "description": "Baysor `prior_segmentation_confidence` parameter"
+                    "description": "Baysor `prior_segmentation_confidence` parameter",
+                    "default": 0.2
                 },
                 "min_molecules_per_cell": {
                     "type": "number",
-                    "description": "Baysor `min_molecules_per_cell` parameter"
+                    "description": "Baysor `min_molecules_per_cell` parameter",
+                    "default": 20.0
                 },
                 "min_molecules_per_gene": {
                     "type": "number",
-                    "description": "Baysor `min_molecules_per_gene` parameter"
+                    "description": "Baysor `min_molecules_per_gene` parameter",
+                    "default": 10.0
                 },
                 "min_molecules_per_segment": {
                     "type": "number",
@@ -469,12 +513,12 @@
                     "default": true
                 }
             },
-            "required": ["use_baysor"]
+            "fa_icon": "fas fa-tools"
         },
         "cellpose": {
             "title": "Cellpose",
             "type": "object",
-            "description": "",
+            "description": "Parameters related to the cellpose segmentation method",
             "default": "",
             "properties": {
                 "use_cellpose": {
@@ -487,11 +531,15 @@
                 },
                 "cellpose_channels": {
                     "type": "string",
-                    "description": "Channel names to use for cellpose segmentation."
+                    "description": "Channel name(s) to use for cellpose segmentation. If multiple, separate by space, comma or pipe characters."
                 },
                 "flow_threshold": {
                     "type": "number",
                     "description": "Cellpose `flow_threshold` parameter"
+                },
+                "cellprob_threshold": {
+                    "type": "number",
+                    "description": "Cellpose `cellprob_threshold` parameter"
                 },
                 "cellpose_model_type": {
                     "type": "string",
@@ -510,12 +558,12 @@
                     "description": "Additional cellpose parameters as a python dict string"
                 }
             },
-            "required": ["use_cellpose"]
+            "fa_icon": "fas fa-tools"
         },
         "stardist": {
             "title": "Stardist",
             "type": "object",
-            "description": "",
+            "description": "Parameters related to the stardist segmentation method",
             "default": "",
             "properties": {
                 "use_stardist": {
@@ -536,39 +584,19 @@
                 },
                 "stardist_channels": {
                     "type": "string",
-                    "description": "Optional channel names to use for stardist segmentation."
+                    "description": "Optional channel name(s) to use for stardist segmentation. If multiple, separate by space, comma or pipe characters."
                 },
                 "stardist_kwargs": {
                     "type": "string",
                     "description": "Additional stardist parameters as a python dict string"
                 }
             },
-            "required": ["use_stardist"]
-        },
-        "image_preprocessing": {
-            "title": "Image preprocessing for channel-based segmentation",
-            "type": "object",
-            "description": "",
-            "default": "",
-            "properties": {
-                "gaussian_sigma": {
-                    "type": "number",
-                    "description": "Parameter for scipy gaussian_filter (applied before running the segmentation method)"
-                },
-                "clip_limit": {
-                    "type": "number",
-                    "description": "Parameter for skimage.exposure.equalize_adapthist (applied before running the segmentation method)"
-                },
-                "clahe_kernel_size": {
-                    "type": "number",
-                    "description": "Parameter for skimage.exposure.equalize_adapthist (applied before running the segmentation method)"
-                }
-            }
+            "fa_icon": "fas fa-tools"
         },
         "tangram": {
             "title": "Tangram",
             "type": "object",
-            "description": "",
+            "description": "Parameters related to the tangram cell-type annotation method",
             "default": "",
             "properties": {
                 "use_tangram": {
@@ -596,12 +624,12 @@
                     "description": "Maximum samples to be considered in the reference for tangram. Low values will decrease the memory usage"
                 }
             },
-            "required": ["use_tangram"]
+            "fa_icon": "fas fa-scroll"
         },
         "fluorescence_annotation": {
             "title": "Fluorescence annotation",
             "type": "object",
-            "description": "",
+            "description": "Parameters related to the fluorescence-based cell-type annotation method",
             "default": "",
             "properties": {
                 "use_fluorescence_annotation": {
@@ -614,10 +642,10 @@
                 },
                 "marker_cell_dict": {
                     "type": "string",
-                    "description": "TODO"
+                    "description": "Dictionary mapping whose keys are marker channel names and values are the cell types associated to each marker. Should be provided as a string representation of a python dictionary."
                 }
             },
-            "required": ["use_fluorescence_annotation"]
+            "fa_icon": "fas fa-scroll"
         }
     },
     "allOf": [
@@ -640,6 +668,12 @@
             "$ref": "#/$defs/patches"
         },
         {
+            "$ref": "#/$defs/tissue_segmentation"
+        },
+        {
+            "$ref": "#/$defs/filtering"
+        },
+        {
             "$ref": "#/$defs/aggregation"
         },
         {
@@ -650,9 +684,6 @@
         },
         {
             "$ref": "#/$defs/image_preprocessing"
-        },
-        {
-            "$ref": "#/$defs/tissue_segmentation"
         },
         {
             "$ref": "#/$defs/proseg"
@@ -674,9 +705,6 @@
         },
         {
             "$ref": "#/$defs/fluorescence_annotation"
-        },
-        {
-            "$ref": "#/$defs/filtering"
         }
     ]
 }

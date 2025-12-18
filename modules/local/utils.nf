@@ -44,11 +44,11 @@ def extractSubArgs(Map args, String group) {
     } else if (group == "cellpose") {
         return [
             diameter: args.cellpose_diameter,
-            channels: args.cellpose_channels,
+            channels: getChannels(args.cellpose_channels, false),
             flow_threshold: args.flow_threshold,
             model_type: args.cellpose_model_type,
             pretrained_model: args.pretrained_model,
-            use_gpu: args.cellpose_use_gpu,
+            gpu: args.cellpose_use_gpu,
             min_area: args.min_area,
             clip_limit: args.clip_limit,
             clahe_kernel_size: args.clahe_kernel_size,
@@ -60,7 +60,7 @@ def extractSubArgs(Map args, String group) {
             model_type: args.stardist_model_type,
             prob_thresh: args.prob_thresh,
             nms_thresh: args.nms_thresh,
-            channels: args.stardist_channels,
+            channels: getChannels(args.stardist_channels, true),
             min_area: args.min_area,
             clip_limit: args.clip_limit,
             clahe_kernel_size: args.clahe_kernel_size,
@@ -128,16 +128,15 @@ def extractSubArgs(Map args, String group) {
             patch_width_microns: args.patch_width_microns,
             patch_overlap_microns: args.patch_overlap_microns,
             unassigned_value: args.unassigned_value,
-            prior_shapes_key: args.prior_shapes_key,
+            prior_shapes_key: getPriorShapesKey(),
         ]
     } else if (group == "image_patches") {
         return [
-            patch_width_pixels: args.patch_width_pixels,
-            patch_overlap_pixels: args.patch_overlap_pixels
+            patch_width_pixel: args.patch_width_pixel,
+            patch_overlap_pixel: args.patch_overlap_pixel
         ]
     } else if (group == "tangram") {
         return [
-            sc_reference_path: args.sc_reference_path,
             cell_type_key: args.tangram_cell_type_key,
             reference_preprocessing: args.reference_preprocessing,
             bag_size: args.bag_size,
@@ -162,6 +161,25 @@ def extractSubArgs(Map args, String group) {
         ]
     } else {
         exit 1, "Unknown argument group: ${group}"
+    }
+}
+
+def getPriorShapesKey() {
+    if (params.use_cellpose) {
+        return "cellpose_boundaries"
+    } else {
+        return params.prior_shapes_key
+    }
+}
+
+def getChannels(String channels, Boolean allow_null = false) {
+    if (channels instanceof String) {
+        return channels.split(/[ ,|]+/)
+    } else {
+        if (allow_null && channels == null) {
+            return null
+        }
+        exit 1, "The channels parameter must be a string of channel names separated by space, comma or pipe characters."
     }
 }
 
