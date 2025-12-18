@@ -92,7 +92,7 @@ workflow SOPA {
     if (params.use_comseg) {
         ch_input_comseg = params.use_cellpose ? ch_resolved : ch_tissue_seg
 
-        ch_transcripts_patches = MAKE_TRANSCRIPT_PATCHES(ch_input_comseg, argsCLI("transcript_patches") + " --write-cells-centroids ")
+        ch_transcripts_patches = MAKE_TRANSCRIPT_PATCHES(ch_input_comseg, argsCLI("transcript_patches") + " --write-cells-centroids")
         (ch_resolved, versions) = COMSEG(ch_transcripts_patches)
 
         ch_versions = ch_versions.mix(versions)
@@ -115,10 +115,10 @@ workflow SOPA {
         (ch_annotated, _out, versions) = TANGRAM_ANNOTATION(ch_aggregated, sc_reference, argsCLI("tangram"))
         ch_versions = ch_versions.mix(versions)
     }
-    // else if (params.annotation && params.annotation.method == "fluorescence") {
-    //     (ch_annotated, _out, versions) = FLUO_ANNOTATION(ch_aggregated, argsCLI(params.annotation.args))
-    //     ch_versions = ch_versions.mix(versions)
-    // }
+    else if (params.use_fluorescence_annotation) {
+        (ch_annotated, _out, versions) = FLUO_ANNOTATION(ch_aggregated, argsCLI("fluorescence_annotation"))
+        ch_versions = ch_versions.mix(versions)
+    }
     else {
         ch_annotated = ch_aggregated
     }
@@ -222,7 +222,7 @@ workflow BAYSOR {
 
     ch_segmented = PATCH_SEGMENTATION_BAYSOR(ch_baysor).map { meta, sdata_path, _out, n_patches -> [groupKey(meta.sdata_dir, n_patches), [meta, sdata_path]] }.groupTuple().map { it -> it[1][0] }
 
-    (ch_resolved, _out, versions) = RESOLVE_BAYSOR(ch_segmented, resolveArgs())
+    (ch_resolved, _out, versions) = RESOLVE_BAYSOR(ch_segmented, argsCLI("resolve"))
 
     ch_versions = ch_versions.mix(versions)
 
@@ -247,34 +247,13 @@ workflow COMSEG {
 
     ch_segmented = PATCH_SEGMENTATION_COMSEG(ch_comseg).map { meta, sdata_path, _out1, _out2, n_patches -> [groupKey(meta.sdata_dir, n_patches), [meta, sdata_path]] }.groupTuple().map { it -> it[1][0] }
 
-    (ch_resolved, _out, versions) = RESOLVE_COMSEG(ch_segmented, resolveArgs())
+    (ch_resolved, _out, versions) = RESOLVE_COMSEG(ch_segmented, argsCLI("resolve"))
 
     ch_versions = ch_versions.mix(versions)
 
     emit:
     ch_resolved
     ch_versions
-}
-
-
-def resolveArgs() {
-    def gene_column
-    def min_area
-
-    // TODO
-    // if (params.use_comseg) {
-    //     gene_column = config.segmentation.comseg.config.gene_column
-    //     min_area = config.segmentation.comseg.min_area ?: 0
-    // }
-    // else if (params.use_baysor) {
-    //     gene_column = config.segmentation.baysor.config.data.gene
-    //     min_area = config.segmentation.baysor.min_area ?: 0
-    // }
-    // else {
-    //     throw new IllegalArgumentException("Unknown segmentation method in config for resolveArgs")
-    // }
-
-    return "--gene-column ${gene_column} --min-area ${min_area}"
 }
 
 workflow PROSEG {
@@ -284,9 +263,7 @@ workflow PROSEG {
     main:
     ch_versions = channel.empty()
 
-    proseg_args = argsCLI("proseg")
-
-    (ch_segmented, _out, versions) = PATCH_SEGMENTATION_PROSEG(ch_patches, proseg_args)
+    (ch_segmented, _out, versions) = PATCH_SEGMENTATION_PROSEG(ch_patches, argsCLI("proseg"))
 
     ch_versions = ch_versions.mix(versions)
 

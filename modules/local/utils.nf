@@ -42,36 +42,92 @@ def extractSubArgs(Map args, String group) {
             prior_shapes_key: args.visium_hd_prior_shapes_key,
         ]
     } else if (group == "cellpose") {
-        return [ // TODO
-        ]
-    } else if (group == "baysor") {
-        return [ // TODO
-        ]
-    } else if (group == "comseg") {
-        return [ // TODO
+        return [
+            diameter: args.cellpose_diameter,
+            channels: args.cellpose_channels,
+            flow_threshold: args.flow_threshold,
+            model_type: args.cellpose_model_type,
+            pretrained_model: args.pretrained_model,
+            use_gpu: args.cellpose_use_gpu,
+            min_area: args.min_area,
+            clip_limit: args.clip_limit,
+            clahe_kernel_size: args.clahe_kernel_size,
+            gaussian_sigma: args.gaussian_sigma,
+            method_kwargs: args.cellpose_kwargs,
         ]
     } else if (group == "stardist") {
-        return [ // TODO
+        return [
+            model_type: args.stardist_model_type,
+            prob_thresh: args.prob_thresh,
+            nms_thresh: args.nms_thresh,
+            channels: args.stardist_channels,
+            min_area: args.min_area,
+            clip_limit: args.clip_limit,
+            clahe_kernel_size: args.clahe_kernel_size,
+            gaussian_sigma: args.gaussian_sigma,
+            method_kwargs: args.stardist_kwargs,
+        ]
+    } else if (group == "baysor") {
+        return [
+            config: [
+                data: [
+                    x: "x",
+                    y: "y",
+                    z: "z",
+                    force_2d: args.force_2d,
+                    min_molecules_per_cell: args.min_molecules_per_cell,
+                    min_molecules_per_gene: args.min_molecules_per_gene,
+                    min_molecules_per_segment: args.min_molecules_per_segment,
+                    confidence_nn_id: args.confidence_nn_id,
+                ],
+                segmentation: [
+                    scale: args.baysor_scale,
+                    scale_std: args.baysor_scale_std,
+                    prior_segmentation_confidence: args.prior_segmentation_confidence,
+                ],
+            ],
+            min_area: args.min_area,
+        ]
+    } else if (group == "comseg") {
+        return [
+            config: [
+                dict_scale: [
+                    x: 1,
+                    y: 1,
+                    z: 1,
+                ],
+                allow_disconnected_polygon: args.allow_disconnected_polygon,
+                norm_vector: args.norm_vector,
+                mean_cell_diameter: args.mean_cell_diameter,
+                max_cell_radius: args.max_cell_radius,
+                alpha: args.alpha,
+                min_rna_per_cell: args.min_rna_per_cell,
+            ],
+            min_area: args.min_area,
         ]
     } else if (group == "aggregate") {
         return [
             aggregate_genes: args.aggregate_genes,
             aggregate_channels: args.aggregate_channels,
+            expand_radius_ratio: args.expand_radius_ratio,
             min_transcripts: args.min_transcripts,
             min_intensity_ratio: args.min_intensity_ratio,
-            expand_radius_ratio: args.expand_radius_ratio,
         ]
     } else if (group == "tissue_segmentation") {
         return [
             level: args.level,
             mode: args.mode,
         ]
+    } else if (group == "resolve") {
+        return [
+            min_area: args.min_area,
+        ]
     } else if (group == "transcript_patches") {
         return [
-            prior_shapes_key: args.prior_shapes_key,
-            unassigned_value: args.unassigned_value,
             patch_width_microns: args.patch_width_microns,
-            patch_overlap_microns: args.patch_overlap_microns
+            patch_overlap_microns: args.patch_overlap_microns,
+            unassigned_value: args.unassigned_value,
+            prior_shapes_key: args.prior_shapes_key,
         ]
     } else if (group == "image_patches") {
         return [
@@ -82,12 +138,19 @@ def extractSubArgs(Map args, String group) {
         return [
             sc_reference_path: args.sc_reference_path,
             cell_type_key: args.cell_type_key,
-            reference_preprocessing: args.reference_preprocessing
+            reference_preprocessing: args.reference_preprocessing,
+            bag_size: args.bag_size,
+            max_obs_reference: args.max_obs_reference,
+        ]
+    } else if (group == "fluorescence_annotation") {
+        return [
+            cell_type_key: args.cell_type_key,
+            marker_cell_dict: args.marker_cell_dict,
         ]
     } else if (group == "scanpy_preprocessing") {
         return [
-            check_counts: args.check_counts,
             resolution: args.resolution,
+            check_counts: args.check_counts,
             hvg: args.hvg,
         ]
     } else if (group == "explorer") {
@@ -119,10 +182,6 @@ def argsToSpatialData(Map meta, String fullres_image_file) {
         technology: params.technology,
         kwargs: [:],
     ]
-
-    if (params.toy_dataset_genes != null) {
-        args.kwargs['genes'] = params.toy_dataset_genes
-    }
 
     if (params.visium_hd_imread_page != null) {
         args.kwargs['imread_kwargs'] = ["page": params.visium_hd_imread_page]
