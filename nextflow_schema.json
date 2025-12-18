@@ -222,7 +222,8 @@
                     "type": "number",
                     "description": "Optional page for the imageio reader"
                 }
-            }
+            },
+            "required": ["technology"]
         },
         "patches": {
             "title": "Patches",
@@ -258,8 +259,7 @@
             "properties": {
                 "use_tissue_segmentation": {
                     "type": "boolean",
-                    "description": "Whether to run tissue segmentation",
-                    "default": false
+                    "description": "Whether to run tissue segmentation"
                 },
                 "level": {
                     "type": "number",
@@ -274,7 +274,8 @@
                     "type": "string",
                     "description": "Additional tissue segmentation parameters as a python dict string"
                 }
-            }
+            },
+            "required": ["use_tissue_segmentation"]
         },
         "filtering": {
             "title": "Cell filtering",
@@ -288,12 +289,10 @@
                     "default": 0.0
                 },
                 "min_transcripts": {
-                    "type": "number",
-                    "default": 0.0
+                    "type": "number"
                 },
                 "min_intensity_ratio": {
-                    "type": "number",
-                    "default": 0.0
+                    "type": "number"
                 }
             }
         },
@@ -310,10 +309,10 @@
                     "type": "boolean"
                 },
                 "expand_radius_ratio": {
-                    "type": "string",
-                    "default": "0"
+                    "type": "string"
                 }
-            }
+            },
+            "required": ["aggregate_genes", "aggregate_channels"]
         },
         "scanpy_preprocessing": {
             "title": "Scanpy preprocessing",
@@ -323,13 +322,11 @@
             "properties": {
                 "use_scanpy_preprocessing": {
                     "type": "boolean",
-                    "description": "Whether to run scanpy preprocessing",
-                    "default": false
+                    "description": "Whether to run scanpy preprocessing"
                 },
                 "resolution": {
                     "type": "number",
-                    "description": "Resolution parameter for the leiden clustering",
-                    "default": 1.0
+                    "description": "Resolution parameter for the leiden clustering"
                 },
                 "check_counts": {
                     "type": "boolean",
@@ -339,7 +336,8 @@
                     "type": "boolean",
                     "description": "Whether to compute highly variable genes before computing the UMAP and clustering"
                 }
-            }
+            },
+            "required": ["use_scanpy_preprocessing"]
         },
         "explorer": {
             "title": "Explorer",
@@ -362,7 +360,8 @@
                     "description": "Threshold (in gygabytes) from which image can be loaded in memory.",
                     "default": 4.0
                 }
-            }
+            },
+            "required": ["pixel_size"]
         },
         "proseg": {
             "title": "Proseg",
@@ -372,8 +371,7 @@
             "properties": {
                 "use_proseg": {
                     "type": "boolean",
-                    "description": "Whether to run proseg segmentation",
-                    "default": false
+                    "description": "Whether to run proseg segmentation"
                 },
                 "command_line_suffix": {
                     "type": "string",
@@ -387,7 +385,8 @@
                     "type": "string",
                     "description": "**Only for Visium HD data.** Key of `sdata` containing the prior cell boundaries. If `'auto'`, use the latest performed segmentation (e.g., stardist or the 10X Genomics segmentation)."
                 }
-            }
+            },
+            "required": ["use_proseg"]
         },
         "comseg": {
             "title": "Comseg",
@@ -397,40 +396,34 @@
             "properties": {
                 "use_comseg": {
                     "type": "boolean",
-                    "description": "Whether to run comseg segmentation",
-                    "default": false
+                    "description": "Whether to run comseg segmentation"
                 },
                 "mean_cell_diameter": {
                     "type": "number",
-                    "description": "Comseg `mean_cell_diameter` parameter",
-                    "default": 30.0
+                    "description": "Comseg `mean_cell_diameter` parameter"
                 },
                 "max_cell_radius": {
                     "type": "number",
-                    "description": "Comseg `max_cell_radius` parameter",
-                    "default": 15.0
+                    "description": "Comseg `max_cell_radius` parameter"
                 },
                 "alpha": {
                     "type": "number",
-                    "description": "Comseg `alpha` parameter",
-                    "default": 0.2
+                    "description": "Comseg `alpha` parameter"
                 },
                 "min_rna_per_cell": {
                     "type": "number",
-                    "description": "Comseg `min_rna_per_cell` parameter",
-                    "default": 10.0
+                    "description": "Comseg `min_rna_per_cell` parameter"
                 },
                 "allow_disconnected_polygon": {
                     "type": "boolean",
-                    "description": "Comseg `allow_disconnected_polygon` parameter",
-                    "default": false
+                    "description": "Comseg `allow_disconnected_polygon` parameter"
                 },
                 "norm_vector": {
                     "type": "boolean",
-                    "description": "Comseg `norm_vector` parameter",
-                    "default": false
+                    "description": "Comseg `norm_vector` parameter"
                 }
-            }
+            },
+            "required": ["use_comseg"]
         },
         "baysor": {
             "title": "Baysor",
@@ -440,50 +433,43 @@
             "properties": {
                 "use_baysor": {
                     "type": "boolean",
-                    "description": "Whether to run baysor segmentation",
-                    "default": false
+                    "description": "Whether to run baysor segmentation"
                 },
                 "baysor_scale": {
                     "type": "number",
-                    "description": "Baysor `scale` parameter",
-                    "default": 20.0
+                    "description": "Baysor `scale` parameter"
                 },
                 "baysor_scale_std": {
                     "type": "number",
-                    "description": "Baysor `scale_std` parameter",
-                    "default": 4.0
+                    "description": "Baysor `scale_std` parameter"
                 },
                 "prior_segmentation_confidence": {
                     "type": "number",
-                    "description": "Baysor `prior_segmentation_confidence` parameter",
-                    "default": 0.0
+                    "description": "Baysor `prior_segmentation_confidence` parameter"
                 },
                 "min_molecules_per_cell": {
                     "type": "number",
-                    "description": "Baysor `min_molecules_per_cell` parameter",
-                    "default": 20.0
+                    "description": "Baysor `min_molecules_per_cell` parameter"
                 },
                 "min_molecules_per_gene": {
                     "type": "number",
-                    "description": "Baysor `min_molecules_per_gene` parameter",
-                    "default": 5.0
+                    "description": "Baysor `min_molecules_per_gene` parameter"
                 },
                 "min_molecules_per_segment": {
                     "type": "number",
-                    "description": "Baysor `min_molecules_per_segment` parameter",
-                    "default": 0.0
+                    "description": "Baysor `min_molecules_per_segment` parameter"
                 },
                 "confidence_nn_id": {
                     "type": "number",
-                    "description": "Baysor `confidence_nn_id` parameter",
-                    "default": 10.0
+                    "description": "Baysor `confidence_nn_id` parameter"
                 },
                 "force_2d": {
                     "type": "boolean",
                     "description": "Baysor `force_2d` parameter",
                     "default": true
                 }
-            }
+            },
+            "required": ["use_baysor"]
         },
         "cellpose": {
             "title": "Cellpose",
@@ -493,8 +479,7 @@
             "properties": {
                 "use_cellpose": {
                     "type": "boolean",
-                    "description": "Whether to run cellpose segmentation",
-                    "default": false
+                    "description": "Whether to run cellpose segmentation"
                 },
                 "cellpose_diameter": {
                     "type": "number",
@@ -518,14 +503,14 @@
                 },
                 "cellpose_use_gpu": {
                     "type": "boolean",
-                    "description": "Whether to use GPU for Cellpose segmentation",
-                    "default": false
+                    "description": "Whether to use GPU for Cellpose segmentation"
                 },
                 "cellpose_kwargs": {
                     "type": "string",
                     "description": "Additional cellpose parameters as a python dict string"
                 }
-            }
+            },
+            "required": ["use_cellpose"]
         },
         "stardist": {
             "title": "Stardist",
@@ -535,8 +520,7 @@
             "properties": {
                 "use_stardist": {
                     "type": "boolean",
-                    "description": "Whether to run stardist segmentation",
-                    "default": false
+                    "description": "Whether to run stardist segmentation"
                 },
                 "stardist_model_type": {
                     "type": "string",
@@ -558,7 +542,8 @@
                     "type": "string",
                     "description": "Additional stardist parameters as a python dict string"
                 }
-            }
+            },
+            "required": ["use_stardist"]
         },
         "image_preprocessing": {
             "title": "Image preprocessing for channel-based segmentation",
@@ -588,8 +573,7 @@
             "properties": {
                 "use_tangram": {
                     "type": "boolean",
-                    "description": "Whether to run tangram cell-type annotation",
-                    "default": false
+                    "description": "Whether to run tangram cell-type annotation"
                 },
                 "sc_reference_path": {
                     "type": "string",
@@ -611,7 +595,8 @@
                     "type": "number",
                     "description": "Maximum samples to be considered in the reference for tangram. Low values will decrease the memory usage"
                 }
-            }
+            },
+            "required": ["use_tangram"]
         },
         "fluorescence_annotation": {
             "title": "Fluorescence annotation",
@@ -621,8 +606,7 @@
             "properties": {
                 "use_fluorescence_annotation": {
                     "type": "boolean",
-                    "description": "Whether to run cell-type annotation based on a marker-to-cell dictionary",
-                    "default": false
+                    "description": "Whether to run cell-type annotation based on a marker-to-cell dictionary"
                 },
                 "fluorescence_cell_type_key": {
                     "type": "string",
@@ -632,7 +616,8 @@
                     "type": "string",
                     "description": "TODO"
                 }
-            }
+            },
+            "required": ["use_fluorescence_annotation"]
         }
     },
     "allOf": [
