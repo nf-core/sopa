@@ -291,9 +291,14 @@
             "description": "Filtering low-quality cells during and after segmentation",
             "default": "",
             "properties": {
-                "min_area": {
+                "min_area_pixels2": {
                     "type": "number",
-                    "description": "Cells with an area less than this value will be filtered. The unit is in microns^2 for Baysor/Comseg, and in pixels^2 for Stardist/Cellpose. Not used for Proseg.",
+                    "description": "Cells with an area less than this value will be filtered. The unit is in pixels^2, and used by Stardist/Cellpose.",
+                    "default": 0.0
+                },
+                "min_area_microns2": {
+                    "type": "number",
+                    "description": "Cells with an area less than this value will be filtered. The unit is in microns^2, and used by Baysor/Comseg. Not used by Proseg.",
                     "default": 0.0
                 },
                 "min_transcripts": {

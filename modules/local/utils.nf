@@ -49,7 +49,7 @@ def extractSubArgs(Map args, String group) {
             model_type: args.cellpose_model_type,
             pretrained_model: args.pretrained_model,
             gpu: args.cellpose_use_gpu,
-            min_area: args.min_area,
+            min_area: args.min_area_pixels2,
             clip_limit: args.clip_limit,
             clahe_kernel_size: args.clahe_kernel_size,
             gaussian_sigma: args.gaussian_sigma,
@@ -61,7 +61,7 @@ def extractSubArgs(Map args, String group) {
             prob_thresh: args.prob_thresh,
             nms_thresh: args.nms_thresh,
             channels: getChannels(args.stardist_channels, true),
-            min_area: args.min_area,
+            min_area: args.min_area_pixels2,
             clip_limit: args.clip_limit,
             clahe_kernel_size: args.clahe_kernel_size,
             gaussian_sigma: args.gaussian_sigma,
@@ -86,7 +86,7 @@ def extractSubArgs(Map args, String group) {
                     prior_segmentation_confidence: args.prior_segmentation_confidence,
                 ],
             ],
-            min_area: args.min_area,
+            min_area: args.min_area_microns2,
         ]
     } else if (group == "comseg") {
         return [
@@ -103,7 +103,7 @@ def extractSubArgs(Map args, String group) {
                 alpha: args.alpha,
                 min_rna_per_cell: args.min_rna_per_cell,
             ],
-            min_area: args.min_area,
+            min_area: args.min_area_microns2,
         ]
     } else if (group == "aggregate") {
         return [
@@ -121,7 +121,7 @@ def extractSubArgs(Map args, String group) {
         ]
     } else if (group == "resolve") {
         return [
-            min_area: args.min_area,
+            min_area: args.min_area_microns2,
         ]
     } else if (group == "transcript_patches") {
         return [
