@@ -18,7 +18,7 @@
             },
             [
                 "pipeline_info",
-                "pipeline_info/nf_core_sopa_software_mqc_versions.yml",
+                "pipeline_info/nf_core_sopa_software_versions.yml",
                 "sample_name.explorer",
                 "sample_name.explorer/adata.h5ad",
                 "sample_name.explorer/analysis.zarr.zip",

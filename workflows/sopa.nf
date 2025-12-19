@@ -138,12 +138,32 @@ workflow SOPA {
     //
     // Collate and save software versions
     //
-    softwareVersionsToYAML(ch_versions).collectFile(
-        storeDir: "${params.outdir}/pipeline_info",
-        name: 'nf_core_sopa_software_mqc_versions.yml',
-        sort: true,
-        newLine: true,
-    )
+    def topic_versions = Channel.topic("versions")
+        .distinct()
+        .branch { entry ->
+            versions_file: entry instanceof Path
+            versions_tuple: true
+        }
+
+    def topic_versions_string = topic_versions.versions_tuple
+        .map { process, tool, version ->
+            [ process[process.lastIndexOf(':')+1..-1], "  ${tool}: ${version}" ]
+        }
+        .groupTuple(by:0)
+        .map { process, tool_versions ->
+            tool_versions.unique().sort()
+            "${process}:\n${tool_versions.join('\n')}"
+        }
+
+    softwareVersionsToYAML(ch_versions.mix(topic_versions.versions_file))
+        .mix(topic_versions_string)
+        .collectFile(
+            storeDir: "${params.outdir}/pipeline_info",
+            name: 'nf_core_sopa_software_versions.yml',
+            sort: true,
+            newLine: true
+        ).set { ch_collated_versions }
+
 
     emit:
     versions = ch_versions // channel: [ path(versions.yml) ]
