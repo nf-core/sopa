@@ -7,7 +7,7 @@
                 },
                 "PATCH_SEGMENTATION_PROSEG": {
                     "sopa": "2.1.11",
-                    "proseg": "3.0.11"
+                    "proseg": "3.0.12"
                 },
                 "SCANPY_PREPROCESS": {
                     "sopa": "2.1.11",
@@ -339,6 +339,22 @@
                 "sample_name.zarr/tables/table/obsp/distances/indptr",
                 "sample_name.zarr/tables/table/obsp/distances/indptr/.zarray",
                 "sample_name.zarr/tables/table/obsp/distances/indptr/0",
+                "sample_name.zarr/tables/table/obsp/transition_counts",
+                "sample_name.zarr/tables/table/obsp/transition_counts/.zattrs",
+                "sample_name.zarr/tables/table/obsp/transition_counts/.zgroup",
+                "sample_name.zarr/tables/table/obsp/transition_counts/data",
+                "sample_name.zarr/tables/table/obsp/transition_counts/data/.zarray",
+                "sample_name.zarr/tables/table/obsp/transition_counts/data/0",
+                "sample_name.zarr/tables/table/obsp/transition_counts/indices",
+                "sample_name.zarr/tables/table/obsp/transition_counts/indices/.zarray",
+                "sample_name.zarr/tables/table/obsp/transition_counts/indices/0",
+                "sample_name.zarr/tables/table/obsp/transition_counts/indptr",
+                "sample_name.zarr/tables/table/obsp/transition_counts/indptr/.zarray",
+                "sample_name.zarr/tables/table/obsp/transition_counts/indptr/0",
+                "sample_name.zarr/tables/table/raw",
+                "sample_name.zarr/tables/table/raw/.zarray",
+                "sample_name.zarr/tables/table/raw/.zattrs",
+                "sample_name.zarr/tables/table/raw/0",
                 "sample_name.zarr/tables/table/uns",
                 "sample_name.zarr/tables/table/uns/.zattrs",
                 "sample_name.zarr/tables/table/uns/.zgroup",
@@ -363,6 +379,10 @@
                 "sample_name.zarr/tables/table/uns/log1p",
                 "sample_name.zarr/tables/table/uns/log1p/.zattrs",
                 "sample_name.zarr/tables/table/uns/log1p/.zgroup",
+                "sample_name.zarr/tables/table/uns/log1p/base",
+                "sample_name.zarr/tables/table/uns/log1p/base/.zarray",
+                "sample_name.zarr/tables/table/uns/log1p/base/.zattrs",
+                "sample_name.zarr/tables/table/uns/log1p/base/0",
                 "sample_name.zarr/tables/table/uns/neighbors",
                 "sample_name.zarr/tables/table/uns/neighbors/.zattrs",
                 "sample_name.zarr/tables/table/uns/neighbors/.zgroup",
@@ -497,6 +517,6 @@
             "nf-test": "0.9.2",
             "nextflow": "25.04.6"
         },
-        "timestamp": "2025-12-19T12:22:58.714199"
+        "timestamp": "2025-12-19T15:00:26.838435"
     }
 }

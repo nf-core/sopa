@@ -123,10 +123,10 @@ You'll also need to choose some Sopa parameters to decide which reader/segmentat
 
 ## Running the pipeline
 
-Once you have defined your samplesheet and `params-file`, you'll be able to run `nf-core/sopa`. The typical command for running the pipeline is as follows:
+Once you have defined your samplesheet and technology `profile`, you'll be able to run `nf-core/sopa`. The typical command for running the pipeline is as follows:
 
 ```bash
-nextflow run nf-core/sopa --input ./samplesheet.csv -params-file <PARAMS_FILE> --outdir ./results  -profile docker
+nextflow run nf-core/sopa --input ./samplesheet.csv --outdir ./results  -profile docker,<TECHNOLOGY_PROFILE>
 ```
 
 > [!NOTE]
