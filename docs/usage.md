@@ -110,6 +110,10 @@ You'll also need to choose some Sopa parameters to decide which reader/segmentat
   - A profile with Sopa parameters to run Cellpose as a prior for Baysor on CosMx data
 - `visium_hd_stardist`
   - A profile with Sopa parameters to run Stardist on Visium HD data
+- `visium_hd_proseg`
+  - A profile with Sopa parameters to run Proseg on Visium HD data (it will use the 10X Genomics segmentation as a prior)
+- `visium_hd_stardist_proseg`
+  - A profile with Sopa parameters to run Stardist on Visium HD data as a prior for Proseg
 - `phenocycler_base_10X`
   - A profile with Sopa parameters to run Cellpose on Phenocycler data at 10X resolution
 - `phenocycler_base_20X`
