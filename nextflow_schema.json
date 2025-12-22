@@ -250,7 +250,7 @@
                 },
                 "prior_shapes_key": {
                     "type": "string",
-                    "description": "Optional name of the boundaries element to use as a segmentation prior. Either a column name for the transcript dataframe, or a key of `sdata` containing the shapes names."
+                    "description": "Optional name of the boundaries element to use as a segmentation prior. Either a column name for the transcript dataframe, or a key of `sdata` containing the shapes names. If combining cellpose with proseg/baysor/comseg, it will be set automatically to `'cellpose_boundaries'`."
                 },
                 "unassigned_value": {
                     "type": "string",
@@ -423,7 +423,7 @@
                 },
                 "visium_hd_prior_shapes_key": {
                     "type": "string",
-                    "description": "**Only for Visium HD data.** Key of `sdata` containing the prior cell boundaries. If `'auto'`, use the latest performed segmentation (e.g., stardist or the 10X Genomics segmentation)."
+                    "description": "**Only for Visium HD data.** Key of `sdata` containing the prior cell boundaries. If `'auto'`, use the latest performed segmentation (e.g., stardist or the 10X Genomics segmentation). If combining stardist with proseg, it will be set automatically to `'stardist_boundaries'`."
                 }
             },
             "fa_icon": "fas fa-tools"

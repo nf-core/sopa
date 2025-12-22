@@ -39,7 +39,7 @@ def extractSubArgs(Map args, String group) {
         return [
             command_line_suffix: args.command_line_suffix,
             infer_presets: args.infer_presets,
-            prior_shapes_key: args.visium_hd_prior_shapes_key,
+            prior_shapes_key: getProsegPriorShapesKey(),
         ]
     } else if (group == "cellpose") {
         return [
@@ -165,10 +165,18 @@ def extractSubArgs(Map args, String group) {
 }
 
 def getPriorShapesKey() {
-    if (params.use_cellpose) {
-        return "cellpose_boundaries"
-    } else {
+    if (params.prior_shapes_key != null) {
         return params.prior_shapes_key
+    } else {
+        return params.use_cellpose ? "cellpose_boundaries" : null
+    }
+}
+
+def getProsegPriorShapesKey() {
+    if (params.visium_hd_prior_shapes_key != null) {
+        return params.visium_hd_prior_shapes_key
+    } else {
+        return params.use_stardist ? "stardist_boundaries" : null
     }
 }
 
