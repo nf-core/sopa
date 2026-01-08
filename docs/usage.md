@@ -110,6 +110,10 @@ You'll also need to choose some Sopa parameters to decide which reader/segmentat
   - A profile with Sopa parameters to run Cellpose as a prior for Baysor on CosMx data
 - `visium_hd_stardist`
   - A profile with Sopa parameters to run Stardist on Visium HD data
+- `visium_hd_proseg`
+  - A profile with Sopa parameters to run Proseg on Visium HD data (it will use the 10X Genomics segmentation as a prior)
+- `visium_hd_stardist_proseg`
+  - A profile with Sopa parameters to run Stardist on Visium HD data as a prior for Proseg
 - `phenocycler_base_10X`
   - A profile with Sopa parameters to run Cellpose on Phenocycler data at 10X resolution
 - `phenocycler_base_20X`
@@ -121,13 +125,17 @@ You'll also need to choose some Sopa parameters to decide which reader/segmentat
 - `macsima_base`
   - A profile with Sopa parameters to run Cellpose on MACSima data
 
+These profiles contain the backbone of the pipeline, i.e. which technology to use and how to process the segmentation. For more customization, you can provide [other Sopa parameters](https://nf-co.re/sopa/dev/parameters/) via the command line, for instance `--use_scanpy_preprocessing true` if you want to have a UMAP and a leiden clustering on your output AnnData object.
+
 ## Running the pipeline
 
-Once you have defined your samplesheet and `params-file`, you'll be able to run `nf-core/sopa`. The typical command for running the pipeline is as follows:
+Once you have defined (i) your samplesheet and (ii) your Sopa parameters (denoted below as `<TECHNOLOGY_PROFILE>`), you'll be able to run `nf-core/sopa`. The typical command for running the pipeline is as follows.
 
 ```bash
-nextflow run nf-core/sopa --input ./samplesheet.csv -params-file <PARAMS_FILE> --outdir ./results  -profile docker
+nextflow run nf-core/sopa --input ./samplesheet.csv --outdir ./results  -profile docker,<TECHNOLOGY_PROFILE>
 ```
+
+This will launch the pipeline with the `docker` configuration profile. See below for more information about profiles.
 
 > [!NOTE]
 > For Visium HD data, you may also need to provide a `--spaceranger_probeset` argument with an official 10X Genomics probe set (see [here](https://www.10xgenomics.com/support/software/space-ranger/downloads)). For instance, you can use:
@@ -135,8 +143,6 @@ nextflow run nf-core/sopa --input ./samplesheet.csv -params-file <PARAMS_FILE> -
 > ```
 > --spaceranger_probeset https://cf.10xgenomics.com/supp/spatial-exp/probeset/Visium_Human_Transcriptome_Probe_Set_v2.0_GRCh38-2020-A.csv
 > ```
-
-This will launch the pipeline with the `docker` configuration profile. See below for more information about profiles.
 
 Note that the pipeline will create the following files in your working directory:
 

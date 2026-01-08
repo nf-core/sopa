@@ -4,11 +4,11 @@
             8,
             {
                 "RESOLVE_CELLPOSE": {
-                    "sopa": "2.1.10",
+                    "sopa": "2.1.11",
                     "cellpose": "4.0.8"
                 },
                 "TO_SPATIALDATA": {
-                    "sopa": "2.1.10",
+                    "sopa": "2.1.11",
                     "spatialdata": "0.5.0",
                     "spatialdata_io": "0.5.1"
                 },
@@ -284,6 +284,6 @@
             "nf-test": "0.9.2",
             "nextflow": "25.04.6"
         },
-        "timestamp": "2025-08-01T16:10:22.8482"
+        "timestamp": "2025-12-19T13:13:34.065435"
     }
 }

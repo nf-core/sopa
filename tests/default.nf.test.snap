@@ -3,18 +3,18 @@
         "content": [
             {
                 "FLUO_ANNOTATION": {
-                    "sopa": "2.1.10"
+                    "sopa": "2.1.11"
                 },
                 "PATCH_SEGMENTATION_PROSEG": {
-                    "sopa": "2.1.10",
-                    "proseg": "3.0.11"
+                    "sopa": "2.1.11",
+                    "proseg": "3.1.0"
                 },
                 "SCANPY_PREPROCESS": {
-                    "sopa": "2.1.10",
+                    "sopa": "2.1.11",
                     "scanpy": "1.11.5"
                 },
                 "TO_SPATIALDATA": {
-                    "sopa": "2.1.10",
+                    "sopa": "2.1.11",
                     "spatialdata": "0.5.0",
                     "spatialdata_io": "0.5.1"
                 },
@@ -256,11 +256,6 @@
                 "sample_name.zarr/tables/table/obsm",
                 "sample_name.zarr/tables/table/obsm/.zattrs",
                 "sample_name.zarr/tables/table/obsm/.zgroup",
-                "sample_name.zarr/tables/table/obsm/X_pca",
-                "sample_name.zarr/tables/table/obsm/X_pca/.zarray",
-                "sample_name.zarr/tables/table/obsm/X_pca/.zattrs",
-                "sample_name.zarr/tables/table/obsm/X_pca/0",
-                "sample_name.zarr/tables/table/obsm/X_pca/0/0",
                 "sample_name.zarr/tables/table/obsm/X_umap",
                 "sample_name.zarr/tables/table/obsm/X_umap/.zarray",
                 "sample_name.zarr/tables/table/obsm/X_umap/.zattrs",
@@ -344,6 +339,18 @@
                 "sample_name.zarr/tables/table/obsp/distances/indptr",
                 "sample_name.zarr/tables/table/obsp/distances/indptr/.zarray",
                 "sample_name.zarr/tables/table/obsp/distances/indptr/0",
+                "sample_name.zarr/tables/table/obsp/transition_counts",
+                "sample_name.zarr/tables/table/obsp/transition_counts/.zattrs",
+                "sample_name.zarr/tables/table/obsp/transition_counts/.zgroup",
+                "sample_name.zarr/tables/table/obsp/transition_counts/data",
+                "sample_name.zarr/tables/table/obsp/transition_counts/data/.zarray",
+                "sample_name.zarr/tables/table/obsp/transition_counts/data/0",
+                "sample_name.zarr/tables/table/obsp/transition_counts/indices",
+                "sample_name.zarr/tables/table/obsp/transition_counts/indices/.zarray",
+                "sample_name.zarr/tables/table/obsp/transition_counts/indices/0",
+                "sample_name.zarr/tables/table/obsp/transition_counts/indptr",
+                "sample_name.zarr/tables/table/obsp/transition_counts/indptr/.zarray",
+                "sample_name.zarr/tables/table/obsp/transition_counts/indptr/0",
                 "sample_name.zarr/tables/table/raw",
                 "sample_name.zarr/tables/table/raw/.zarray",
                 "sample_name.zarr/tables/table/raw/.zattrs",
@@ -406,32 +413,6 @@
                 "sample_name.zarr/tables/table/uns/neighbors/params/random_state/.zarray",
                 "sample_name.zarr/tables/table/uns/neighbors/params/random_state/.zattrs",
                 "sample_name.zarr/tables/table/uns/neighbors/params/random_state/0",
-                "sample_name.zarr/tables/table/uns/pca",
-                "sample_name.zarr/tables/table/uns/pca/.zattrs",
-                "sample_name.zarr/tables/table/uns/pca/.zgroup",
-                "sample_name.zarr/tables/table/uns/pca/params",
-                "sample_name.zarr/tables/table/uns/pca/params/.zattrs",
-                "sample_name.zarr/tables/table/uns/pca/params/.zgroup",
-                "sample_name.zarr/tables/table/uns/pca/params/mask_var",
-                "sample_name.zarr/tables/table/uns/pca/params/mask_var/.zarray",
-                "sample_name.zarr/tables/table/uns/pca/params/mask_var/.zattrs",
-                "sample_name.zarr/tables/table/uns/pca/params/mask_var/0",
-                "sample_name.zarr/tables/table/uns/pca/params/use_highly_variable",
-                "sample_name.zarr/tables/table/uns/pca/params/use_highly_variable/.zarray",
-                "sample_name.zarr/tables/table/uns/pca/params/use_highly_variable/.zattrs",
-                "sample_name.zarr/tables/table/uns/pca/params/use_highly_variable/0",
-                "sample_name.zarr/tables/table/uns/pca/params/zero_center",
-                "sample_name.zarr/tables/table/uns/pca/params/zero_center/.zarray",
-                "sample_name.zarr/tables/table/uns/pca/params/zero_center/.zattrs",
-                "sample_name.zarr/tables/table/uns/pca/params/zero_center/0",
-                "sample_name.zarr/tables/table/uns/pca/variance",
-                "sample_name.zarr/tables/table/uns/pca/variance/.zarray",
-                "sample_name.zarr/tables/table/uns/pca/variance/.zattrs",
-                "sample_name.zarr/tables/table/uns/pca/variance/0",
-                "sample_name.zarr/tables/table/uns/pca/variance_ratio",
-                "sample_name.zarr/tables/table/uns/pca/variance_ratio/.zarray",
-                "sample_name.zarr/tables/table/uns/pca/variance_ratio/.zattrs",
-                "sample_name.zarr/tables/table/uns/pca/variance_ratio/0",
                 "sample_name.zarr/tables/table/uns/proseg_run",
                 "sample_name.zarr/tables/table/uns/proseg_run/.zattrs",
                 "sample_name.zarr/tables/table/uns/proseg_run/.zgroup",
@@ -513,11 +494,6 @@
                 "sample_name.zarr/tables/table/varm",
                 "sample_name.zarr/tables/table/varm/.zattrs",
                 "sample_name.zarr/tables/table/varm/.zgroup",
-                "sample_name.zarr/tables/table/varm/PCs",
-                "sample_name.zarr/tables/table/varm/PCs/.zarray",
-                "sample_name.zarr/tables/table/varm/PCs/.zattrs",
-                "sample_name.zarr/tables/table/varm/PCs/0",
-                "sample_name.zarr/tables/table/varm/PCs/0/0",
                 "sample_name.zarr/tables/table/varp",
                 "sample_name.zarr/tables/table/varp/.zattrs",
                 "sample_name.zarr/tables/table/varp/.zgroup",
@@ -541,6 +517,6 @@
             "nf-test": "0.9.2",
             "nextflow": "25.04.6"
         },
-        "timestamp": "2025-10-15T11:11:22.043613"
+        "timestamp": "2025-12-19T15:00:26.838435"
     }
 }

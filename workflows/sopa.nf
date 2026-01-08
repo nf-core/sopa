@@ -28,7 +28,7 @@ include { REPORT } from '../modules/local/report'
 include { TANGRAM_ANNOTATION } from '../modules/local/tangram_annotation'
 include { FLUO_ANNOTATION } from '../modules/local/fluo_annotation'
 include { SPACERANGER } from '../subworkflows/local/spaceranger'
-include { ArgsCLI } from '../modules/local/utils'
+include { argsCLI } from '../modules/local/utils'
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     RUN MAIN WORKFLOW
@@ -43,7 +43,7 @@ workflow SOPA {
 
     ch_versions = channel.empty()
 
-    if (params.read.technology == "visium_hd") {
+    if (params.technology == "visium_hd") {
         (ch_input_spatialdata, versions) = SPACERANGER(ch_samplesheet)
         ch_input_spatialdata = ch_input_spatialdata.map { meta, out -> [meta, out[0].toString().replaceFirst(/(.*?outs).*/, '$1'), meta.image] }
 
@@ -56,83 +56,89 @@ workflow SOPA {
     (ch_spatialdata, versions) = TO_SPATIALDATA(ch_input_spatialdata)
     ch_versions = ch_versions.mix(versions)
 
-    ch_explorer_raw = ch_spatialdata.map { meta, sdata_path -> [meta, sdata_path, params.read.technology == "xenium" ? meta.data_dir : []] }
+    ch_explorer_raw = ch_spatialdata.map { meta, sdata_path -> [meta, sdata_path, params.technology == "xenium" ? meta.data_dir : []] }
     EXPLORER_RAW(ch_explorer_raw)
 
-    if (params.segmentation.tissue) {
-        (ch_tissue_seg, _out) = TISSUE_SEGMENTATION(ch_spatialdata, ArgsCLI(params.segmentation.tissue))
+    if (params.use_tissue_segmentation) {
+        (ch_tissue_seg, _out) = TISSUE_SEGMENTATION(ch_spatialdata, argsCLI("tissue_segmentation"))
     }
     else {
         ch_tissue_seg = ch_spatialdata
     }
 
-    if (params.segmentation.cellpose) {
-        (ch_image_patches, _out) = MAKE_IMAGE_PATCHES(ch_tissue_seg, ArgsCLI(params.patchify, "pixel"))
-        (ch_resolved, versions) = CELLPOSE(ch_image_patches, params)
+    if (params.use_cellpose) {
+        (ch_image_patches, _out) = MAKE_IMAGE_PATCHES(ch_tissue_seg, argsCLI("image_patches"))
+        (ch_resolved, versions) = CELLPOSE(ch_image_patches)
 
         ch_versions = ch_versions.mix(versions)
     }
 
-    if (params.segmentation.stardist) {
-        (ch_image_patches, _out) = MAKE_IMAGE_PATCHES(ch_tissue_seg, ArgsCLI(params.patchify, "pixel"))
-        (ch_resolved, versions) = STARDIST(ch_image_patches, params)
+    if (params.use_stardist) {
+        (ch_image_patches, _out) = MAKE_IMAGE_PATCHES(ch_tissue_seg, argsCLI("image_patches"))
+        (ch_resolved, versions) = STARDIST(ch_image_patches)
 
         ch_versions = ch_versions.mix(versions)
     }
 
-    if (params.segmentation.baysor) {
-        ch_input_baysor = params.segmentation.cellpose ? ch_resolved : ch_tissue_seg
+    if (params.use_baysor) {
+        ch_input_baysor = params.use_cellpose ? ch_resolved : ch_tissue_seg
 
-        ch_transcripts_patches = MAKE_TRANSCRIPT_PATCHES(ch_input_baysor, transcriptPatchesArgs(params, "baysor"))
-        (ch_resolved, versions) = BAYSOR(ch_transcripts_patches, params)
-
-        ch_versions = ch_versions.mix(versions)
-    }
-
-    if (params.segmentation.comseg) {
-        ch_input_comseg = params.segmentation.cellpose ? ch_resolved : ch_tissue_seg
-
-        ch_transcripts_patches = MAKE_TRANSCRIPT_PATCHES(ch_input_comseg, transcriptPatchesArgs(params, "comseg"))
-        (ch_resolved, versions) = COMSEG(ch_transcripts_patches, params)
+        ch_transcripts_patches = MAKE_TRANSCRIPT_PATCHES(ch_input_baysor, argsCLI("transcript_patches"))
+        (ch_resolved, versions) = BAYSOR(ch_transcripts_patches)
 
         ch_versions = ch_versions.mix(versions)
     }
 
-    if (params.segmentation.proseg) {
-        ch_input_proseg = params.segmentation.cellpose ? ch_resolved : ch_tissue_seg
+    if (params.use_comseg) {
+        ch_input_comseg = params.use_cellpose ? ch_resolved : ch_tissue_seg
 
-        ch_proseg_patches = MAKE_TRANSCRIPT_PATCHES(ch_input_proseg, transcriptPatchesArgs(params, "proseg"))
-        (ch_resolved, versions) = PROSEG(ch_proseg_patches, params)
+        ch_transcripts_patches = MAKE_TRANSCRIPT_PATCHES(ch_input_comseg, argsCLI("transcript_patches") + " --write-cells-centroids")
+        (ch_resolved, versions) = COMSEG(ch_transcripts_patches)
 
         ch_versions = ch_versions.mix(versions)
     }
 
-    (ch_aggregated, _out) = AGGREGATE(ch_resolved, ArgsCLI(params.aggregate))
+    if (params.use_proseg) {
+        if (params.use_stardist) {
+            if (!params.technology == "visium_hd") {
+                exit 1, "Proseg segmentation with StarDist prior shapes is only supported for Visium HD data."
+            }
+            ch_input_proseg = ch_resolved.map { meta, sdata_path -> [meta, sdata_path, [], []] }
+        } else {
+            ch_proseg_patches = params.use_cellpose ? ch_resolved : ch_tissue_seg
+            ch_input_proseg = MAKE_TRANSCRIPT_PATCHES(ch_proseg_patches, argsCLI("transcript_patches"))
+        }
 
-    if (params.annotation && params.annotation.method == "tangram") {
-        sc_reference = file(params.annotation.args.sc_reference_path)
-        params.annotation.args.remove('sc_reference_path')
+        (ch_resolved, versions) = PROSEG(ch_input_proseg)
 
-        (ch_annotated, _out, versions) = TANGRAM_ANNOTATION(ch_aggregated, sc_reference, ArgsCLI(params.annotation.args))
         ch_versions = ch_versions.mix(versions)
     }
-    else if (params.annotation && params.annotation.method == "fluorescence") {
-        (ch_annotated, _out, versions) = FLUO_ANNOTATION(ch_aggregated, ArgsCLI(params.annotation.args))
+
+    (ch_aggregated, _out) = AGGREGATE(ch_resolved, argsCLI("aggregate"))
+
+    if (params.use_tangram) {
+        sc_reference = file(params.sc_reference_path)
+
+        (ch_annotated, _out, versions) = TANGRAM_ANNOTATION(ch_aggregated, sc_reference, argsCLI("tangram"))
+        ch_versions = ch_versions.mix(versions)
+    }
+    else if (params.use_fluorescence_annotation) {
+        (ch_annotated, _out, versions) = FLUO_ANNOTATION(ch_aggregated, argsCLI("fluorescence_annotation"))
         ch_versions = ch_versions.mix(versions)
     }
     else {
         ch_annotated = ch_aggregated
     }
 
-    if (params.scanpy_preprocess) {
-        (ch_preprocessed, _out, versions) = SCANPY_PREPROCESS(ch_annotated, ArgsCLI(params.scanpy_preprocess))
+    if (params.use_scanpy_preprocessing) {
+        (ch_preprocessed, _out, versions) = SCANPY_PREPROCESS(ch_annotated, argsCLI("scanpy_preprocessing"))
         ch_versions = ch_versions.mix(versions)
     }
     else {
         ch_preprocessed = ch_annotated
     }
 
-    EXPLORER(ch_preprocessed, ArgsCLI(params.explorer))
+    EXPLORER(ch_preprocessed, argsCLI("explorer"))
 
     REPORT(ch_preprocessed)
 
@@ -179,12 +185,11 @@ workflow SOPA {
 workflow CELLPOSE {
     take:
     ch_patches
-    config
 
     main:
-    ch_versions = Channel.empty()
+    ch_versions = channel.empty()
 
-    cellpose_args = ArgsCLI(config.segmentation.cellpose)
+    cellpose_args = argsCLI("cellpose")
 
     ch_patches
         .map { meta, sdata_path, patches_file_image -> [meta, sdata_path, patches_file_image.text.trim().toInteger()] }
@@ -205,12 +210,11 @@ workflow CELLPOSE {
 workflow STARDIST {
     take:
     ch_patches
-    config
 
     main:
-    ch_versions = Channel.empty()
+    ch_versions = channel.empty()
 
-    stardist_args = ArgsCLI(config.segmentation.stardist)
+    stardist_args = argsCLI("stardist")
 
     ch_patches
         .map { meta, sdata_path, patches_file_image -> [meta, sdata_path, patches_file_image.text.trim().toInteger()] }
@@ -228,35 +232,15 @@ workflow STARDIST {
     ch_versions
 }
 
-workflow PROSEG {
-    take:
-    ch_patches
-    config
-
-    main:
-    ch_versions = Channel.empty()
-
-    proseg_args = ArgsCLI(config.segmentation.proseg, null, ["command_line_suffix"])
-
-    (ch_segmented, _out, versions) = PATCH_SEGMENTATION_PROSEG(ch_patches, proseg_args)
-
-    ch_versions = ch_versions.mix(versions)
-
-    emit:
-    ch_segmented
-    ch_versions
-}
-
 
 workflow BAYSOR {
     take:
     ch_patches
-    config
 
     main:
-    ch_versions = Channel.empty()
+    ch_versions = channel.empty()
 
-    baysor_args = ArgsCLI(config.segmentation.baysor, null, ["config"])
+    baysor_args = argsCLI("baysor")
 
     ch_patches
         .map { meta, sdata_path, patches_file_transcripts, _patches -> [meta, sdata_path, patches_file_transcripts.splitText()] }
@@ -265,7 +249,7 @@ workflow BAYSOR {
 
     ch_segmented = PATCH_SEGMENTATION_BAYSOR(ch_baysor).map { meta, sdata_path, _out, n_patches -> [groupKey(meta.sdata_dir, n_patches), [meta, sdata_path]] }.groupTuple().map { it -> it[1][0] }
 
-    (ch_resolved, _out, versions) = RESOLVE_BAYSOR(ch_segmented, resolveArgs(config))
+    (ch_resolved, _out, versions) = RESOLVE_BAYSOR(ch_segmented, argsCLI("resolve"))
 
     ch_versions = ch_versions.mix(versions)
 
@@ -277,12 +261,11 @@ workflow BAYSOR {
 workflow COMSEG {
     take:
     ch_patches
-    config
 
     main:
-    ch_versions = Channel.empty()
+    ch_versions = channel.empty()
 
-    comseg_args = ArgsCLI(config.segmentation.comseg, null, ["config"])
+    comseg_args = argsCLI("comseg")
 
     ch_patches
         .map { meta, sdata_path, patches_file_transcripts, _patches -> [meta, sdata_path, patches_file_transcripts.splitText()] }
@@ -291,7 +274,7 @@ workflow COMSEG {
 
     ch_segmented = PATCH_SEGMENTATION_COMSEG(ch_comseg).map { meta, sdata_path, _out1, _out2, n_patches -> [groupKey(meta.sdata_dir, n_patches), [meta, sdata_path]] }.groupTuple().map { it -> it[1][0] }
 
-    (ch_resolved, _out, versions) = RESOLVE_COMSEG(ch_segmented, resolveArgs(config))
+    (ch_resolved, _out, versions) = RESOLVE_COMSEG(ch_segmented, argsCLI("resolve"))
 
     ch_versions = ch_versions.mix(versions)
 
@@ -300,27 +283,18 @@ workflow COMSEG {
     ch_versions
 }
 
-def transcriptPatchesArgs(Map config, String method) {
-    def prior_args = ArgsCLI(config.segmentation[method], null, ["prior_shapes_key", "unassigned_value"])
+workflow PROSEG {
+    take:
+    ch_patches
 
-    return ArgsCLI(config.patchify, "micron") + ("comseg" in config.segmentation ? " --write-cells-centroids " : " ") + prior_args
-}
+    main:
+    ch_versions = channel.empty()
 
-def resolveArgs(Map config) {
-    def gene_column
-    def min_area
+    (ch_segmented, _out, versions) = PATCH_SEGMENTATION_PROSEG(ch_patches, argsCLI("proseg"))
 
-    if ("comseg" in config.segmentation) {
-        gene_column = config.segmentation.comseg.config.gene_column
-        min_area = config.segmentation.comseg.min_area ?: 0
-    }
-    else if ("baysor" in config.segmentation) {
-        gene_column = config.segmentation.baysor.config.data.gene
-        min_area = config.segmentation.baysor.min_area ?: 0
-    }
-    else {
-        throw new IllegalArgumentException("Unknown segmentation method in config for resolveArgs")
-    }
+    ch_versions = ch_versions.mix(versions)
 
-    return "--gene-column ${gene_column} --min-area ${min_area}"
+    emit:
+    ch_segmented
+    ch_versions
 }
