@@ -101,7 +101,7 @@ workflow SOPA {
     if (params.use_proseg) {
         if (params.use_stardist) {
             if (!params.technology == "visium_hd") {
-                exit 1, "Proseg segmentation with StarDist prior shapes is only supported for Visium HD data."
+                error("Proseg segmentation with StarDist prior shapes is only supported for Visium HD data.")
             }
             ch_input_proseg = ch_resolved.map { meta, sdata_path -> [meta, sdata_path, [], []] }
         } else {
