@@ -125,7 +125,7 @@ You'll also need to choose some Sopa parameters to decide which reader/segmentat
 - `macsima_base`
   - A profile with Sopa parameters to run Cellpose on MACSima data
 
-These profiles contain the backbone of the pipeline, i.e. which technology to use and how to process the segmentation. For more customization, you can provide [other Sopa parameters](https://nf-co.re/sopa/dev/parameters/) via the command line, for instance `--use_scanpy_preprocessing true` if you want to have a UMAP and a leiden clustering on your output AnnData object.
+These profiles contain the backbone of the pipeline, i.e. which technology to use and how to process the segmentation. For more customization, you can provide [other Sopa parameters](https://nf-co.re/sopa/dev/parameters/) via the command line, for instance `--use_scanpy_preprocessing true` if you want to have a UMAP and a Leiden clustering on your output AnnData object.
 
 ## Running the pipeline
 
