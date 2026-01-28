@@ -140,7 +140,7 @@ This will launch the pipeline with the `docker` configuration profile. See below
 > [!NOTE]
 > For Visium HD data, you may also need to provide a `--spaceranger_probeset` argument with an official 10X Genomics probe set (see [here](https://www.10xgenomics.com/support/software/space-ranger/downloads)). For instance, you can use:
 >
-> ```
+> ```bash
 > --spaceranger_probeset https://cf.10xgenomics.com/supp/spatial-exp/probeset/Visium_Human_Transcriptome_Probe_Set_v2.0_GRCh38-2020-A.csv
 > ```
 
