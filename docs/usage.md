@@ -36,7 +36,7 @@ SAMPLE1,/path/to/one/merscope_directory
 SAMPLE2,/path/to/another/merscope_directory
 ```
 
-We also provide a detailed description of what `data_path` should contain, depending on the technologies:
+#### `data_path` directory content
 
 | Technology            | `data_path` directory content                                                                                                                                                                                          |
 | --------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
