@@ -30,11 +30,10 @@ workflow SPACERANGER {
 
     // Combine extracted and directory inputs into one channel
     ch_spaceranger_combined = UNTAR_SPACERANGER_INPUT.out.untar
-        .mix(ch_spaceranger.dir)
-        .map { meta, dir -> meta + [fastq_dir: dir] }
+        .mix ( ch_spaceranger.dir.map { meta, dir -> [meta, file(dir)] } )
 
     // Create final meta map and check input existance
-    ch_spaceranger_input = ch_spaceranger_combined.map { create_channel_spaceranger(it) }
+    ch_spaceranger_input = ch_spaceranger_combined.map { meta, dir -> create_channel_spaceranger(meta, dir) }
 
 
     //
@@ -85,7 +84,7 @@ workflow SPACERANGER {
 
 
 // Function to get list of [ meta, [ fastq_dir, tissue_hires_image, slide, area ]]
-def create_channel_spaceranger(LinkedHashMap meta) {
+def create_channel_spaceranger(LinkedHashMap meta, File fastq_dir) {
     // Convert a path in `meta` to a file object and return it. If `key` is not contained in `meta`
     // return an empty list which is recognized as 'no file' by nextflow.
     def get_file_from_meta = { key ->
@@ -95,8 +94,9 @@ def create_channel_spaceranger(LinkedHashMap meta) {
 
     def slide = meta.remove("slide")
     def area = meta.remove("area")
-    def fastq_dir = meta.remove("fastq_dir")
-    def fastq_files = file("${fastq_dir}/${meta['id']}*.fastq.gz")
+    def fastq_files = fastq_dir.listFiles().findAll { file ->
+        file.name.startsWith(meta['id']) && file.name.endsWith('.fastq.gz')
+    }
     def manual_alignment = get_file_from_meta("manual_alignment")
     def slidefile = get_file_from_meta("slidefile")
     def image = get_file_from_meta("image")
