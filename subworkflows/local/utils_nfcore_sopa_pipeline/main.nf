@@ -130,9 +130,6 @@ workflow PIPELINE_INITIALISATION {
 
             return meta
         }
-        .map { samplesheet ->
-            validateInputSamplesheet(samplesheet)
-        }
         .set { ch_samplesheet }
 
     //
@@ -196,12 +193,6 @@ workflow PIPELINE_COMPLETION {
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-//
-// Validate channels from input samplesheet
-//
-def validateInputSamplesheet(input) {
-    return input
-}
 //
 // Generate methods description for MultiQC
 //
