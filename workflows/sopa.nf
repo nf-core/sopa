@@ -29,6 +29,7 @@ include { TANGRAM_ANNOTATION } from '../modules/local/tangram_annotation'
 include { FLUO_ANNOTATION } from '../modules/local/fluo_annotation'
 include { SPACERANGER } from '../subworkflows/local/spaceranger'
 include { argsCLI } from '../modules/local/utils'
+include { extractOutsDir } from '../modules/local/utils'
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     RUN MAIN WORKFLOW
@@ -45,7 +46,7 @@ workflow SOPA {
 
     if (params.technology == "visium_hd") {
         (ch_input_spatialdata, versions) = SPACERANGER(ch_samplesheet)
-        ch_input_spatialdata = ch_input_spatialdata.map { meta, out -> [meta, out[0].toString().replaceFirst(/(.*?outs).*/, '$1'), meta.image] }
+        ch_input_spatialdata = ch_input_spatialdata.map { meta, out -> [meta, extractOutsDir(out[0]), meta.image] }
 
         ch_versions = ch_versions.mix(versions)
     }
