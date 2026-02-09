@@ -7,7 +7,7 @@ process RESOLVE_STARDIST {
         : 'docker.io/quentinblampey/sopa:2.1.11-stardist'}"
 
     input:
-    tuple val(meta), path(sdata_path)
+    tuple val(meta), path(sdata_path), path(parquets)
 
     output:
     tuple val(meta), path(sdata_path)
