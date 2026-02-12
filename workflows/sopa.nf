@@ -100,10 +100,8 @@ workflow SOPA {
     }
 
     if (params.use_proseg) {
-        if (params.use_stardist) {
-            if (!params.technology == "visium_hd") {
-                error("Proseg segmentation with StarDist prior shapes is only supported for Visium HD data.")
-            }
+        if (params.technology == "visium_hd") {
+            ch_resolved = params.use_stardist ? ch_resolved : ch_tissue_seg
             ch_input_proseg = ch_resolved.map { meta, sdata_path -> [meta, sdata_path, [], []] }
         } else {
             ch_proseg_patches = params.use_cellpose ? ch_resolved : ch_tissue_seg

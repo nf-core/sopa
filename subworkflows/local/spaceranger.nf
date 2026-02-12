@@ -20,8 +20,8 @@ workflow SPACERANGER {
     ch_spaceranger = ch_samplesheet
         .map { it -> [it, it.fastq_dir] }
         .branch {
-            tar: it[1].name.contains(".tar.gz")
-            dir: !it[1].name.contains(".tar.gz")
+            tar: it[1].name.contains(".gz")
+            dir: !it[1].name.contains(".gz")
         }
 
     // Extract tarballed inputs
