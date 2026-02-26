@@ -16,6 +16,14 @@ process RESOLVE_CELLPOSE {
 
     script:
     """
+    for f in ${parquets}; do
+        if [ ! -f "${sdata_path}/.sopa_cache/cellpose_boundaries/\$f" ]; then
+            mv "\$f" "${sdata_path}/.sopa_cache/cellpose_boundaries/"
+        else
+            echo "Skipping \$f: already exists in cache"
+        fi
+    done
+
     sopa resolve cellpose ${sdata_path}
 
     cat <<-END_VERSIONS > versions.yml
