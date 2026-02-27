@@ -27,7 +27,9 @@ include { SCANPY_PREPROCESS } from '../modules/local/scanpy_preprocess'
 include { REPORT } from '../modules/local/report'
 include { TANGRAM_ANNOTATION } from '../modules/local/tangram_annotation'
 include { FLUO_ANNOTATION } from '../modules/local/fluo_annotation'
-include { SPACERANGER } from '../subworkflows/local/spaceranger'
+include { SPACERANGER            } from '../subworkflows/local/spaceranger'
+include { INPUT_CHECK            } from '../subworkflows/local/input_check'
+
 include { argsCLI } from '../modules/local/utils'
 include { extractOutsDir } from '../modules/local/utils'
 /*
@@ -45,7 +47,11 @@ workflow SOPA {
     ch_versions = channel.empty()
 
     if (params.technology == "visium_hd") {
-        (ch_input_spatialdata, versions) = SPACERANGER(ch_samplesheet)
+        INPUT_CHECK (ch_samplesheet)
+        (ch_input_spatialdata, versions) = SPACERANGER (INPUT_CHECK.out.ch_spaceranger_input, 
+                                                        INPUT_CHECK.out.ch_versions)
+
+        //(ch_input_spatialdata, versions) = SPACERANGER(ch_samplesheet)
         ch_input_spatialdata = ch_input_spatialdata.map { meta, out -> [meta, extractOutsDir(out[0]), meta.image] }
 
         ch_versions = ch_versions.mix(versions)
