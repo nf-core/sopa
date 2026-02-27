@@ -48,7 +48,7 @@ workflow SOPA {
 
     if (params.technology == "visium_hd") {
         INPUT_CHECK (ch_samplesheet)
-        (ch_input_spatialdata, versions) = SPACERANGER (INPUT_CHECK.out.ch_spaceranger_input, 
+        (ch_input_spatialdata, versions) = SPACERANGER (INPUT_CHECK.out.ch_spaceranger_input,
                                                         INPUT_CHECK.out.ch_versions)
 
         //(ch_input_spatialdata, versions) = SPACERANGER(ch_samplesheet)
