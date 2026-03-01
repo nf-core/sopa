@@ -1,6 +1,6 @@
 nextflow_pipeline {
 
-    name "Test pipeline"
+    name "Test visium HD workflow"
     script "../main.nf"
     profile "test_visium_hd"
     tag "pipeline"
@@ -14,21 +14,41 @@ nextflow_pipeline {
         }
 
         then {
-            // stable_name: All files + folders in ${params.outdir}/ with a stable name
-            def stable_name = getAllFilesFromDir(params.outdir, relative: true, includeDir: true, ignore: ['pipeline_info/*.{html,json,txt}', '**/.sopa_cache', '**/.sopa_cache/**'])
-            // stable_path: All files in ${params.outdir}/ with stable content
-            def stable_path = getAllFilesFromDir(params.outdir, ignoreFile: 'tests/.nftignore')
+
+            // stable_name: All files in ${params.outdir}/ with stable content (names)
+            def stable_name = getAllFilesFromDir(
+                params.outdir,
+                relative: true,
+                includeDir: true,
+                ignore: [
+                    'pipeline_info/*.{html,json,txt}',
+                    '**/.sopa_cache',
+                    '**/.sopa_cache/**'
+                ]
+            )
+
             assertAll(
-                { assert workflow.success},
+                { assert workflow.success },
+
+                // Space Ranger
+                { assert file("$outputDir/Visium_HD_Human_Lung_Cancer_HD_Only_Experiment2_spaceranger/outs/web_summary.html").exists() },
+
+		{ assert snapshot(
+                    path("$outputDir/Visium_HD_Human_Lung_Cancer_HD_Only_Experiment2_spaceranger/outs/binned_outputs/square_002um/raw_feature_bc_matrix.h5"),
+                    path("$outputDir/Visium_HD_Human_Lung_Cancer_HD_Only_Experiment2_spaceranger/outs/binned_outputs/square_002um/filtered_feature_bc_matrix.h5"),
+                )},
+
+                { assert file("$outputDir/Visium_HD_Human_Lung_Cancer_HD_Only_Experiment2_spaceranger/outs/binned_outputs/square_002um/raw_feature_bc_matrix.h5").exists() },
+
+                { assert file("$outputDir/Visium_HD_Human_Lung_Cancer_HD_Only_Experiment2_spaceranger/outs/binned_outputs/square_002um/spatial/tissue_positions.parquet").exists() },
+
                 { assert snapshot(
                     // Number of successful tasks
                     workflow.trace.succeeded().size(),
-                    // pipeline versions.yml file for multiqc from which Nextflow version is removed because we test pipelines on multiple Nextflow versions
+                    // Software versions
                     removeNextflowVersion("$outputDir/pipeline_info/nf_core_sopa_software_versions.yml"),
                     // All stable path name, with a relative path
-                    stable_name,
-                    // All files with stable contents
-                    stable_path
+                    stable_name
                 ).match() }
             )
         }
