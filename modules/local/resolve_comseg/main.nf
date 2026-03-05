@@ -7,7 +7,7 @@ process RESOLVE_COMSEG {
         : 'docker.io/quentinblampey/sopa:2.1.11-comseg'}"
 
     input:
-    tuple val(meta), path(sdata_path)
+    tuple val(meta), path(sdata_path), path(counts, stageAs: "?/*"), path(polygons, stageAs: "?/*")
     val cli_arguments
 
     output:

@@ -201,7 +201,9 @@ workflow CELLPOSE {
         .flatMap { meta, sdata_path, n_patches -> (0..<n_patches).collect { index -> [meta, sdata_path, cellpose_args, index, n_patches] } }
         .set { ch_cellpose }
 
-    ch_segmented = PATCH_SEGMENTATION_CELLPOSE(ch_cellpose).map { meta, sdata_path, parquet, n_patches -> [groupKey(meta.sdata_dir, n_patches), meta, sdata_path, parquet] }.groupTuple().map { _key, metas, sdata_paths, parquets -> [metas[0], sdata_paths[0], parquets] }
+    ch_segmented = PATCH_SEGMENTATION_CELLPOSE(ch_cellpose)
+        .map { meta, sdata_path, parquet, n_patches -> [groupKey(meta.sdata_dir, n_patches), meta, sdata_path, parquet] }
+        .groupTuple().map { _key, metas, sdata_paths, parquets -> [metas[0], sdata_paths[0], parquets] }
 
     (ch_resolved, _out, versions) = RESOLVE_CELLPOSE(ch_segmented)
 
@@ -226,7 +228,9 @@ workflow STARDIST {
         .flatMap { meta, sdata_path, n_patches -> (0..<n_patches).collect { index -> [meta, sdata_path, stardist_args, index, n_patches] } }
         .set { ch_stardist }
 
-    ch_segmented = PATCH_SEGMENTATION_STARDIST(ch_stardist).map { meta, sdata_path, parquet, n_patches -> [groupKey(meta.sdata_dir, n_patches), meta, sdata_path, parquet] }.groupTuple().map { _key, metas, sdata_paths, parquets -> [metas[0], sdata_paths[0], parquets] }
+    ch_segmented = PATCH_SEGMENTATION_STARDIST(ch_stardist)
+        .map { meta, sdata_path, parquet, n_patches -> [groupKey(meta.sdata_dir, n_patches), meta, sdata_path, parquet] }
+        .groupTuple().map { _key, metas, sdata_paths, parquets -> [metas[0], sdata_paths[0], parquets] }
 
     (ch_resolved, _out, versions) = RESOLVE_STARDIST(ch_segmented)
 
@@ -252,7 +256,9 @@ workflow BAYSOR {
         .flatMap { meta, sdata_path, patches_indices -> patches_indices.collect { index -> [meta, sdata_path, baysor_args, index.trim().toInteger(), patches_indices.size] } }
         .set { ch_baysor }
 
-    ch_segmented = PATCH_SEGMENTATION_BAYSOR(ch_baysor).map { meta, sdata_path, _out, n_patches -> [groupKey(meta.sdata_dir, n_patches), [meta, sdata_path]] }.groupTuple().map { it -> it[1][0] }
+    ch_segmented = PATCH_SEGMENTATION_BAYSOR(ch_baysor)
+        .map { meta, sdata_path, counts, polygons, n_patches -> [groupKey(meta.sdata_dir, n_patches), meta, sdata_path, counts, polygons] }
+        .groupTuple().map { _key, metas, sdata_paths, counts, polygons -> [metas[0], sdata_paths[0], counts, polygons] }
 
     (ch_resolved, _out, versions) = RESOLVE_BAYSOR(ch_segmented, argsCLI("resolve"))
 
@@ -277,7 +283,9 @@ workflow COMSEG {
         .flatMap { meta, sdata_path, patches_indices -> patches_indices.collect { index -> [meta, sdata_path, comseg_args, index.trim().toInteger(), patches_indices.size] } }
         .set { ch_comseg }
 
-    ch_segmented = PATCH_SEGMENTATION_COMSEG(ch_comseg).map { meta, sdata_path, _out1, _out2, n_patches -> [groupKey(meta.sdata_dir, n_patches), [meta, sdata_path]] }.groupTuple().map { it -> it[1][0] }
+    ch_segmented = PATCH_SEGMENTATION_COMSEG(ch_comseg)
+        .map { meta, sdata_path, counts, polygons, n_patches -> [groupKey(meta.sdata_dir, n_patches), meta, sdata_path, counts, polygons] }
+        .groupTuple().map { _key, metas, sdata_paths, counts, polygons -> [metas[0], sdata_paths[0], counts, polygons] }
 
     (ch_resolved, _out, versions) = RESOLVE_COMSEG(ch_segmented, argsCLI("resolve"))
 
