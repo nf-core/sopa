@@ -7,7 +7,7 @@ process RESOLVE_CELLPOSE {
         : 'docker.io/quentinblampey/sopa:2.1.11-cellpose'}"
 
     input:
-    tuple val(meta), path(sdata_path), path(parquets, stageAs: "?/*")
+    tuple val(meta), path(sdata_path), path(parquets, stageAs: "*")
 
     output:
     tuple val(meta), path(sdata_path)

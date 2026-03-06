@@ -7,7 +7,7 @@ process RESOLVE_BAYSOR {
         : 'docker.io/quentinblampey/sopa:2.1.11-baysor'}"
 
     input:
-    tuple val(meta), path(sdata_path), path(counts, stageAs: "?/*"), path(polygons, stageAs: "?/*")
+    tuple val(meta), path(sdata_path), path(counts, stageAs: "*"), path(polygons, stageAs: "*")
     val cli_arguments
 
     output:
