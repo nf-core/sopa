@@ -17,11 +17,7 @@ process RESOLVE_STARDIST {
     script:
     """
     for f in ${parquets}; do
-        if [ ! -f "${sdata_path}/.sopa_cache/stardist_boundaries/\$f" ]; then
-            mv "\$f" "${sdata_path}/.sopa_cache/stardist_boundaries/"
-        else
-            echo "Skipping \$f: already exists in cache"
-        fi
+        mv "\$f" "${sdata_path}/.sopa_cache/stardist_boundaries/"
     done
 
     sopa resolve stardist ${sdata_path}
