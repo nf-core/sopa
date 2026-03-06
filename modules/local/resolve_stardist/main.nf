@@ -7,7 +7,7 @@ process RESOLVE_STARDIST {
         : 'docker.io/quentinblampey/sopa:2.1.11-stardist'}"
 
     input:
-    tuple val(meta), path(sdata_path), path(parquets, stageAs: "**")
+    tuple val(meta), path(sdata_path), path(parquets)
 
     output:
     tuple val(meta), path(sdata_path)
@@ -16,6 +16,14 @@ process RESOLVE_STARDIST {
 
     script:
     """
+    for f in ${parquets}; do
+        if [ ! -f "${sdata_path}/.sopa_cache/stardist_boundaries/\$f" ]; then
+            mv "\$f" "${sdata_path}/.sopa_cache/stardist_boundaries/"
+        else
+            echo "Skipping \$f: already exists in cache"
+        fi
+    done
+
     sopa resolve stardist ${sdata_path}
 
     cat <<-END_VERSIONS > versions.yml
