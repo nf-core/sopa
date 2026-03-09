@@ -16,6 +16,7 @@ process RESOLVE_STARDIST {
 
     script:
     """
+    mkdir -p ${sdata_path}/.sopa_cache/stardist_boundaries
     for f in ${parquets}; do
         mv "\$f" "${sdata_path}/.sopa_cache/stardist_boundaries/"
     done

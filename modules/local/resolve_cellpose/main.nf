@@ -16,6 +16,7 @@ process RESOLVE_CELLPOSE {
 
     script:
     """
+    mkdir -p ${sdata_path}/.sopa_cache/cellpose_boundaries
     for f in ${parquets}; do
         mv "\$f" "${sdata_path}/.sopa_cache/cellpose_boundaries/"
     done
