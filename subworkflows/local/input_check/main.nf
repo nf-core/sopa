@@ -52,7 +52,6 @@ def get_file_from_meta(meta, k) {
 
 // Function to get list of [ meta, [ fastq_dir, tissue_hires_image, slide, area ]]
 def create_channel_spaceranger(meta, fastq_dir) {
-    meta["id"] = meta.get("sample")
     def slide = meta.get("slide")
     def area = meta.get("area")
 
