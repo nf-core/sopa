@@ -7,7 +7,7 @@ process RESOLVE_STARDIST {
         : 'docker.io/quentinblampey/sopa:2.1.11-stardist'}"
 
     input:
-    tuple val(meta), path(sdata_path)
+    tuple val(meta), path(sdata_path), path(parquets)
 
     output:
     tuple val(meta), path(sdata_path)
@@ -16,6 +16,11 @@ process RESOLVE_STARDIST {
 
     script:
     """
+    mkdir -p ${sdata_path}/.sopa_cache/stardist_boundaries
+    for f in ${parquets}; do
+        mv "\$f" "${sdata_path}/.sopa_cache/stardist_boundaries/"
+    done
+
     sopa resolve stardist ${sdata_path}
 
     cat <<-END_VERSIONS > versions.yml

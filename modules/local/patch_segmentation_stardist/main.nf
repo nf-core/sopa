@@ -10,10 +10,12 @@ process PATCH_SEGMENTATION_STARDIST {
     tuple val(meta), path(sdata_path), val(cli_arguments), val(index), val(n_patches)
 
     output:
-    tuple val(meta), path(sdata_path), path("${sdata_path}/.sopa_cache/stardist_boundaries/${index}.parquet"), val(n_patches)
+    tuple val(meta), path(sdata_path), path("${index}.parquet"), val(n_patches)
 
     script:
     """
     sopa segmentation stardist ${sdata_path} --patch-index ${index} ${cli_arguments}
+
+    mv ${sdata_path}/.sopa_cache/stardist_boundaries/${index}.parquet ${index}.parquet
     """
 }

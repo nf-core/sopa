@@ -7,7 +7,7 @@ process RESOLVE_COMSEG {
         : 'docker.io/quentinblampey/sopa:2.1.11-comseg'}"
 
     input:
-    tuple val(meta), path(sdata_path)
+    tuple val(meta), path(sdata_path), path(counts), path(polygons)
     val cli_arguments
 
     output:
@@ -17,6 +17,26 @@ process RESOLVE_COMSEG {
 
     script:
     """
+    for f in $counts; do
+        index=\${f%%-*}
+
+        mkdir -p ${sdata_path}/.sopa_cache/transcript_patches/\$index
+
+        if [ ! -f "${sdata_path}/.sopa_cache/transcript_patches/\$index/segmentation_counts.h5ad" ]; then
+            mv \$f ${sdata_path}/.sopa_cache/transcript_patches/\$index/segmentation_counts.h5ad
+        fi
+    done
+
+    for f in $polygons; do
+        index=\${f%%-*}
+
+        mkdir -p ${sdata_path}/.sopa_cache/transcript_patches/\$index
+
+        if [ ! -f "${sdata_path}/.sopa_cache/transcript_patches/\$index/segmentation_polygons.json" ]; then
+            mv \$f ${sdata_path}/.sopa_cache/transcript_patches/\$index/segmentation_polygons.json
+        fi
+    done
+
     sopa resolve comseg ${sdata_path} ${cli_arguments}
 
     rm -r ${sdata_path}/.sopa_cache/transcript_patches  || true    # cleanup large comseg files

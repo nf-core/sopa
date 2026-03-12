@@ -27,8 +27,11 @@ include { SCANPY_PREPROCESS } from '../modules/local/scanpy_preprocess'
 include { REPORT } from '../modules/local/report'
 include { TANGRAM_ANNOTATION } from '../modules/local/tangram_annotation'
 include { FLUO_ANNOTATION } from '../modules/local/fluo_annotation'
-include { SPACERANGER } from '../subworkflows/local/spaceranger'
+include { SPACERANGER            } from '../subworkflows/local/spaceranger'
+include { INPUT_CHECK            } from '../subworkflows/local/input_check'
+
 include { argsCLI } from '../modules/local/utils'
+include { extractOutsDir } from '../modules/local/utils'
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     RUN MAIN WORKFLOW
@@ -44,8 +47,10 @@ workflow SOPA {
     ch_versions = channel.empty()
 
     if (params.technology == "visium_hd") {
-        (ch_input_spatialdata, versions) = SPACERANGER(ch_samplesheet)
-        ch_input_spatialdata = ch_input_spatialdata.map { meta, out -> [meta, out[0].toString().replaceFirst(/(.*?outs).*/, '$1'), meta.image] }
+        INPUT_CHECK(ch_samplesheet)
+        (ch_input_spatialdata, versions) = SPACERANGER(INPUT_CHECK.out.ch_spaceranger_input, INPUT_CHECK.out.ch_versions)
+
+        ch_input_spatialdata = ch_input_spatialdata.map { meta, out -> [meta, extractOutsDir(out[0]), meta.image] }
 
         ch_versions = ch_versions.mix(versions)
     }
@@ -99,10 +104,8 @@ workflow SOPA {
     }
 
     if (params.use_proseg) {
-        if (params.use_stardist) {
-            if (!params.technology == "visium_hd") {
-                error("Proseg segmentation with StarDist prior shapes is only supported for Visium HD data.")
-            }
+        if (params.technology == "visium_hd") {
+            ch_resolved = params.use_stardist ? ch_resolved : ch_tissue_seg
             ch_input_proseg = ch_resolved.map { meta, sdata_path -> [meta, sdata_path, [], []] }
         } else {
             ch_proseg_patches = params.use_cellpose ? ch_resolved : ch_tissue_seg
@@ -196,7 +199,9 @@ workflow CELLPOSE {
         .flatMap { meta, sdata_path, n_patches -> (0..<n_patches).collect { index -> [meta, sdata_path, cellpose_args, index, n_patches] } }
         .set { ch_cellpose }
 
-    ch_segmented = PATCH_SEGMENTATION_CELLPOSE(ch_cellpose).map { meta, sdata_path, _out, n_patches -> [groupKey(meta.sdata_dir, n_patches), [meta, sdata_path]] }.groupTuple().map { it -> it[1][0] }
+    ch_segmented = PATCH_SEGMENTATION_CELLPOSE(ch_cellpose)
+        .map { meta, sdata_path, parquet, n_patches -> [groupKey(meta.sdata_dir, n_patches), meta, sdata_path, parquet] }
+        .groupTuple().map { _key, metas, sdata_paths, parquets -> [metas[0], sdata_paths[0], parquets] }
 
     (ch_resolved, _out, versions) = RESOLVE_CELLPOSE(ch_segmented)
 
@@ -221,7 +226,9 @@ workflow STARDIST {
         .flatMap { meta, sdata_path, n_patches -> (0..<n_patches).collect { index -> [meta, sdata_path, stardist_args, index, n_patches] } }
         .set { ch_stardist }
 
-    ch_segmented = PATCH_SEGMENTATION_STARDIST(ch_stardist).map { meta, sdata_path, _out, n_patches -> [groupKey(meta.sdata_dir, n_patches), [meta, sdata_path]] }.groupTuple().map { it -> it[1][0] }
+    ch_segmented = PATCH_SEGMENTATION_STARDIST(ch_stardist)
+        .map { meta, sdata_path, parquet, n_patches -> [groupKey(meta.sdata_dir, n_patches), meta, sdata_path, parquet] }
+        .groupTuple().map { _key, metas, sdata_paths, parquets -> [metas[0], sdata_paths[0], parquets] }
 
     (ch_resolved, _out, versions) = RESOLVE_STARDIST(ch_segmented)
 
@@ -247,7 +254,9 @@ workflow BAYSOR {
         .flatMap { meta, sdata_path, patches_indices -> patches_indices.collect { index -> [meta, sdata_path, baysor_args, index.trim().toInteger(), patches_indices.size] } }
         .set { ch_baysor }
 
-    ch_segmented = PATCH_SEGMENTATION_BAYSOR(ch_baysor).map { meta, sdata_path, _out, n_patches -> [groupKey(meta.sdata_dir, n_patches), [meta, sdata_path]] }.groupTuple().map { it -> it[1][0] }
+    ch_segmented = PATCH_SEGMENTATION_BAYSOR(ch_baysor)
+        .map { meta, sdata_path, counts, polygons, n_patches -> [groupKey(meta.sdata_dir, n_patches), meta, sdata_path, counts, polygons] }
+        .groupTuple().map { _key, metas, sdata_paths, counts, polygons -> [metas[0], sdata_paths[0], counts, polygons] }
 
     (ch_resolved, _out, versions) = RESOLVE_BAYSOR(ch_segmented, argsCLI("resolve"))
 
@@ -272,7 +281,9 @@ workflow COMSEG {
         .flatMap { meta, sdata_path, patches_indices -> patches_indices.collect { index -> [meta, sdata_path, comseg_args, index.trim().toInteger(), patches_indices.size] } }
         .set { ch_comseg }
 
-    ch_segmented = PATCH_SEGMENTATION_COMSEG(ch_comseg).map { meta, sdata_path, _out1, _out2, n_patches -> [groupKey(meta.sdata_dir, n_patches), [meta, sdata_path]] }.groupTuple().map { it -> it[1][0] }
+    ch_segmented = PATCH_SEGMENTATION_COMSEG(ch_comseg)
+        .map { meta, sdata_path, counts, polygons, n_patches -> [groupKey(meta.sdata_dir, n_patches), meta, sdata_path, counts, polygons] }
+        .groupTuple().map { _key, metas, sdata_paths, counts, polygons -> [metas[0], sdata_paths[0], counts, polygons] }
 
     (ch_resolved, _out, versions) = RESOLVE_COMSEG(ch_segmented, argsCLI("resolve"))
 

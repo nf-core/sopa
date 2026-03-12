@@ -204,6 +204,13 @@ def argsCLI(String group = null, Map args = null) {
         .join(" ")
 }
 
+def extractOutsDir(file) {
+    if (file.name == 'outs') {
+        return file
+    }
+    return extractOutsDir(file.parent)
+}
+
 def argsToSpatialData(Map meta, String fullres_image_file) {
     def args = [
         technology: params.technology,

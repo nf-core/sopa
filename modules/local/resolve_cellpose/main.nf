@@ -7,7 +7,7 @@ process RESOLVE_CELLPOSE {
         : 'docker.io/quentinblampey/sopa:2.1.11-cellpose'}"
 
     input:
-    tuple val(meta), path(sdata_path)
+    tuple val(meta), path(sdata_path), path(parquets)
 
     output:
     tuple val(meta), path(sdata_path)
@@ -16,6 +16,11 @@ process RESOLVE_CELLPOSE {
 
     script:
     """
+    mkdir -p ${sdata_path}/.sopa_cache/cellpose_boundaries
+    for f in ${parquets}; do
+        mv "\$f" "${sdata_path}/.sopa_cache/cellpose_boundaries/"
+    done
+
     sopa resolve cellpose ${sdata_path}
 
     cat <<-END_VERSIONS > versions.yml

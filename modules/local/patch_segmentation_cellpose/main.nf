@@ -10,7 +10,7 @@ process PATCH_SEGMENTATION_CELLPOSE {
     tuple val(meta), path(sdata_path), val(cli_arguments), val(index), val(n_patches)
 
     output:
-    tuple val(meta), path(sdata_path), path("${sdata_path}/.sopa_cache/cellpose_boundaries/${index}.parquet"), val(n_patches)
+    tuple val(meta), path(sdata_path), path("${index}.parquet"), val(n_patches)
 
     script:
     """
@@ -18,5 +18,7 @@ process PATCH_SEGMENTATION_CELLPOSE {
     export CELLPOSE_LOCAL_MODELS_PATH=./cellpose_cache
 
     sopa segmentation cellpose ${sdata_path} --patch-index ${index} ${cli_arguments}
+
+    mv ${sdata_path}/.sopa_cache/cellpose_boundaries/${index}.parquet ${index}.parquet
     """
 }
