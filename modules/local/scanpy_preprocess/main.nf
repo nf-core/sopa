@@ -12,7 +12,6 @@ process SCANPY_PREPROCESS {
 
     output:
     tuple val(meta), path(sdata_path)
-    path "${sdata_path}/tables/table"
     path "versions.yml"
 
     script:

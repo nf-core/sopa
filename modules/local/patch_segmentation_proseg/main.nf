@@ -7,12 +7,11 @@ process PATCH_SEGMENTATION_PROSEG {
         : 'docker.io/quentinblampey/sopa:2.1.11-proseg'}"
 
     input:
-    tuple val(meta), path(sdata_path), path(patches_file_transcripts), path(transcript_patches)
+    tuple val(meta), path(sdata_path), path(patches_file_transcripts)
     val cli_arguments
 
     output:
     tuple val(meta), path(sdata_path)
-    path "${sdata_path}/shapes/proseg_boundaries"
     path "versions.yml"
 
     script:

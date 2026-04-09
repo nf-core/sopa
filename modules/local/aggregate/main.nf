@@ -12,7 +12,6 @@ process AGGREGATE {
 
     output:
     tuple val(meta), path(sdata_path)
-    path "${sdata_path}/tables/table"
 
     script:
     """

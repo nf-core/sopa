@@ -11,10 +11,12 @@ process MAKE_TRANSCRIPT_PATCHES {
     val cli_arguments
 
     output:
-    tuple val(meta), path(sdata_path), path("${sdata_path}/.sopa_cache/patches_file_transcripts"), path("${sdata_path}/.sopa_cache/transcript_patches")
+    tuple val(meta), path(sdata_path), path("patches_file_transcripts")
 
     script:
     """
     sopa patchify transcripts ${sdata_path} ${cli_arguments}
+
+    mv ${sdata_path}/.sopa_cache/patches_file_transcripts patches_file_transcripts
     """
 }

@@ -12,7 +12,6 @@ process RESOLVE_COMSEG {
 
     output:
     tuple val(meta), path(sdata_path)
-    path "${sdata_path}/shapes/comseg_boundaries"
     path "versions.yml"
 
     script:

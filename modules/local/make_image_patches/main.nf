@@ -11,11 +11,12 @@ process MAKE_IMAGE_PATCHES {
     val cli_arguments
 
     output:
-    tuple val(meta), path(sdata_path), path("${sdata_path}/.sopa_cache/patches_file_image")
-    path "${sdata_path}/shapes/image_patches"
+    tuple val(meta), path(sdata_path), path("patches_file_image")
 
     script:
     """
     sopa patchify image ${sdata_path} ${cli_arguments}
+
+    mv ${sdata_path}/.sopa_cache/patches_file_image patches_file_image
     """
 }

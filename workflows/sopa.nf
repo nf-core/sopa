@@ -65,21 +65,21 @@ workflow SOPA {
     EXPLORER_RAW(ch_explorer_raw)
 
     if (params.use_tissue_segmentation) {
-        (ch_tissue_seg, _out) = TISSUE_SEGMENTATION(ch_spatialdata, argsCLI("tissue_segmentation"))
+        ch_tissue_seg = TISSUE_SEGMENTATION(ch_spatialdata, argsCLI("tissue_segmentation"))
     }
     else {
         ch_tissue_seg = ch_spatialdata
     }
 
     if (params.use_cellpose) {
-        (ch_image_patches, _out) = MAKE_IMAGE_PATCHES(ch_tissue_seg, argsCLI("image_patches"))
+        ch_image_patches = MAKE_IMAGE_PATCHES(ch_tissue_seg, argsCLI("image_patches"))
         (ch_resolved, versions) = CELLPOSE(ch_image_patches)
 
         ch_versions = ch_versions.mix(versions)
     }
 
     if (params.use_stardist) {
-        (ch_image_patches, _out) = MAKE_IMAGE_PATCHES(ch_tissue_seg, argsCLI("image_patches"))
+        ch_image_patches = MAKE_IMAGE_PATCHES(ch_tissue_seg, argsCLI("image_patches"))
         (ch_resolved, versions) = STARDIST(ch_image_patches)
 
         ch_versions = ch_versions.mix(versions)
@@ -106,7 +106,7 @@ workflow SOPA {
     if (params.use_proseg) {
         if (params.technology == "visium_hd") {
             ch_resolved = params.use_stardist ? ch_resolved : ch_tissue_seg
-            ch_input_proseg = ch_resolved.map { meta, sdata_path -> [meta, sdata_path, [], []] }
+            ch_input_proseg = ch_resolved.map { meta, sdata_path -> [meta, sdata_path, []] }
         } else {
             ch_proseg_patches = params.use_cellpose ? ch_resolved : ch_tissue_seg
             ch_input_proseg = MAKE_TRANSCRIPT_PATCHES(ch_proseg_patches, argsCLI("transcript_patches"))
@@ -117,16 +117,16 @@ workflow SOPA {
         ch_versions = ch_versions.mix(versions)
     }
 
-    (ch_aggregated, _out) = AGGREGATE(ch_resolved, argsCLI("aggregate"))
+    ch_aggregated = AGGREGATE(ch_resolved, argsCLI("aggregate"))
 
     if (params.use_tangram) {
         sc_reference = file(params.sc_reference_path)
 
-        (ch_annotated, _out, versions) = TANGRAM_ANNOTATION(ch_aggregated, sc_reference, argsCLI("tangram"))
+        (ch_annotated, versions) = TANGRAM_ANNOTATION(ch_aggregated, sc_reference, argsCLI("tangram"))
         ch_versions = ch_versions.mix(versions)
     }
     else if (params.use_fluorescence_annotation) {
-        (ch_annotated, _out, versions) = FLUO_ANNOTATION(ch_aggregated, argsCLI("fluorescence_annotation"))
+        (ch_annotated, versions) = FLUO_ANNOTATION(ch_aggregated, argsCLI("fluorescence_annotation"))
         ch_versions = ch_versions.mix(versions)
     }
     else {
@@ -134,7 +134,7 @@ workflow SOPA {
     }
 
     if (params.use_scanpy_preprocessing) {
-        (ch_preprocessed, _out, versions) = SCANPY_PREPROCESS(ch_annotated, argsCLI("scanpy_preprocessing"))
+        (ch_preprocessed, versions) = SCANPY_PREPROCESS(ch_annotated, argsCLI("scanpy_preprocessing"))
         ch_versions = ch_versions.mix(versions)
     }
     else {
@@ -203,7 +203,7 @@ workflow CELLPOSE {
         .map { meta, sdata_path, parquet, n_patches -> [groupKey(meta.sdata_dir, n_patches), meta, sdata_path, parquet] }
         .groupTuple().map { _key, metas, sdata_paths, parquets -> [metas[0], sdata_paths[0], parquets] }
 
-    (ch_resolved, _out, versions) = RESOLVE_CELLPOSE(ch_segmented)
+    (ch_resolved, versions) = RESOLVE_CELLPOSE(ch_segmented)
 
     ch_versions = ch_versions.mix(versions)
 
@@ -230,7 +230,7 @@ workflow STARDIST {
         .map { meta, sdata_path, parquet, n_patches -> [groupKey(meta.sdata_dir, n_patches), meta, sdata_path, parquet] }
         .groupTuple().map { _key, metas, sdata_paths, parquets -> [metas[0], sdata_paths[0], parquets] }
 
-    (ch_resolved, _out, versions) = RESOLVE_STARDIST(ch_segmented)
+    (ch_resolved, versions) = RESOLVE_STARDIST(ch_segmented)
 
     ch_versions = ch_versions.mix(versions)
 
@@ -250,7 +250,7 @@ workflow BAYSOR {
     baysor_args = argsCLI("baysor")
 
     ch_patches
-        .map { meta, sdata_path, patches_file_transcripts, _patches -> [meta, sdata_path, patches_file_transcripts.splitText()] }
+        .map { meta, sdata_path, patches_file_transcripts -> [meta, sdata_path, patches_file_transcripts.splitText()] }
         .flatMap { meta, sdata_path, patches_indices -> patches_indices.collect { index -> [meta, sdata_path, baysor_args, index.trim().toInteger(), patches_indices.size] } }
         .set { ch_baysor }
 
@@ -258,7 +258,7 @@ workflow BAYSOR {
         .map { meta, sdata_path, counts, polygons, n_patches -> [groupKey(meta.sdata_dir, n_patches), meta, sdata_path, counts, polygons] }
         .groupTuple().map { _key, metas, sdata_paths, counts, polygons -> [metas[0], sdata_paths[0], counts, polygons] }
 
-    (ch_resolved, _out, versions) = RESOLVE_BAYSOR(ch_segmented, argsCLI("resolve"))
+    (ch_resolved, versions) = RESOLVE_BAYSOR(ch_segmented, argsCLI("resolve"))
 
     ch_versions = ch_versions.mix(versions)
 
@@ -277,7 +277,7 @@ workflow COMSEG {
     comseg_args = argsCLI("comseg")
 
     ch_patches
-        .map { meta, sdata_path, patches_file_transcripts, _patches -> [meta, sdata_path, patches_file_transcripts.splitText()] }
+        .map { meta, sdata_path, patches_file_transcripts -> [meta, sdata_path, patches_file_transcripts.splitText()] }
         .flatMap { meta, sdata_path, patches_indices -> patches_indices.collect { index -> [meta, sdata_path, comseg_args, index.trim().toInteger(), patches_indices.size] } }
         .set { ch_comseg }
 
@@ -285,7 +285,7 @@ workflow COMSEG {
         .map { meta, sdata_path, counts, polygons, n_patches -> [groupKey(meta.sdata_dir, n_patches), meta, sdata_path, counts, polygons] }
         .groupTuple().map { _key, metas, sdata_paths, counts, polygons -> [metas[0], sdata_paths[0], counts, polygons] }
 
-    (ch_resolved, _out, versions) = RESOLVE_COMSEG(ch_segmented, argsCLI("resolve"))
+    (ch_resolved, versions) = RESOLVE_COMSEG(ch_segmented, argsCLI("resolve"))
 
     ch_versions = ch_versions.mix(versions)
 
@@ -301,7 +301,7 @@ workflow PROSEG {
     main:
     ch_versions = channel.empty()
 
-    (ch_segmented, _out, versions) = PATCH_SEGMENTATION_PROSEG(ch_patches, argsCLI("proseg"))
+    (ch_segmented, versions) = PATCH_SEGMENTATION_PROSEG(ch_patches, argsCLI("proseg"))
 
     ch_versions = ch_versions.mix(versions)
 

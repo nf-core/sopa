@@ -11,7 +11,6 @@ process RESOLVE_CELLPOSE {
 
     output:
     tuple val(meta), path(sdata_path)
-    path "${sdata_path}/shapes/cellpose_boundaries"
     path "versions.yml"
 
     script:

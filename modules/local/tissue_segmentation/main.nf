@@ -12,7 +12,6 @@ process TISSUE_SEGMENTATION {
 
     output:
     tuple val(meta), path(sdata_path)
-    path "${sdata_path}/shapes/region_of_interest"
 
     script:
     """

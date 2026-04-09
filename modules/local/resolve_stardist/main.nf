@@ -11,7 +11,6 @@ process RESOLVE_STARDIST {
 
     output:
     tuple val(meta), path(sdata_path)
-    path "${sdata_path}/shapes/stardist_boundaries"
     path "versions.yml"
 
     script:

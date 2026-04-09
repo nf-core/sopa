@@ -12,7 +12,6 @@ process FLUO_ANNOTATION {
 
     output:
     tuple val(meta), path(sdata_path)
-    path "${sdata_path}/tables/table/obs"
     path "versions.yml"
 
     script:

@@ -12,7 +12,6 @@ process RESOLVE_BAYSOR {
 
     output:
     tuple val(meta), path(sdata_path)
-    path "${sdata_path}/shapes/baysor_boundaries"
     path "versions.yml"
 
     script:
