@@ -2,6 +2,7 @@ include { argsExplorerRaw } from '../utils'
 
 process EXPLORER_RAW {
     label "process_high"
+    tag "${meta.sample}"
 
     conda "${moduleDir}/environment.yml"
     container "${workflow.containerEngine == 'apptainer' && !task.ext.singularity_pull_docker_container

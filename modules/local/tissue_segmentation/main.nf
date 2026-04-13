@@ -1,5 +1,6 @@
 process TISSUE_SEGMENTATION {
     label "process_low"
+    tag "${meta.sample}"
 
     conda "${moduleDir}/environment.yml"
     container "${workflow.containerEngine == 'apptainer' && !task.ext.singularity_pull_docker_container

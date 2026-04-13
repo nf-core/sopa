@@ -86,7 +86,9 @@ nf-core/sopa was originally written by [Quentin Blampey](https://github.com/quen
 
 We thank the following people for their extensive assistance in the development of this pipeline:
 
+- [Ali Hamraoui](https://github.com/alihamraoui)
 - [Matthias Hörtenhuber](https://github.com/mashehu)
+- [Olivier Coen](https://github.com/OlivierCoen)
 - [Kevin Weiss](https://github.com/kweisscure51)
 
 ## Contributions and Support

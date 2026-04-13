@@ -1,5 +1,6 @@
 process TANGRAM_ANNOTATION {
     label "process_gpu"
+    tag "${meta.sample}"
 
     conda "${moduleDir}/environment.yml"
     container "${workflow.containerEngine == 'apptainer' && !task.ext.singularity_pull_docker_container

@@ -1,5 +1,6 @@
 process PATCH_SEGMENTATION_COMSEG {
     label "process_long"
+    tag "${meta.sample}"
 
     conda "${moduleDir}/environment.yml"
     container "${workflow.containerEngine == 'apptainer' && !task.ext.singularity_pull_docker_container

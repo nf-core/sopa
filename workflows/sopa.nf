@@ -3,34 +3,31 @@
     IMPORT MODULES / SUBWORKFLOWS / FUNCTIONS
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
-include { paramsSummaryMap } from 'plugin/nf-schema'
-include { softwareVersionsToYAML } from '../subworkflows/nf-core/utils_nfcore_pipeline'
-include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_sopa_pipeline'
+include { paramsSummaryMap        } from 'plugin/nf-schema'
+include { softwareVersionsToYAML  } from '../subworkflows/nf-core/utils_nfcore_pipeline'
+include { methodsDescriptionText  } from '../subworkflows/local/utils_nfcore_sopa_pipeline'
 
-include { TO_SPATIALDATA } from '../modules/local/to_spatialdata'
-include { MAKE_IMAGE_PATCHES } from '../modules/local/make_image_patches'
+include { TO_SPATIALDATA          } from '../modules/local/to_spatialdata'
+include { MAKE_IMAGE_PATCHES      } from '../modules/local/make_image_patches'
 include { MAKE_TRANSCRIPT_PATCHES } from '../modules/local/make_transcript_patches'
-include { TISSUE_SEGMENTATION } from '../modules/local/tissue_segmentation'
-include { PATCH_SEGMENTATION_BAYSOR } from '../modules/local/patch_segmentation_baysor'
-include { PATCH_SEGMENTATION_COMSEG } from '../modules/local/patch_segmentation_comseg'
-include { PATCH_SEGMENTATION_CELLPOSE } from '../modules/local/patch_segmentation_cellpose'
-include { PATCH_SEGMENTATION_STARDIST } from '../modules/local/patch_segmentation_stardist'
-include { PATCH_SEGMENTATION_PROSEG } from '../modules/local/patch_segmentation_proseg'
-include { RESOLVE_BAYSOR } from '../modules/local/resolve_baysor'
-include { RESOLVE_COMSEG } from '../modules/local/resolve_comseg'
-include { RESOLVE_CELLPOSE } from '../modules/local/resolve_cellpose'
-include { RESOLVE_STARDIST } from '../modules/local/resolve_stardist'
-include { AGGREGATE } from '../modules/local/aggregate'
-include { EXPLORER } from '../modules/local/explorer'
-include { EXPLORER_RAW } from '../modules/local/explorer_raw'
-include { SCANPY_PREPROCESS } from '../modules/local/scanpy_preprocess'
-include { REPORT } from '../modules/local/report'
-include { TANGRAM_ANNOTATION } from '../modules/local/tangram_annotation'
-include { FLUO_ANNOTATION } from '../modules/local/fluo_annotation'
-include { SPACERANGER            } from '../subworkflows/local/spaceranger'
-include { INPUT_CHECK            } from '../subworkflows/local/input_check'
+include { TISSUE_SEGMENTATION     } from '../modules/local/tissue_segmentation'
+include { AGGREGATE               } from '../modules/local/aggregate'
+include { EXPLORER                } from '../modules/local/explorer'
+include { EXPLORER_RAW            } from '../modules/local/explorer_raw'
+include { SCANPY_PREPROCESS       } from '../modules/local/scanpy_preprocess'
+include { REPORT                  } from '../modules/local/report'
+include { TANGRAM_ANNOTATION      } from '../modules/local/tangram_annotation'
+include { FLUO_ANNOTATION         } from '../modules/local/fluo_annotation'
+include { SPACERANGER             } from '../subworkflows/local/spaceranger'
+include { INPUT_CHECK             } from '../subworkflows/local/input_check'
+include { CELLPOSE                } from '../subworkflows/local/cellpose'
+include { STARDIST                } from '../subworkflows/local/stardist'
+include { PROSEG                  } from '../subworkflows/local/proseg'
+include { COMSEG                  } from '../subworkflows/local/comseg'
+include { BAYSOR                  } from '../subworkflows/local/baysor'
 
-include { argsCLI } from '../modules/local/utils'
+
+include { argsCLI        } from '../modules/local/utils'
 include { extractOutsDir } from '../modules/local/utils'
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -177,135 +174,4 @@ workflow SOPA {
 
     emit:
     versions = ch_versions // channel: [ path(versions.yml) ]
-}
-
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    SEGMENTATION WORKFLOWS
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
-
-workflow CELLPOSE {
-    take:
-    ch_patches
-
-    main:
-    ch_versions = channel.empty()
-
-    cellpose_args = argsCLI("cellpose")
-
-    ch_patches
-        .map { meta, sdata_path, patches_file_image -> [meta, sdata_path, patches_file_image.text.trim().toInteger()] }
-        .flatMap { meta, sdata_path, n_patches -> (0..<n_patches).collect { index -> [meta, sdata_path, cellpose_args, index, n_patches] } }
-        .set { ch_cellpose }
-
-    ch_segmented = PATCH_SEGMENTATION_CELLPOSE(ch_cellpose)
-        .map { meta, sdata_path, parquet, n_patches -> [groupKey(meta.sdata_dir, n_patches), meta, sdata_path, parquet] }
-        .groupTuple().map { _key, metas, sdata_paths, parquets -> [metas[0], sdata_paths[0], parquets] }
-
-    (ch_resolved, versions) = RESOLVE_CELLPOSE(ch_segmented)
-
-    ch_versions = ch_versions.mix(versions)
-
-    emit:
-    ch_resolved
-    ch_versions
-}
-
-workflow STARDIST {
-    take:
-    ch_patches
-
-    main:
-    ch_versions = channel.empty()
-
-    stardist_args = argsCLI("stardist")
-
-    ch_patches
-        .map { meta, sdata_path, patches_file_image -> [meta, sdata_path, patches_file_image.text.trim().toInteger()] }
-        .flatMap { meta, sdata_path, n_patches -> (0..<n_patches).collect { index -> [meta, sdata_path, stardist_args, index, n_patches] } }
-        .set { ch_stardist }
-
-    ch_segmented = PATCH_SEGMENTATION_STARDIST(ch_stardist)
-        .map { meta, sdata_path, parquet, n_patches -> [groupKey(meta.sdata_dir, n_patches), meta, sdata_path, parquet] }
-        .groupTuple().map { _key, metas, sdata_paths, parquets -> [metas[0], sdata_paths[0], parquets] }
-
-    (ch_resolved, versions) = RESOLVE_STARDIST(ch_segmented)
-
-    ch_versions = ch_versions.mix(versions)
-
-    emit:
-    ch_resolved
-    ch_versions
-}
-
-
-workflow BAYSOR {
-    take:
-    ch_patches
-
-    main:
-    ch_versions = channel.empty()
-
-    baysor_args = argsCLI("baysor")
-
-    ch_patches
-        .map { meta, sdata_path, patches_file_transcripts -> [meta, sdata_path, patches_file_transcripts.splitText()] }
-        .flatMap { meta, sdata_path, patches_indices -> patches_indices.collect { index -> [meta, sdata_path, baysor_args, index.trim().toInteger(), patches_indices.size] } }
-        .set { ch_baysor }
-
-    ch_segmented = PATCH_SEGMENTATION_BAYSOR(ch_baysor)
-        .map { meta, sdata_path, counts, polygons, n_patches -> [groupKey(meta.sdata_dir, n_patches), meta, sdata_path, counts, polygons] }
-        .groupTuple().map { _key, metas, sdata_paths, counts, polygons -> [metas[0], sdata_paths[0], counts, polygons] }
-
-    (ch_resolved, versions) = RESOLVE_BAYSOR(ch_segmented, argsCLI("resolve"))
-
-    ch_versions = ch_versions.mix(versions)
-
-    emit:
-    ch_resolved
-    ch_versions
-}
-
-workflow COMSEG {
-    take:
-    ch_patches
-
-    main:
-    ch_versions = channel.empty()
-
-    comseg_args = argsCLI("comseg")
-
-    ch_patches
-        .map { meta, sdata_path, patches_file_transcripts -> [meta, sdata_path, patches_file_transcripts.splitText()] }
-        .flatMap { meta, sdata_path, patches_indices -> patches_indices.collect { index -> [meta, sdata_path, comseg_args, index.trim().toInteger(), patches_indices.size] } }
-        .set { ch_comseg }
-
-    ch_segmented = PATCH_SEGMENTATION_COMSEG(ch_comseg)
-        .map { meta, sdata_path, counts, polygons, n_patches -> [groupKey(meta.sdata_dir, n_patches), meta, sdata_path, counts, polygons] }
-        .groupTuple().map { _key, metas, sdata_paths, counts, polygons -> [metas[0], sdata_paths[0], counts, polygons] }
-
-    (ch_resolved, versions) = RESOLVE_COMSEG(ch_segmented, argsCLI("resolve"))
-
-    ch_versions = ch_versions.mix(versions)
-
-    emit:
-    ch_resolved
-    ch_versions
-}
-
-workflow PROSEG {
-    take:
-    ch_patches
-
-    main:
-    ch_versions = channel.empty()
-
-    (ch_segmented, versions) = PATCH_SEGMENTATION_PROSEG(ch_patches, argsCLI("proseg"))
-
-    ch_versions = ch_versions.mix(versions)
-
-    emit:
-    ch_segmented
-    ch_versions
 }

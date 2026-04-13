@@ -1,5 +1,6 @@
 process SCANPY_PREPROCESS {
     label "process_high"
+    tag "${meta.sample}"
 
     conda "${moduleDir}/environment.yml"
     container "${workflow.containerEngine == 'apptainer' && !task.ext.singularity_pull_docker_container
