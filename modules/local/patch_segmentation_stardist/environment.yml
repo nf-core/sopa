@@ -2,7 +2,7 @@ channels:
   - conda-forge
   - bioconda
 dependencies:
-  - python=3.11
+  - python=3.12
   - pip=24.3.1
   - pip:
-      - sopa[stardist]==2.1.6
+      - sopa[stardist]==2.2.5
