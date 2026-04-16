@@ -6,8 +6,8 @@ process EXPLORER_RAW {
 
     conda "${moduleDir}/environment.yml"
     container "${workflow.containerEngine == 'apptainer' && !task.ext.singularity_pull_docker_container
-        ? 'docker://quentinblampey/sopa:2.1.11'
-        : 'docker.io/quentinblampey/sopa:2.1.11'}"
+        ? 'oras://community.wave.seqera.io/library/sopa:2.2.5--7a8340c1f5d41e34'
+        : 'community.wave.seqera.io/library/sopa:2.2.5--77a69d04f8380675'}"
 
     publishDir "${params.outdir}", mode: params.publish_dir_mode
 
