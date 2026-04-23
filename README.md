@@ -21,13 +21,13 @@
 
 ## Introduction
 
-**nf-core/sopa** is the Nextflow version of [Sopa](https://github.com/gustaveroussy/sopa). Built on top of [SpatialData](https://github.com/scverse/spatialdata), Sopa enables processing and analyses of spatial omics data with single-cell resolution (spatial transcriptomics or multiplex imaging data) using a standard data structure and output. We currently support the following technologies: Xenium, Visium HD, MERSCOPE, CosMX, PhenoCycler, MACSima, Molecural Cartography, and others. It outputs a `.zarr` directory containing a processed [SpatialData](https://github.com/scverse/spatialdata) object, and a `.explorer` directory for visualization.
+**nf-core/sopa** is the Nextflow version of [Sopa](https://github.com/prism-oncology/sopa). Built on top of [SpatialData](https://github.com/scverse/spatialdata), Sopa enables processing and analyses of spatial omics data with single-cell resolution (spatial transcriptomics or multiplex imaging data) using a standard data structure and output. We currently support the following technologies: Xenium, Visium HD, MERSCOPE, CosMX, PhenoCycler, MACSima, Molecural Cartography, and others. It outputs a `.zarr` directory containing a processed [SpatialData](https://github.com/scverse/spatialdata) object, and a `.explorer` directory for visualization.
 
 > [!WARNING]
-> If you are interested in the main Sopa python package, refer to [this Sopa repository](https://github.com/gustaveroussy/sopa). Else, if you want to use Nextflow, you are in the good place.
+> If you are interested in the main Sopa python package, refer to [this Sopa repository](https://github.com/prism-oncology/sopa). Else, if you want to use Nextflow, you are in the good place.
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/gustaveroussy/sopa/main/docs/assets/overview_white.png" alt="sopa_overview" width="100%"/>
+  <img src="https://raw.githubusercontent.com/prism-oncology/sopa/main/docs/assets/overview_white.png" alt="sopa_overview" width="100%"/>
 </p>
 
 1. (Visium HD only) Raw data processing with Space Ranger
@@ -38,14 +38,14 @@
 6. User-friendly output creation for visualization and quick analysis
 7. Full [SpatialData](https://github.com/scverse/spatialdata) object export as a `.zarr` directory
 
-After running `nf-core/sopa`, you can continue analyzing your `SpatialData` object with [`sopa` as a Python package](https://github.com/gustaveroussy/sopa).
+After running `nf-core/sopa`, you can continue analyzing your `SpatialData` object with [`sopa` as a Python package](https://github.com/prism-oncology/sopa).
 
 ## Usage
 
 > [!NOTE]
 > If you are new to Nextflow and nf-core, please refer to [this page](https://nf-co.re/docs/usage/installation) on how to set-up Nextflow. Make sure to [test your setup](https://nf-co.re/docs/usage/introduction#how-to-run-a-pipeline) with `-profile test` before running the workflow on actual data.
 
-First, prepare a samplesheet that lists the `data_path` to each sample data directory (typically, the per-sample output of the Xenium/MERSCOPE/etc, see more info [here](https://gustaveroussy.github.io/sopa/faq/#what-are-the-inputs-of-sopa)). You can optionally add `sample` to provide a name to your output directory, else it will be named based on `data_path`. Here is a samplesheet example:
+First, prepare a samplesheet that lists the `data_path` to each sample data directory (typically, the per-sample output of the Xenium/MERSCOPE/etc, see more info [here](https://prism-oncology.github.io/sopa/faq/#what-are-the-inputs-of-sopa)). You can optionally add `sample` to provide a name to your output directory, else it will be named based on `data_path`. Here is a samplesheet example:
 
 `samplesheet.csv`:
 

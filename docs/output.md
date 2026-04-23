@@ -27,7 +27,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and outputs the
 
 The `{sample}.zarr` directory contains a [SpatialData](https://spatialdata.scverse.org/en/stable/) object, where the `sample` name is either (i) specified by the samplesheet, or (ii) based on the name of the corresponding input directory.
 
-Refer to the [SpatialData docs](https://spatialdata.scverse.org/en/stable/) for usage details, or to the [documentation of `sopa` as a Python package](https://gustaveroussy.github.io/sopa/). If you are not familiar with `SpatialData`, you can also use directly the extracted `AnnData` object (see below).
+Refer to the [SpatialData docs](https://spatialdata.scverse.org/en/stable/) for usage details, or to the [documentation of `sopa` as a Python package](https://prism-oncology.github.io/sopa/). If you are not familiar with `SpatialData`, you can also use directly the extracted `AnnData` object (see below).
 
 ### Explorer directory
 
