@@ -3,5 +3,5 @@ channels:
   - bioconda
 dependencies:
   - python=3.12
-  - sopa=2.2.5
+  - sopa=2.2.6
   - cellpose=3.1.1.3
