@@ -4,8 +4,8 @@ process RESOLVE_CELLPOSE {
 
     conda "${moduleDir}/environment.yml"
     container "${workflow.containerEngine == 'apptainer' && !task.ext.singularity_pull_docker_container
-        ? 'oras://community.wave.seqera.io/library/sopa:2.2.5--7a8340c1f5d41e34-cellpose'
-        : 'community.wave.seqera.io/library/sopa:2.2.5--77a69d04f8380675-cellpose'}"
+        ? 'oras://community.wave.seqera.io/library/python_sopa_cellpose:881b5601e4fb377d'
+        : 'community.wave.seqera.io/library/python_sopa_cellpose:6d37d26c557b9aa8'}"
 
     input:
     tuple val(meta), path(sdata_path), path(parquets)

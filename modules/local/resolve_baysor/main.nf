@@ -4,8 +4,8 @@ process RESOLVE_BAYSOR {
 
     conda "${moduleDir}/environment.yml"
     container "${workflow.containerEngine == 'apptainer' && !task.ext.singularity_pull_docker_container
-        ? 'oras://community.wave.seqera.io/library/sopa:2.2.5--7a8340c1f5d41e34-baysor'
-        : 'community.wave.seqera.io/library/sopa:2.2.5--77a69d04f8380675-baysor'}"
+        ? 'oras://community.wave.seqera.io/library/python_pip_baysor_sopabaysor:212ea14315a685c9'
+        : 'community.wave.seqera.io/library/python_pip_baysor_sopabaysor:cf41b963c13b72fd'}"
 
     input:
     tuple val(meta), path(sdata_path), path(counts), path(polygons)

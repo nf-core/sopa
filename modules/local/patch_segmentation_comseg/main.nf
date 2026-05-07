@@ -4,8 +4,8 @@ process PATCH_SEGMENTATION_COMSEG {
 
     conda "${moduleDir}/environment.yml"
     container "${workflow.containerEngine == 'apptainer' && !task.ext.singularity_pull_docker_container
-        ? 'oras://community.wave.seqera.io/library/sopa:2.2.5--7a8340c1f5d41e34-comseg'
-        : 'community.wave.seqera.io/library/sopa:2.2.5--77a69d04f8380675-comseg'}"
+        ? 'oras://community.wave.seqera.io/library/python_pip_sopa_comseg:916aa54080d2e2c0'
+        : 'community.wave.seqera.io/library/python_pip_sopa_comseg:0abdb5731f3e13d6'}"
 
     input:
     tuple val(meta), path(sdata_path), val(cli_arguments), val(index), val(n_patches)
