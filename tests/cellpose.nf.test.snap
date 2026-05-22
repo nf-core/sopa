@@ -240,24 +240,10 @@
                 "sample_name.zarr/zarr.json"
             ],
             [
-                "zarr.json:md5,951a1f4753211e1f21211c51af29873a",
-                "zarr.json:md5,73bcbd59f8c0931c97dcca3e15d618a0",
-                "zarr.json:md5,c9e8c8bd6b39127eae49388a7452193a",
-                "zarr.json:md5,ebe6896d28a50094ae61c3b2ac748461",
-                "zarr.json:md5,8a2e1e5e6756851fecc0025e18af4f9f",
-                "zarr.json:md5,b551d3fe8d80ed37526a5efb85aced37",
-                "zarr.json:md5,457126c0639af2eba0140851c39c1aad",
-                "zarr.json:md5,cec0c4d72a59c07f5e30dc2d71b41581",
-                "zarr.json:md5,457126c0639af2eba0140851c39c1aad",
-                "zarr.json:md5,41794a46835cfd9cc1ada843bf21e42f",
-                "zarr.json:md5,41794a46835cfd9cc1ada843bf21e42f",
-                "zarr.json:md5,41794a46835cfd9cc1ada843bf21e42f",
-                "zarr.json:md5,457126c0639af2eba0140851c39c1aad",
-                "zarr.json:md5,457126c0639af2eba0140851c39c1aad",
-                "zarr.json:md5,e4fbd4ef0ba4d63388219ab03151b668"
+                
             ]
         ],
-        "timestamp": "2026-05-22T14:17:01.839344",
+        "timestamp": "2026-05-22T14:41:06.142286",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "25.10.2"

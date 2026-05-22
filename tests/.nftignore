@@ -9,6 +9,7 @@ pipeline_info/*.{html,json,txt,yml}
 **/shapes.parquet
 **/.zattrs
 **/.zarray
+**/zarr.json
 **/0
 **/1
 **/2
