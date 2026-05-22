@@ -31,6 +31,15 @@ nextflow_pipeline {
                     stable_path
                 ).match() }
             )
+
+            // ensure we have >=1500 non-zero genes over >=350 cells
+            def json_X = new groovy.json.JsonSlurper().parse(file("$outputDir/sample_name.zarr/tables/table/X/zarr.json"))
+            def nCells = json_X.attributes.shape[0] as int
+            assert nCells >= 350
+
+            def json_data = new groovy.json.JsonSlurper().parse(file("$outputDir/sample_name.zarr/tables/table/X/data/zarr.json"))
+            def nElements = json_data.shape[0] as int
+            assert nElements >= 1500
         }
     }
 }
