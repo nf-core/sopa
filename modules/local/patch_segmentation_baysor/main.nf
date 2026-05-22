@@ -15,6 +15,9 @@ process PATCH_SEGMENTATION_BAYSOR {
 
     script:
     """
+    export JULIA_DEPOT_PATH="${TMPDIR:-/tmp}/julia-depot"
+    mkdir -p "$JULIA_DEPOT_PATH"
+    
     export JULIA_NUM_THREADS=${task.cpus} # parallelize within each patch for Baysor >= v0.7
 
     sopa segmentation baysor ${sdata_path} --patch-index ${index} ${cli_arguments}
