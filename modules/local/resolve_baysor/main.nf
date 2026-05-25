@@ -17,6 +17,9 @@ process RESOLVE_BAYSOR {
 
     script:
     """
+    mkdir -p .julia
+    export JULIA_DEPOT_PATH=\$PWD/.julia
+    
     for f in $counts; do
         index=\${f%%-*}
 
