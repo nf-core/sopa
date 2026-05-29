@@ -4,8 +4,8 @@ process EXPLORER {
 
     conda "${moduleDir}/environment.yml"
     container "${workflow.containerEngine == 'apptainer' && !task.ext.singularity_pull_docker_container
-        ? 'oras://community.wave.seqera.io/library/python_sopa:ae2e3bb4a14388f3'
-        : 'community.wave.seqera.io/library/python_sopa:835e8c88fff339ab'}"
+        ? 'oras://community.wave.seqera.io/library/python_sopa:b18f7051c113391d'
+        : 'community.wave.seqera.io/library/python_sopa:271022a587d06a6e'}"
 
     publishDir "${params.outdir}", mode: params.publish_dir_mode
 

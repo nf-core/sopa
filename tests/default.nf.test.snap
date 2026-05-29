@@ -3,20 +3,20 @@
         "content": [
             {
                 "FLUO_ANNOTATION": {
-                    "sopa": "2.2.6"
+                    "sopa": "2.2.7"
                 },
                 "PATCH_SEGMENTATION_PROSEG": {
-                    "sopa": "2.2.6",
+                    "sopa": "2.2.7",
                     "proseg": "3.1.1"
                 },
                 "SCANPY_PREPROCESS": {
-                    "sopa": "2.2.6",
+                    "sopa": "2.2.7",
                     "scanpy": "1.12.1"
                 },
                 "TO_SPATIALDATA": {
-                    "sopa": "2.2.6",
-                    "spatialdata": "0.7.2",
-                    "spatialdata_io": "0.6.0"
+                    "sopa": "2.2.7",
+                    "spatialdata": "0.7.3",
+                    "spatialdata_io": "0.7.0"
                 },
                 "Workflow": {
                     "nf-core/sopa": "v1.0.0"

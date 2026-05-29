@@ -4,8 +4,8 @@ process SCANPY_PREPROCESS {
 
     conda "${moduleDir}/environment.yml"
     container "${workflow.containerEngine == 'apptainer' && !task.ext.singularity_pull_docker_container
-        ? 'oras://community.wave.seqera.io/library/baysor_sopa:0f8315a5889d8509'
-        : 'community.wave.seqera.io/library/baysor_sopa:965139f4eefc6e4c'}"
+        ? 'oras://community.wave.seqera.io/library/python_sopa:b18f7051c113391d'
+        : 'community.wave.seqera.io/library/python_sopa:271022a587d06a6e'}"
 
     input:
     tuple val(meta), path(sdata_path)
