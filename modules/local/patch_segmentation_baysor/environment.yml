@@ -4,6 +4,6 @@ channels:
 dependencies:
   - python=3.12
   - pip=24.3.1
-  - baysor=0.7.1
+  - baysor=0.7.1=*_1
   - pip:
       - sopa[baysor]==2.2.8
