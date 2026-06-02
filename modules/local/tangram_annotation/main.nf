@@ -4,8 +4,8 @@ process TANGRAM_ANNOTATION {
 
     conda "${moduleDir}/environment.yml"
     container "${workflow.containerEngine == 'apptainer' && !task.ext.singularity_pull_docker_container
-        ? 'oras://community.wave.seqera.io/library/python_pip_sopa_tangram-sc:52d3833d55ea5861'
-        : 'community.wave.seqera.io/library/python_pip_sopa_tangram-sc:b4f89b21ec41fc08'}"
+        ? 'oras://community.wave.seqera.io/library/python_pip_sopa_tangram-sc:7e709cd4da9038b2'
+        : 'community.wave.seqera.io/library/python_pip_sopa_tangram-sc:1e7964868e6ad761'}"
 
     input:
     tuple val(meta), path(sdata_path)

@@ -3,18 +3,18 @@
         "content": [
             {
                 "FLUO_ANNOTATION": {
-                    "sopa": "2.2.7"
+                    "sopa": "2.2.8"
                 },
                 "PATCH_SEGMENTATION_PROSEG": {
-                    "sopa": "2.2.7",
+                    "sopa": "2.2.8",
                     "proseg": "3.1.1"
                 },
                 "SCANPY_PREPROCESS": {
-                    "sopa": "2.2.7",
+                    "sopa": "2.2.8",
                     "scanpy": "1.12.1"
                 },
                 "TO_SPATIALDATA": {
-                    "sopa": "2.2.7",
+                    "sopa": "2.2.8",
                     "spatialdata": "0.7.3",
                     "spatialdata_io": "0.7.0"
                 },

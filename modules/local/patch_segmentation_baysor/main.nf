@@ -4,8 +4,8 @@ process PATCH_SEGMENTATION_BAYSOR {
 
     conda "${moduleDir}/environment.yml"
     container "${workflow.containerEngine == 'apptainer' && !task.ext.singularity_pull_docker_container
-        ? 'oras://community.wave.seqera.io/library/python_pip_baysor_sopabaysor:c126d018231f80cf'
-        : 'community.wave.seqera.io/library/python_pip_baysor_sopabaysor:47fd540e3f8d27b3'}"
+        ? 'oras://community.wave.seqera.io/library/python_pip_baysor_sopabaysor:0f5dfb7a7ebaa297'
+        : 'community.wave.seqera.io/library/python_pip_baysor_sopabaysor:8fad2b4f5508ee4f'}"
 
     input:
     tuple val(meta), path(sdata_path), val(cli_arguments), val(index), val(n_patches)

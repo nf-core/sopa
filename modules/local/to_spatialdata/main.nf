@@ -6,8 +6,8 @@ process TO_SPATIALDATA {
 
     conda "${moduleDir}/environment.yml"
     container "${workflow.containerEngine == 'apptainer' && !task.ext.singularity_pull_docker_container
-        ? 'oras://community.wave.seqera.io/library/python_sopa:b18f7051c113391d'
-        : 'community.wave.seqera.io/library/python_sopa:271022a587d06a6e'}"
+        ? 'oras://community.wave.seqera.io/library/python_sopa:3a64d90551e67cae'
+        : 'community.wave.seqera.io/library/python_sopa:63c5d58df2bdd5c5'}"
 
     input:
     tuple val(meta), path(data_dir), path(fullres_image_file)

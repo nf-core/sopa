@@ -4,8 +4,8 @@ process PATCH_SEGMENTATION_PROSEG {
 
     conda "${moduleDir}/environment.yml"
     container "${workflow.containerEngine == 'apptainer' && !task.ext.singularity_pull_docker_container
-        ? 'oras://community.wave.seqera.io/library/python_rust-proseg_sopa:8971e61a8994c4f3'
-        : 'community.wave.seqera.io/library/python_rust-proseg_sopa:1f4984a310771026'}"
+        ? 'oras://community.wave.seqera.io/library/python_rust-proseg_sopa:a704450446f1bffa'
+        : 'community.wave.seqera.io/library/python_rust-proseg_sopa:f217b3fac7dcc631'}"
 
     input:
     tuple val(meta), path(sdata_path), path(patches_file_transcripts)

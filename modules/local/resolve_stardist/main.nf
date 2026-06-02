@@ -4,8 +4,8 @@ process RESOLVE_STARDIST {
 
     conda "${moduleDir}/environment.yml"
     container "${workflow.containerEngine == 'apptainer' && !task.ext.singularity_pull_docker_container
-        ? 'oras://community.wave.seqera.io/library/python_pip_sopastardist:90d5386bb9759378'
-        : 'community.wave.seqera.io/library/python_pip_sopastardist:daeb0671bfa69bc7'}"
+        ? 'oras://community.wave.seqera.io/library/python_pip_sopastardist:f1dfb14ee4b00ac1'
+        : 'community.wave.seqera.io/library/python_pip_sopastardist:ccffd85cf984eeb5'}"
 
     input:
     tuple val(meta), path(sdata_path), path(parquets)
