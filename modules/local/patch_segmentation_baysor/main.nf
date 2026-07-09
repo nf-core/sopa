@@ -3,7 +3,7 @@ process PATCH_SEGMENTATION_BAYSOR {
     tag "${meta.sample}"
 
     conda "${moduleDir}/environment.yml"
-    container "quay.io/nf-core/sopa:2.2.6-baysor"
+    container "quay.io/nf-core/sopa:2.2.8-baysor"
 
     input:
     tuple val(meta), path(sdata_path), val(cli_arguments), val(index), val(n_patches)
