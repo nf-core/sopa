@@ -3,9 +3,7 @@ process RESOLVE_BAYSOR {
     tag "${meta.sample}"
 
     conda "${moduleDir}/environment.yml"
-    container "${workflow.containerEngine == 'apptainer' && !task.ext.singularity_pull_docker_container
-        ? 'docker://quentinblampey/sopa:2.2.6-baysor'
-        : 'docker.io/quentinblampey/sopa:2.2.6-baysor'}"
+    container "quay.io/nf-core/sopa:2.2.6-baysor"
 
     input:
     tuple val(meta), path(sdata_path), path(counts), path(polygons)
