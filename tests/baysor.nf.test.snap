@@ -4,7 +4,7 @@
             9,
             {
                 "RESOLVE_BAYSOR": {
-                    "sopa": "2.2.8",
+                    "sopa": "2.2.9",
                     "baysor": "0.7.1"
                 },
                 "TANGRAM_ANNOTATION": {
