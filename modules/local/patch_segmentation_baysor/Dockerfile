@@ -1,4 +1,4 @@
-# Dockerfile to build a docker image for Sopa + Baysor. Build using SOPA_VERSION 2.2.10.
+# Dockerfile to build a docker image for Sopa + Baysor. Build using SOPA_VERSION 2.2.9.
 FROM python:3.12-slim-bookworm
 
 ARG SOPA_VERSION

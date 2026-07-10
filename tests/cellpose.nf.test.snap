@@ -4,11 +4,11 @@
             8,
             {
                 "RESOLVE_CELLPOSE": {
-                    "sopa": "2.2.10",
+                    "sopa": "2.2.9",
                     "cellpose": "3.1.1.3"
                 },
                 "TO_SPATIALDATA": {
-                    "sopa": "2.2.10",
+                    "sopa": "2.2.9",
                     "spatialdata": "0.8.0",
                     "spatialdata_io": "0.7.1"
                 },
