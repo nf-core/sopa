@@ -598,39 +598,6 @@
             },
             "fa_icon": "fas fa-tools"
         },
-        "tangram": {
-            "title": "Tangram",
-            "type": "object",
-            "description": "Parameters related to the tangram cell-type annotation method",
-            "default": "",
-            "properties": {
-                "use_tangram": {
-                    "type": "boolean",
-                    "description": "Whether to run tangram cell-type annotation"
-                },
-                "sc_reference_path": {
-                    "type": "string",
-                    "description": "Path to the scRNAseq annotated reference, as a `.h5ad` file"
-                },
-                "tangram_cell_type_key": {
-                    "type": "string",
-                    "description": "Key of `adata_ref.obs` containing the cell-types"
-                },
-                "reference_preprocessing": {
-                    "type": "string",
-                    "description": "Preprocessing method applied to the reference. Either None (raw counts), or `normalized` (sc.pp.normalize_total) or `log1p` (sc.pp.normalize_total and sc.pp.log1p)"
-                },
-                "bag_size": {
-                    "type": "number",
-                    "description": "Number of cells in each bag of the spatial table. Low values will decrease the memory usage"
-                },
-                "max_obs_reference": {
-                    "type": "number",
-                    "description": "Maximum samples to be considered in the reference for tangram. Low values will decrease the memory usage"
-                }
-            },
-            "fa_icon": "fas fa-scroll"
-        },
         "fluorescence_annotation": {
             "title": "Fluorescence annotation",
             "type": "object",
@@ -704,9 +671,6 @@
         },
         {
             "$ref": "#/$defs/stardist"
-        },
-        {
-            "$ref": "#/$defs/tangram"
         },
         {
             "$ref": "#/$defs/fluorescence_annotation"
