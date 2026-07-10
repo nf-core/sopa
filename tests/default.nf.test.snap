@@ -193,6 +193,7 @@
                 "sample_name.zarr/tables/table/obs/cell_type/values/c",
                 "sample_name.zarr/tables/table/obs/cell_type/values/c/0",
                 "sample_name.zarr/tables/table/obs/cell_type/values/zarr.json",
+                "sample_name.zarr/tables/table/obs/cell_type/zarr.json",
                 "sample_name.zarr/tables/table/obs/centroid_x",
                 "sample_name.zarr/tables/table/obs/centroid_x/c",
                 "sample_name.zarr/tables/table/obs/centroid_x/c/0",
