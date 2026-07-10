@@ -1,7 +1,7 @@
 {
     "-profile test_baysor": {
         "content": [
-            9,
+            8,
             {
                 "RESOLVE_BAYSOR": {
                     "sopa": "2.2.9",
@@ -283,8 +283,12 @@
                 "sample_name.zarr/tables/table/uns/zarr.json",
                 "sample_name.zarr/tables/table/var",
                 "sample_name.zarr/tables/table/var/Name",
-                "sample_name.zarr/tables/table/var/Name/c",
-                "sample_name.zarr/tables/table/var/Name/c/0",
+                "sample_name.zarr/tables/table/var/Name/mask",
+                "sample_name.zarr/tables/table/var/Name/mask/zarr.json",
+                "sample_name.zarr/tables/table/var/Name/values",
+                "sample_name.zarr/tables/table/var/Name/values/c",
+                "sample_name.zarr/tables/table/var/Name/values/c/0",
+                "sample_name.zarr/tables/table/var/Name/values/zarr.json",
                 "sample_name.zarr/tables/table/var/Name/zarr.json",
                 "sample_name.zarr/tables/table/var/zarr.json",
                 "sample_name.zarr/tables/table/varm",
