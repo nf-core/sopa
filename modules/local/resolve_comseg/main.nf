@@ -4,8 +4,8 @@ process RESOLVE_COMSEG {
 
     conda "${moduleDir}/environment.yml"
     container "${workflow.containerEngine == 'apptainer' && !task.ext.singularity_pull_docker_container
-        ? 'oras://community.wave.seqera.io/library/python_pip_sopa_comseg:a638975f8908d60b'
-        : 'community.wave.seqera.io/library/python_pip_sopa_comseg:945487f9a969b7e2'}"
+        ? 'oras://community.wave.seqera.io/library/python_pip_sopa_comseg:82adca1dc4b37526'
+        : 'community.wave.seqera.io/library/python_pip_sopa_comseg:b037aaf65bc1ff46'}"
 
     input:
     tuple val(meta), path(sdata_path), path(counts), path(polygons)

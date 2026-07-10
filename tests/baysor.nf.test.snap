@@ -4,17 +4,17 @@
             9,
             {
                 "RESOLVE_BAYSOR": {
-                    "sopa": "2.2.6",
+                    "sopa": "2.2.8",
                     "baysor": "0.7.1"
                 },
                 "TANGRAM_ANNOTATION": {
-                    "sopa": "2.2.8",
+                    "sopa": "2.2.10",
                     "tangram": "1.0.4"
                 },
                 "TO_SPATIALDATA": {
-                    "sopa": "2.2.8",
-                    "spatialdata": "0.7.3",
-                    "spatialdata_io": "0.7.0"
+                    "sopa": "2.2.10",
+                    "spatialdata": "0.8.0",
+                    "spatialdata_io": "0.7.1"
                 },
                 "Workflow": {
                     "nf-core/sopa": "v1.0.0"
