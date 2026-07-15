@@ -16,7 +16,6 @@ include { EXPLORER                } from '../modules/local/explorer'
 include { EXPLORER_RAW            } from '../modules/local/explorer_raw'
 include { SCANPY_PREPROCESS       } from '../modules/local/scanpy_preprocess'
 include { REPORT                  } from '../modules/local/report'
-include { TANGRAM_ANNOTATION      } from '../modules/local/tangram_annotation'
 include { FLUO_ANNOTATION         } from '../modules/local/fluo_annotation'
 include { SPACERANGER             } from '../subworkflows/local/spaceranger'
 include { INPUT_CHECK             } from '../subworkflows/local/input_check'
@@ -116,13 +115,7 @@ workflow SOPA {
 
     ch_aggregated = AGGREGATE(ch_resolved, argsCLI("aggregate"))
 
-    if (params.use_tangram) {
-        sc_reference = file(params.sc_reference_path)
-
-        (ch_annotated, versions) = TANGRAM_ANNOTATION(ch_aggregated, sc_reference, argsCLI("tangram"))
-        ch_versions = ch_versions.mix(versions)
-    }
-    else if (params.use_fluorescence_annotation) {
+    if (params.use_fluorescence_annotation) {
         (ch_annotated, versions) = FLUO_ANNOTATION(ch_aggregated, argsCLI("fluorescence_annotation"))
         ch_versions = ch_versions.mix(versions)
     }

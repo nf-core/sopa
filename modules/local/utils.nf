@@ -135,13 +135,6 @@ def extractSubArgs(Map args, String group) {
             patch_width_pixel: args.patch_width_pixel,
             patch_overlap_pixel: args.patch_overlap_pixel
         ]
-    } else if (group == "tangram") {
-        return [
-            cell_type_key: args.tangram_cell_type_key,
-            reference_preprocessing: args.reference_preprocessing,
-            bag_size: args.bag_size,
-            max_obs_reference: args.max_obs_reference,
-        ]
     } else if (group == "fluorescence_annotation") {
         return [
             cell_type_key: args.fluorescence_cell_type_key,
