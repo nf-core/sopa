@@ -263,7 +263,7 @@ def methodsDescriptionText(mqc_methods_yaml) {
 
 def validateParams(params) {
     if (params.containsKey("read")) {
-        error("You use a deprecated Sopa params format. We flattened all parameters to conform to the future nextflow 26.04 strict syntax check.\nSee the nf-core/sopa docs for more details on the new syntax usage: https://nf-co.re/sopa/dev/docs/usage/.")
+        error("You use a deprecated Sopa params format. We flattened all parameters to conform to the future nextflow 26.04 strict syntax check.\nSee the nf-core/sopa docs for more details on the new syntax usage: https://nf-co.re/sopa/docs/usage/.")
     }
 
     def TRANSCRIPT_BASED_METHODS = ['use_proseg', 'use_baysor', 'use_comseg']
