@@ -240,6 +240,10 @@
                     "type": "number",
                     "description": "Number of overlapping pixels between the patches. We advise to choose approximately twice the diameter of a cell"
                 },
+                "image_scale": {
+                    "type": "string",
+                    "description": "The scale to be used for the image patches (e.g., `\"scale1\"`). By default, uses the highest resolution scale."
+                },
                 "patch_width_microns": {
                     "type": "number",
                     "description": "Width (and height) of each patch in microns"

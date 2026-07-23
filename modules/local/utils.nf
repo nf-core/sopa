@@ -133,7 +133,8 @@ def extractSubArgs(Map args, String group) {
     } else if (group == "image_patches") {
         return [
             patch_width_pixel: args.patch_width_pixel,
-            patch_overlap_pixel: args.patch_overlap_pixel
+            patch_overlap_pixel: args.patch_overlap_pixel,
+            scale: args.image_scale,
         ]
     } else if (group == "fluorescence_annotation") {
         return [
