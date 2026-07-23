@@ -1,0 +1,7 @@
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - python=3.12
+  - rust-proseg=3.1.1
+  - sopa=2.2.9

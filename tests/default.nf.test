@@ -2,6 +2,7 @@ nextflow_pipeline {
 
     name "Test pipeline"
     script "../main.nf"
+    profile "test"
     tag "pipeline"
 
     test("-profile test") {
@@ -21,13 +22,22 @@ nextflow_pipeline {
             assertAll(
                 { assert snapshot(
                     // pipeline versions.yml file for multiqc from which Nextflow version is removed because we test pipelines on multiple Nextflow versions
-                    removeNextflowVersion("$outputDir/pipeline_info/nf_core_sopa_software_mqc_versions.yml"),
+                    removeNextflowVersion("$outputDir/pipeline_info/nf_core_sopa_software_versions.yml"),
                     // All stable path name, with a relative path
                     stable_path,
                     // All files with stable contents
                     stable_content
                 ).match() }
             )
+
+            // ensure we have >=1500 non-zero genes over >=350 cells
+            def json_X = new groovy.json.JsonSlurper().parse(file("$outputDir/sample_name.zarr/tables/table/X/zarr.json"))
+            def nCells = json_X.attributes.shape[0] as int
+            assert nCells >= 350
+
+            def json_data = new groovy.json.JsonSlurper().parse(file("$outputDir/sample_name.zarr/tables/table/X/data/zarr.json"))
+            def nElements = json_data.shape[0] as int
+            assert nElements >= 1500
         }
     }
 }
