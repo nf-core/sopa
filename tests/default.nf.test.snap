@@ -19,7 +19,7 @@
                     "spatialdata_io": "0.7.0"
                 },
                 "Workflow": {
-                    "nf-core/sopa": "v1.0.0"
+                    "nf-core/sopa": "v1.0.1"
                 }
             },
             [
