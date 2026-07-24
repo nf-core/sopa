@@ -3,7 +3,7 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## v1.0.1 - [xxxx-xx-xx]
+## v1.0.1 - [date]
 
 - Update the spaceranger module in #28
 - Ensure the tests can't silently fail in #29
