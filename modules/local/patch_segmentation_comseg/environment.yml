@@ -1,0 +1,9 @@
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - python=3.12
+  - pip=24.3.1
+  - sopa=2.2.9
+  - pip:
+      - comseg==1.8.2

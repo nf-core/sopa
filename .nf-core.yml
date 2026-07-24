@@ -17,8 +17,7 @@ nf_core_version: 4.0.3
 repository_type: pipeline
 template:
   author: Quentin Blampey
-  description: Technology-invariant pipeline for spatial omics analysis that scales
-    to millions of cells
+  description: Technology-invariant pipeline for spatial omics analysis that scales to millions of cells
   force: false
   is_nfcore: true
   name: sopa
