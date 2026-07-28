@@ -6,12 +6,15 @@ lint:
     - conf/igenomes.config
     - conf/igenomes_ignored.config
     - assets/multiqc_config.yml
+    - .github/workflows/linting_comment.yml
   files_unchanged:
     - .github/CONTRIBUTING.md
     - assets/sendmail_template.txt
     - assets/nf-core-sopa_logo_light.png
     - docs/images/nf-core-sopa_logo_light.png
     - docs/images/nf-core-sopa_logo_dark.png
+    - .github/workflows/branch.yml
+    - .github/workflows/linting.yml
   multiqc_config: false
 nf_core_version: 4.0.3
 repository_type: pipeline
