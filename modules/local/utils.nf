@@ -58,6 +58,7 @@ def extractSubArgs(Map args, String group) {
     } else if (group == "stardist") {
         return [
             model_type: args.stardist_model_type,
+            local_model: args.stardist_local_model,
             prob_thresh: args.prob_thresh,
             nms_thresh: args.nms_thresh,
             channels: getChannels(args.stardist_channels, true),
