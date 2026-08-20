@@ -16,7 +16,7 @@ process PATCH_SEGMENTATION_STARDIST {
     script:
     """
     export KERAS_HOME="\$PWD/.keras"
-    
+
     sopa segmentation stardist ${sdata_path} --patch-index ${index} ${cli_arguments}
 
     mv ${sdata_path}/.sopa_cache/stardist_boundaries/${index}.parquet ${index}.parquet
