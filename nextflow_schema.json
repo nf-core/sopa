@@ -576,11 +576,6 @@
                     "type": "string",
                     "description": "Name of stardist model to use"
                 },
-                "stardist_local_model": {
-                    "type": "string",
-                    "format": "directory-path",
-                    "description": "Path to a local stardist model directory. If not provided, the pretrained model given by `stardist_model_type` is used."
-                },
                 "prob_thresh": {
                     "type": "number",
                     "description": "Stardist `prob_thresh` parameter"
