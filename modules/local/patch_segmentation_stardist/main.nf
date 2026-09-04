@@ -4,8 +4,8 @@ process PATCH_SEGMENTATION_STARDIST {
 
     conda "${moduleDir}/environment.yml"
     container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
-?         'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/40/402afbbc9596451ab73b39e8237d3947f1d8bb157f2e1f4ef792f9f391442d7a/data'
-:         'community.wave.seqera.io/library/python_pip_sopastardist:4f516e0324df2083' }"
+?         'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/4b/4bd32528c3d37b7f49f1eb47e4c792ae51d3cc38a792cf832dfd07adf44cd68c/data'
+:         'community.wave.seqera.io/library/python_pip_sopastardist:df074ee8a42c1e8f' }"
 
     input:
     tuple val(meta), path(sdata_path), val(cli_arguments), val(index), val(n_patches)
