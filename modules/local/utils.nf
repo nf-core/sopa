@@ -73,6 +73,10 @@ def extractSubArgs(Map args, String group) {
             gaussian_sigma: args.gaussian_sigma,
             method_kwargs: args.stardist_kwargs,
         ]
+    } else if (group == "download_stardist") {
+        return [
+            model_type: args.stardist_model_type,
+        ]
     } else if (group == "baysor") {
         return [
             config: [
