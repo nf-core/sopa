@@ -17,8 +17,6 @@ process PATCH_SEGMENTATION_PROSEG {
 
     script:
     """
-    export ANNDATA_ALLOW_WRITE_NULLABLE_STRINGS=0
-
     sopa segmentation proseg ${sdata_path} ${cli_arguments}
 
     cat <<-END_VERSIONS > versions.yml
