@@ -8,7 +8,7 @@
                     "baysor": "0.7.1"
                 },
                 "TO_SPATIALDATA": {
-                    "sopa": "2.2.9",
+                    "sopa": "2.2.11",
                     "spatialdata": "0.8.0",
                     "spatialdata_io": "0.7.0"
                 },

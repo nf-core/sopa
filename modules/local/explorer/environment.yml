@@ -3,4 +3,4 @@ channels:
   - bioconda
 dependencies:
   - python=3.12
-  - sopa=2.2.9
+  - sopa=2.2.11
