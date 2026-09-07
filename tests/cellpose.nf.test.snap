@@ -1,7 +1,7 @@
 {
     "-profile test_cellpose": {
         "content": [
-            8,
+            9,
             {
                 "RESOLVE_CELLPOSE": {
                     "sopa": "2.2.11",
@@ -259,7 +259,7 @@
                 
             ]
         ],
-        "timestamp": "2026-09-04T17:31:42.778116",
+        "timestamp": "2026-09-07T17:22:57.66274",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"

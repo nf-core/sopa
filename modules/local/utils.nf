@@ -55,6 +55,12 @@ def extractSubArgs(Map args, String group) {
             gaussian_sigma: args.gaussian_sigma,
             method_kwargs: args.cellpose_kwargs,
         ]
+    } else if (group == "download_cellpose") {
+        return [
+            model_type: args.cellpose_model_type,
+            pretrained_model: args.pretrained_model,
+            method_kwargs: args.cellpose_kwargs,
+        ]
     } else if (group == "stardist") {
         return [
             model_type: args.stardist_model_type,
