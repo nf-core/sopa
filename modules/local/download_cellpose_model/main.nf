@@ -1,6 +1,5 @@
-process PATCH_SEGMENTATION_CELLPOSE {
+process DOWNLOAD_CELLPOSE_MODEL {
     label "process_single"
-    tag "${meta.sample}"
 
     conda "${moduleDir}/environment.yml"
     container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
@@ -8,17 +7,15 @@ process PATCH_SEGMENTATION_CELLPOSE {
 :         'community.wave.seqera.io/library/python_sopa_cellpose:d098579826bbcf24' }"
 
     input:
-    tuple val(meta), path(sdata_path), val(cli_arguments), val(index), val(n_patches), path(model_dir)
+    val cli_arguments
 
     output:
-    tuple val(meta), path(sdata_path), path("${index}.parquet"), val(n_patches)
+    path "cellpose_models"
 
     script:
     """
-    export CELLPOSE_LOCAL_MODELS_PATH=${model_dir}
+    mkdir -p ./cellpose_models
 
-    sopa segmentation cellpose ${sdata_path} --patch-index ${index} ${cli_arguments}
-
-    mv ${sdata_path}/.sopa_cache/cellpose_boundaries/${index}.parquet ${index}.parquet
+    sopa download cellpose --model-dir ./cellpose_models ${cli_arguments}
     """
 }

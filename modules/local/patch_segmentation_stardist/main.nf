@@ -8,14 +8,14 @@ process PATCH_SEGMENTATION_STARDIST {
 :         'community.wave.seqera.io/library/python_pip_sopastardist:df074ee8a42c1e8f' }"
 
     input:
-    tuple val(meta), path(sdata_path), val(cli_arguments), val(index), val(n_patches)
+    tuple val(meta), path(sdata_path), val(cli_arguments), val(index), val(n_patches), path(model_dir)
 
     output:
     tuple val(meta), path(sdata_path), path("${index}.parquet"), val(n_patches)
 
     script:
     """
-    export KERAS_HOME="\$PWD/.keras"
+    export KERAS_HOME=${model_dir}
 
     sopa segmentation stardist ${sdata_path} --patch-index ${index} ${cli_arguments}
 
