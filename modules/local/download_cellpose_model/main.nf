@@ -16,6 +16,6 @@ process DOWNLOAD_CELLPOSE_MODEL {
     """
     mkdir -p ./cellpose_models
 
-    #sopa download cellpose --model-dir ./cellpose_models ${cli_arguments}
+    sopa download cellpose --model-dir ./cellpose_models ${cli_arguments}
     """
 }
