@@ -272,7 +272,10 @@ def validateParams(params) {
     def TRANSCRIPT_BASED_METHODS = ['use_baysor', 'use_comseg', 'use_proseg']
     def STAINING_BASED_METHODS = ['use_cellpose', 'use_stardist']
     def ALL_METHODS = STAINING_BASED_METHODS + TRANSCRIPT_BASED_METHODS
-    
+    def IMAGING_ONLY_TECHNOLOGIES = ['macsima', 'phenocycler', 'hyperion', 'ome_tif']
+
+    def technology = params.technology
+    def is_visium_hd = technology == 'visium_hd'
     def enabled = ALL_METHODS.findAll { params[it] }
     def enabled_transcript = TRANSCRIPT_BASED_METHODS.findAll { params[it] }
     def enabled_staining = STAINING_BASED_METHODS.findAll { params[it] }
@@ -288,6 +291,32 @@ def validateParams(params) {
     }
     if (enabled_staining.size() > 1) {
         errors << "Only one staining-based method may be used, but got: ${enabled_staining.join(', ')}."
+    }
+
+    //
+    // Segmentation methods compatibility
+    //
+    if (technology in IMAGING_ONLY_TECHNOLOGIES && enabled_transcript) {
+        errors << "Technology '${technology}' has no transcripts, so transcript-based methods are not supported (got: ${enabled_transcript.join(', ')}). Use 'use_cellpose' or 'use_stardist' instead."
+    }
+
+    if (is_visium_hd) {
+        // Visium HD: proseg runs on bins, optionally with stardistas a prior
+        if (params.use_baysor || params.use_comseg) {
+            errors << "'use_baysor' and 'use_comseg' are not supported on Visium HD data. Use 'use_stardist' and/or 'use_proseg' instead."
+        }
+        if (params.use_cellpose && params.use_proseg) {
+            errors << "'use_cellpose' cannot be used as a prior for 'use_proseg' on Visium HD data. Use 'use_stardist' as the prior instead."
+        }
+    }
+    else {
+        // non Visium HD: only cellpose can be chained with a transcript-based method, stardist standalone, 
+        if (params.use_stardist && enabled_transcript) {
+            errors << "'use_stardist' cannot be combined with a transcript-based method (got: ${enabled_transcript.join(', ')}) on technology '${technology}'. This combination is only supported for 'visium_hd'. Use 'use_cellpose' as the prior instead, or run 'use_stardist' alone."
+        }
+        if (params.visium_hd_prior_shapes_key != null) {
+            errors << "'visium_hd_prior_shapes_key' is only supported for Visium HD data, but technology is '${technology}'. Use 'prior_shapes_key' instead."
+        }
     }
 
     if (errors) {
