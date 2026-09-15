@@ -323,5 +323,18 @@ def validateParams(params) {
         error("Invalid combination of nf-core/sopa parameters:\n" + errors.collect { "  - ${it}" }.join("\n") + "\nSee https://nf-co.re/sopa/docs/usage/ for the supported configurations.")
     }
 
+    //
+    // Warnings
+    //
+    if (params.prior_shapes_key != null && !enabled_transcript) {
+        log.warn("'prior_shapes_key' is set but no transcript-based method is enabled: it will be ignored.")
+    }
+    if (params.prior_shapes_key != null && is_visium_hd) {
+        log.warn("'prior_shapes_key' is ignored on Visium HD data: use 'visium_hd_prior_shapes_key' instead.")
+    }
+    if (params.use_stardist && params.use_proseg && is_visium_hd && params.visium_hd_prior_shapes_key == null) {
+        log.info("'visium_hd_prior_shapes_key' not provided: 'stardist_boundaries' will be used as a prior for Proseg.")
+    }
+
     return params
 }
