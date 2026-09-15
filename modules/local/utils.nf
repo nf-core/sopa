@@ -177,7 +177,7 @@ def getPriorShapesKey() {
 }
 
 def getPatchWidthMicrons() {
-    // -1 for Sopa -> "one patch" (null would fall back to default width).
+    // -1 to use only one patch (mandatory for proseg)
     return params.use_proseg ? -1 : params.patch_width_microns
 }
 
