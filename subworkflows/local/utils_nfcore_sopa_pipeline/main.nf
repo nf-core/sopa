@@ -269,15 +269,29 @@ def validateParams(params) {
         error("You use a deprecated Sopa params format. We flattened all parameters to conform to the future nextflow 26.04 strict syntax check.\nSee the nf-core/sopa docs for more details on the new syntax usage: https://nf-co.re/sopa/docs/usage/.")
     }
 
-    def TRANSCRIPT_BASED_METHODS = ['use_proseg', 'use_baysor', 'use_comseg']
-    def STAINING_BASED_METHODS = ['use_stardist', 'use_cellpose']
-    def NON_VALID_STARDIST_METHODS = ['use_baysor', 'use_comseg']
+    def TRANSCRIPT_BASED_METHODS = ['use_baysor', 'use_comseg', 'use_proseg']
+    def STAINING_BASED_METHODS = ['use_cellpose', 'use_stardist']
+    def ALL_METHODS = STAINING_BASED_METHODS + TRANSCRIPT_BASED_METHODS
+    
+    def enabled = ALL_METHODS.findAll { params[it] }
+    def enabled_transcript = TRANSCRIPT_BASED_METHODS.findAll { params[it] }
+    def enabled_staining = STAINING_BASED_METHODS.findAll { params[it] }
 
-    // check segmentation methods
-    assert TRANSCRIPT_BASED_METHODS.count { params[it] } <= 1 : "Only one of ${TRANSCRIPT_BASED_METHODS} may be used"
-    assert STAINING_BASED_METHODS.count { params[it] } <= 1 : "Only one of ${STAINING_BASED_METHODS} may be used"
-    if (params.use_stardist) {
-        assert NON_VALID_STARDIST_METHODS.every { !params[it] } : "'stardist' cannot be combined with transcript-based methods, except proseg."
+    def errors = []
+
+
+    if (enabled.isEmpty()) {
+        errors << "At least one segmentation method must be enabled (one of ${ALL_METHODS.join(', ')})."
+    }
+    if (enabled_transcript.size() > 1) {
+        errors << "Only one transcript-based method may be used, but got: ${enabled_transcript.join(', ')}."
+    }
+    if (enabled_staining.size() > 1) {
+        errors << "Only one staining-based method may be used, but got: ${enabled_staining.join(', ')}."
+    }
+
+    if (errors) {
+        error("Invalid combination of nf-core/sopa parameters:\n" + errors.collect { "  - ${it}" }.join("\n") + "\nSee https://nf-co.re/sopa/docs/usage/ for the supported configurations.")
     }
 
     return params
