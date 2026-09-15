@@ -310,7 +310,7 @@ def validateParams(params) {
         }
     }
     else {
-        // non Visium HD: only cellpose can be chained with a transcript-based method, stardist standalone, 
+        // non Visium HD: only cellpose can be chained with a transcript-based method, stardist standalone,
         if (params.use_stardist && enabled_transcript) {
             errors << "'use_stardist' cannot be combined with a transcript-based method (got: ${enabled_transcript.join(', ')}) on technology '${technology}'. This combination is only supported for 'visium_hd'. Use 'use_cellpose' as the prior instead, or run 'use_stardist' alone."
         }
