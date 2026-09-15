@@ -335,7 +335,7 @@ def validateParams(params) {
     if (params.use_stardist && params.use_proseg && is_visium_hd && params.visium_hd_prior_shapes_key == null) {
         log.info("'visium_hd_prior_shapes_key' not provided: 'stardist_boundaries' will be used as a prior for Proseg.")
     }
-    if (params.use_proseg && params.patch_width_microns != null && params.patch_width_microns != -1) {
+    if (params.use_proseg && !is_visium_hd && params.patch_width_microns != null && params.patch_width_microns != -1) {
         log.warn("Proseg needs to run on one single patch, but received patch_width_microns=${params.patch_width_microns}: setting it to -1 instead.")
     }
 
