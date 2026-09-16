@@ -135,7 +135,7 @@ def extractSubArgs(Map args, String group) {
         ]
     } else if (group == "transcript_patches") {
         return [
-            patch_width_microns: args.patch_width_microns,
+            patch_width_microns: getPatchWidthMicrons(),
             patch_overlap_microns: args.patch_overlap_microns,
             unassigned_value: args.unassigned_value,
             prior_shapes_key: getPriorShapesKey(),
@@ -174,6 +174,11 @@ def getPriorShapesKey() {
     } else {
         return params.use_cellpose ? "cellpose_boundaries" : null
     }
+}
+
+def getPatchWidthMicrons() {
+    // -1 to use only one patch (mandatory for proseg)
+    return params.use_proseg ? -1 : params.patch_width_microns
 }
 
 def getProsegPriorShapesKey() {

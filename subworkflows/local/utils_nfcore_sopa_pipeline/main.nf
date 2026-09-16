@@ -269,15 +269,74 @@ def validateParams(params) {
         error("You use a deprecated Sopa params format. We flattened all parameters to conform to the future nextflow 26.04 strict syntax check.\nSee the nf-core/sopa docs for more details on the new syntax usage: https://nf-co.re/sopa/docs/usage/.")
     }
 
-    def TRANSCRIPT_BASED_METHODS = ['use_proseg', 'use_baysor', 'use_comseg']
-    def STAINING_BASED_METHODS = ['use_stardist', 'use_cellpose']
-    def NON_VALID_STARDIST_METHODS = ['use_baysor', 'use_comseg']
+    def TRANSCRIPT_BASED_METHODS = ['use_baysor', 'use_comseg', 'use_proseg']
+    def STAINING_BASED_METHODS = ['use_cellpose', 'use_stardist']
+    def ALL_METHODS = STAINING_BASED_METHODS + TRANSCRIPT_BASED_METHODS
+    def IMAGING_ONLY_TECHNOLOGIES = ['macsima', 'phenocycler', 'hyperion', 'ome_tif']
 
-    // check segmentation methods
-    assert TRANSCRIPT_BASED_METHODS.count { params[it] } <= 1 : "Only one of ${TRANSCRIPT_BASED_METHODS} may be used"
-    assert STAINING_BASED_METHODS.count { params[it] } <= 1 : "Only one of ${STAINING_BASED_METHODS} may be used"
-    if (params.use_stardist) {
-        assert NON_VALID_STARDIST_METHODS.every { !params[it] } : "'stardist' cannot be combined with transcript-based methods, except proseg."
+    def technology = params.technology
+    def is_visium_hd = technology == 'visium_hd'
+    def enabled = ALL_METHODS.findAll { params[it] }
+    def enabled_transcript = TRANSCRIPT_BASED_METHODS.findAll { params[it] }
+    def enabled_staining = STAINING_BASED_METHODS.findAll { params[it] }
+
+    def errors = []
+
+
+    if (enabled.isEmpty()) {
+        errors << "At least one segmentation method must be enabled (one of ${ALL_METHODS.join(', ')})."
+    }
+    if (enabled_transcript.size() > 1) {
+        errors << "Only one transcript-based method may be used, but got: ${enabled_transcript.join(', ')}."
+    }
+    if (enabled_staining.size() > 1) {
+        errors << "Only one staining-based method may be used, but got: ${enabled_staining.join(', ')}."
+    }
+
+    //
+    // Segmentation methods compatibility
+    //
+    if (technology in IMAGING_ONLY_TECHNOLOGIES && enabled_transcript) {
+        errors << "Technology '${technology}' has no transcripts, so transcript-based methods are not supported (got: ${enabled_transcript.join(', ')}). Use 'use_cellpose' or 'use_stardist' instead."
+    }
+
+    if (is_visium_hd) {
+        // Visium HD: proseg runs on bins, optionally with stardistas a prior
+        if (params.use_baysor || params.use_comseg) {
+            errors << "'use_baysor' and 'use_comseg' are not supported on Visium HD data. Use 'use_stardist' and/or 'use_proseg' instead."
+        }
+        if (params.use_cellpose && params.use_proseg) {
+            errors << "'use_cellpose' cannot be used as a prior for 'use_proseg' on Visium HD data. Use 'use_stardist' as the prior instead."
+        }
+    }
+    else {
+        // non Visium HD: only cellpose can be chained with a transcript-based method, stardist standalone,
+        if (params.use_stardist && enabled_transcript) {
+            errors << "'use_stardist' cannot be combined with a transcript-based method (got: ${enabled_transcript.join(', ')}) on technology '${technology}'. This combination is only supported for 'visium_hd'. Use 'use_cellpose' as the prior instead, or run 'use_stardist' alone."
+        }
+        if (params.visium_hd_prior_shapes_key != null) {
+            errors << "'visium_hd_prior_shapes_key' is only supported for Visium HD data, but technology is '${technology}'. Use 'prior_shapes_key' instead."
+        }
+    }
+
+    if (errors) {
+        error("Invalid combination of nf-core/sopa parameters:\n" + errors.collect { "  - ${it}" }.join("\n") + "\nSee https://nf-co.re/sopa/docs/usage/ for the supported configurations.")
+    }
+
+    //
+    // Warnings
+    //
+    if (params.prior_shapes_key != null && !enabled_transcript) {
+        log.warn("'prior_shapes_key' is set but no transcript-based method is enabled: it will be ignored.")
+    }
+    if (params.prior_shapes_key != null && is_visium_hd) {
+        log.warn("'prior_shapes_key' is ignored on Visium HD data: use 'visium_hd_prior_shapes_key' instead.")
+    }
+    if (params.use_stardist && params.use_proseg && is_visium_hd && params.visium_hd_prior_shapes_key == null) {
+        log.info("'visium_hd_prior_shapes_key' not provided: 'stardist_boundaries' will be used as a prior for Proseg.")
+    }
+    if (params.use_proseg && !is_visium_hd && params.patch_width_microns != null && params.patch_width_microns != -1) {
+        log.warn("Proseg needs to run on one single patch, but received patch_width_microns=${params.patch_width_microns}: setting it to -1 instead.")
     }
 
     return params
