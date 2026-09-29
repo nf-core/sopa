@@ -553,7 +553,8 @@
                 },
                 "cellpose_use_gpu": {
                     "type": "boolean",
-                    "description": "Whether to use GPU for Cellpose segmentation"
+                    "description": "Whether to use GPU for Cellpose segmentation",
+                    "help_text": "If `false` (default), Cellpose v3 runs on CPU. If `true`, a GPU container with Cellpose v4 (PyTorch + CUDA) is used and one GPU is requested per patch. Combine with `-profile gpu` so the container engine exposes the GPU. Note that Cellpose v4 only ships the `cpsam` model, so `cellpose_model_type` is ignored."
                 },
                 "cellpose_kwargs": {
                     "type": "string",
