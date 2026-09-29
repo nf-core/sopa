@@ -1,0 +1,10 @@
+# Built with ave --conda-file environment_gpu.yml --freeze --await --platform linux/amd64
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - python=3.12
+  - sopa=2.2.11
+  - cellpose=4.1.1
+  - pytorch-gpu=2.13.0
+  - cuda-version=12.9
