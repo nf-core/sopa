@@ -1,5 +1,6 @@
 process PATCH_SEGMENTATION_CELLPOSE {
     label "process_single"
+    label "process_gpu"
     tag "${meta.sample}"
 
     conda "${moduleDir}/environment.yml"
