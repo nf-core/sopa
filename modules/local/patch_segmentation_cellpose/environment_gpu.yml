@@ -1,4 +1,4 @@
-# Built with wave --conda-file environment_gpu.yml --freeze --await --platform linux/amd64
+# Built with wave --conda-file environment_gpu.yml --freeze --await 30m --platform linux/amd64
 channels:
   - conda-forge
   - bioconda
