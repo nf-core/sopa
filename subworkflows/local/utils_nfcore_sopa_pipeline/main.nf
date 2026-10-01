@@ -338,6 +338,9 @@ def validateParams(params) {
     if (params.use_proseg && !is_visium_hd && params.patch_width_microns != null && params.patch_width_microns != -1) {
         log.warn("Proseg needs to run on one single patch, but received patch_width_microns=${params.patch_width_microns}: setting it to -1 instead.")
     }
+    if (params.use_cellpose && workflow.profile.contains('gpu') && params.cellpose_model_type != null) {
+        log.warn("The 'gpu' profile uses Cellpose v4, which only provides the 'cpsam' model: 'cellpose_model_type=${params.cellpose_model_type}' will be ignored.")
+    }
 
     return params
 }
