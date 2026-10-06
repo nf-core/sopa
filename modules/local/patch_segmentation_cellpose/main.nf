@@ -4,8 +4,8 @@ process PATCH_SEGMENTATION_CELLPOSE {
     tag "${meta.sample}"
 
     conda "${moduleDir}/environment.yml"
-    // CPU image: cellpose v3 | GPU image (task.ext.use_gpu): cellpose v4 + pytorch/CUDA, built from patch_segmentation_cellpose/environment_gpu.yml
-    container "${ task.ext.use_gpu
+
+    container "${ task.ext.cellpose_v4
 ?         (workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
 ?             'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/88/88ad84624cfa03490ebdbfe171551edd036602a9585c10ec47d2b7557732b627/data'
 :             'community.wave.seqera.io/library/python_sopa_cellpose_pytorch-gpu_cuda-version:7ca3fb7cbc5a048b')

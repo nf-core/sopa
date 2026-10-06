@@ -551,6 +551,11 @@
                     "type": "string",
                     "description": "Cellpose `pretrained_model` parameter"
                 },
+                "cellpose_version": {
+                    "type": "integer",
+                    "enum": [3, 4],
+                    "description": "Force the Cellpose major version (3 or 4). By default, Cellpose v4 is used with the 'gpu' profile and Cellpose v3 otherwise."
+                },
                 "cellpose_kwargs": {
                     "type": "string",
                     "description": "Additional cellpose parameters as a python dict string"
