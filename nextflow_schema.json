@@ -552,9 +552,9 @@
                     "description": "Cellpose `pretrained_model` parameter"
                 },
                 "cellpose_version": {
-                    "type": "integer",
-                    "enum": [3, 4],
-                    "description": "Force the Cellpose major version (3 or 4). By default, Cellpose v4 is used with the 'gpu' profile and Cellpose v3 otherwise."
+                    "type": ["integer", "string"],
+                    "enum": [3, 4, "3", "4"],
+                    "description": "Cellpose major version (3 or 4). Defaults to Cellpose v3. The 'gpu' profile selects the pytorch/CUDA image of the chosen version."
                 },
                 "cellpose_kwargs": {
                     "type": "string",
