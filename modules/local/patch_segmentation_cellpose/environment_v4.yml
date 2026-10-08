@@ -5,6 +5,8 @@ channels:
 dependencies:
   - python=3.12
   - sopa=2.2.11
+  - pytorch=2.13.0
+  - torchvision=0.28.0
   - git
   - pip
   - pip:
