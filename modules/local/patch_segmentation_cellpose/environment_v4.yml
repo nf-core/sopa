@@ -1,0 +1,14 @@
+# Built with wave --conda-file environment_v4.yml --freeze --await 30m --platform linux/amd64
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - python=3.12
+  - sopa=2.2.11
+  - pytorch=2.13.0
+  - torchvision=0.28.0
+  - git
+  - pip
+  - pip:
+      - cellpose==4.2.1.1
+      - git+https://github.com/facebookresearch/dinov3

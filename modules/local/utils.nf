@@ -48,7 +48,7 @@ def extractSubArgs(Map args, String group) {
             flow_threshold: args.flow_threshold,
             model_type: args.cellpose_model_type,
             pretrained_model: args.pretrained_model,
-            gpu: args.cellpose_use_gpu,
+            gpu: workflow.profile.contains("gpu"),
             min_area: args.min_area_pixels2,
             clip_limit: args.clip_limit,
             clahe_kernel_size: args.clahe_kernel_size,
