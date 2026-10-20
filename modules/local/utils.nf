@@ -223,16 +223,23 @@ def extractOutsDir(file) {
 def argsToSpatialData(Map meta, String fullres_image_file) {
     def args = [
         technology: params.technology,
-        kwargs: [:],
     ]
 
-    if (params.visium_hd_imread_page != null) {
-        args.kwargs['imread_kwargs'] = ["page": params.visium_hd_imread_page]
-    }
 
     if (params.technology == "visium_hd") {
-        args.kwargs["dataset_id"] = meta.id
-        args.kwargs["fullres_image_file"] = fullres_image_file
+        if (params.reader_kwargs != null) {
+            error "The reader_kwargs parameter is not supported for Visium HD technology. Please use the visium_hd_imread_page parameter instead, or open an issue."
+        }
+
+        args.kwargs = [
+            dataset_id: meta.id,
+            fullres_image_file: fullres_image_file,
+        ]
+        if (params.visium_hd_imread_page != null) {
+            args.kwargs['imread_kwargs'] = ["page": params.visium_hd_imread_page]
+        }
+    } else {
+        args.kwargs = params.reader_kwargs ?: [:]
     }
 
     return argsCLI(null, args)
