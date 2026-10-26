@@ -24,17 +24,16 @@ include { UTILS_NEXTFLOW_PIPELINE   } from '../../nf-core/utils_nextflow_pipelin
 */
 
 workflow PIPELINE_INITIALISATION {
-
     take:
-    version           // boolean: Display version and exit
-    validate_params   // boolean: Boolean whether to validate parameters against the schema at runtime
-    monochrome_logs   // boolean: Do not use coloured log outputs
+    version // boolean: Display version and exit
+    validate_params // boolean: Boolean whether to validate parameters against the schema at runtime
+    monochrome_logs // boolean: Do not use coloured log outputs
     nextflow_cli_args //   array: List of positional nextflow CLI args
-    outdir            //  string: The output directory where the results will be saved
-    input             //  string: Path to input samplesheet
-    help              // boolean: Display help message and exit
-    help_full         // boolean: Show the full help message
-    show_hidden       // boolean: Show hidden parameters in the help message
+    outdir //  string: The output directory where the results will be saved
+    input //  string: Path to input samplesheet
+    help // boolean: Display help message and exit
+    help_full // boolean: Show the full help message
+    show_hidden // boolean: Show hidden parameters in the help message
 
     main:
 
@@ -43,11 +42,11 @@ workflow PIPELINE_INITIALISATION {
     //
     // Print version and exit if required and dump pipeline parameters to JSON file
     //
-    UTILS_NEXTFLOW_PIPELINE (
+    UTILS_NEXTFLOW_PIPELINE(
         version,
         true,
         outdir,
-        workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1
+        workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1,
     )
 
     //
@@ -79,7 +78,7 @@ workflow PIPELINE_INITIALISATION {
 
     command = "nextflow run ${workflow.manifest.name} -profile <docker/singularity/.../institute> --input samplesheet.csv --outdir <OUTDIR>"
 
-    UTILS_NFSCHEMA_PLUGIN (
+    UTILS_NFSCHEMA_PLUGIN(
         workflow,
         validate_params,
         null,
@@ -95,7 +94,7 @@ workflow PIPELINE_INITIALISATION {
     //
     // Check config provided to the pipeline
     //
-    UTILS_NFCORE_PIPELINE (
+    UTILS_NFCORE_PIPELINE(
         nextflow_cli_args
     )
 
@@ -103,29 +102,51 @@ workflow PIPELINE_INITIALISATION {
     // Create channel from input file provided through params.input
     //
 
-    channel
-        .fromList(samplesheetToList(input, "${projectDir}/assets/schema_input.json"))
-        .map {
-            meta, fastq_1, fastq_2 ->
-                if (!fastq_2) {
-                    return [ meta.id, meta + [ single_end:true ], [ fastq_1 ] ]
-                } else {
-                    return [ meta.id, meta + [ single_end:false ], [ fastq_1, fastq_2 ] ]
+    Channel
+        .fromList(samplesheetToList(params.input, "${projectDir}/assets/schema_input.json"))
+        .map { meta, data_path ->
+            if (!meta.fastq_dir) {
+                if (!data_path) {
+                    error("The `data_path` must be provided (path to the raw inputs), except when running on Visium HD data (in that case, the `fastq_dir` is required)")
                 }
-        }
-        .groupTuple()
-        .map { samplesheet ->
-            validateInputSamplesheet(samplesheet)
-        }
-        .map {
-            meta, fastqs ->
-                return [ meta, fastqs.flatten() ]
+
+                if (!meta.sample) {
+                    meta.sample = file(data_path).baseName
+                }
+
+                meta.data_dir = data_path
+            }
+            else {
+                // spaceranger output directory
+                meta.data_dir = "outs"
+
+                if (!meta.sample) {
+                    error("The `sample` column must be provided when running on Visium HD data")
+                }
+
+                if (!meta.id) {
+                    meta.id = meta.sample
+                }
+
+                if (!meta.image) {
+                    error("The `image` column (full resolution image) must be provided when running Sopa on Visium HD data - it is required for the cell segmentation")
+                }
+            }
+            meta.sdata_dir = "${meta.sample}.zarr"
+            meta.explorer_dir = "${meta.sample}.explorer"
+
+            return meta
         }
         .set { ch_samplesheet }
 
+    //
+    // Sopa params validation
+    //
+    validateParams(params)
+
     emit:
     samplesheet = ch_samplesheet
-    versions    = ch_versions
+    versions = ch_versions
 }
 
 /*
@@ -135,12 +156,11 @@ workflow PIPELINE_INITIALISATION {
 */
 
 workflow PIPELINE_COMPLETION {
-
     take:
-    email           //  string: email address
-    email_on_fail   //  string: email address sent on pipeline failure
+    email //  string: email address
+    email_on_fail //  string: email address sent on pipeline failure
     plaintext_email // boolean: Send plain-text email instead of HTML
-    outdir          //    path: Path to output directory where results will be published
+    outdir //    path: Path to output directory where results will be published
     monochrome_logs // boolean: Disable ANSI colour codes in log output
 
     main:
@@ -158,7 +178,7 @@ workflow PIPELINE_COMPLETION {
                 plaintext_email,
                 outdir,
                 monochrome_logs,
-                []
+                [],
             )
         }
 
@@ -178,40 +198,33 @@ workflow PIPELINE_COMPLETION {
 */
 
 //
-// Validate channels from input samplesheet
-//
-def validateInputSamplesheet(input) {
-    def (metas, fastqs) = input[1..2]
-
-    // Check that multiple runs of the same sample are of the same datatype i.e. single-end / paired-end
-    def endedness_ok = metas.collect{ meta -> meta.single_end }.unique().size == 1
-    if (!endedness_ok) {
-        error("Please check input samplesheet -> Multiple runs of a sample must be of the same datatype i.e. single-end or paired-end: ${metas[0].id}")
-    }
-
-    return [ metas[0], fastqs ]
-}
-//
 // Generate methods description for MultiQC
 //
 def toolCitationText() {
-    // TODO nf-core: Optionally add in-text citation tools to this list.
-    // Can use ternary operators to dynamically construct based conditions, e.g. params["run_xyz"] ? "Tool (Foo et al. 2023)" : "",
-    // Uncomment function in methodsDescriptionText to render in MultiQC report
     def citation_text = [
-            "Tools used in the workflow included:",
-            "."
-        ].join(' ').trim()
+        "Tools used in the workflow included:",
+        "Sopa (Blampey et al. 2024),",
+        "AnnData (Virshup et al. 2021),",
+        "Scanpy (Wolf et al. 2018),",
+        "Space Ranger (10x Genomics)",
+        "SpatialData (Marconato et al. 2023) and",
+    ].join(' ').trim()
 
     return citation_text
 }
 
 def toolBibliographyText() {
-    // TODO nf-core: Optionally add bibliographic entries to this list.
-    // Can use ternary operators to dynamically construct based conditions, e.g. params["run_xyz"] ? "<li>Author (2023) Pub name, Journal, DOI</li>" : "",
-    // Uncomment function in methodsDescriptionText to render in MultiQC report
     def reference_text = [
-        ].join(' ').trim()
+        '<li>Di Tommaso, P., Chatzou, M., Floden, E. W., Barja, P. P., Palumbo, E., & Notredame, C. (2017). Nextflow enables reproducible computational workflows. Nature Biotechnology, 35(4), 316-319. doi: <a href="https://doi.org/10.1038/nbt.3820">10.1038/nbt.3820</a></li>',
+        '<li>Ewels, P. A., Peltzer, A., Fillinger, S., Patel, H., Alneberg, J., Wilm, A., Garcia, M. U., Di Tommaso, P., & Nahnsen, S. (2020). The nf-core framework for community-curated bioinformatics pipelines. Nature Biotechnology, 38(3), 276-278. doi: <a href="https://doi.org/10.1038/s41587-020-0439-x">10.1038/s41587-020-0439-x</a></li>',
+        '<li>Grüning, B., Dale, R., Sjödin, A., Chapman, B. A., Rowe, J., Tomkins-Tinch, C. H., Valieris, R., Köster, J., & Bioconda Team. (2018). Bioconda: sustainable and comprehensive software distribution for the life sciences. Nature Methods, 15(7), 475–476. doi: <a href="https://doi.org/10.1038/s41592-018-0046-7">10.1038/s41592-018-0046-7</a></li>',
+        '<li>da Veiga Leprevost, F., Grüning, B. A., Alves Aflitos, S., Röst, H. L., Uszkoreit, J., Barsnes, H., Vaudel, M., Moreno, P., Gatto, L., Weber, J., Bai, M., Jimenez, R. C., Sachsenberg, T., Pfeuffer, J., Vera Alvarez, R., Griss, J., Nesvizhskii, A. I., & Perez-Riverol, Y. (2017). BioContainers: an open-source and community-driven framework for software standardization. Bioinformatics (Oxford, England), 33(16), 2580–2582. doi: <a href="https://doi.org/10.1093/bioinformatics/btx192">10.1093/bioinformatics/btx192</a></li>',
+        '<li>Quentin Blampey, Kevin Mulder, Margaux Gardet, Stergios Christodoulidis, Charles-Antoine Dutertre, Fabrice André, Florent Ginhoux & Paul-Henry Cournède. Sopa: a technology-invariant pipeline for analyses of image-based spatial omics. Nat Commun 2024 June 11. doi: <a href="https://dx.doi.org/10.1038/s41587-020-0439-x">10.1038/s41587-020-0439-x</a></li>',
+        '<li>Virshup I, Rybakov S, Theis FJ, Angerer P, Wolf FA. bioRxiv 2021.12.16.473007. doi: <a href="https://doi.org/10.1101/2021.12.16.473007">10.1101/2021.12.16.473007</a></li>',
+        '<li>Wolf F, Angerer P, Theis F. SCANPY: large-scale single-cell gene expression data analysis. Genome Biol 19, 15 (2018). doi: <a href="https://doi.org/10.1186/s13059-017-1382-0">10.1186/s13059-017-1382-0</a></li>',
+        '<li>10x Genomics Space Ranger 2.1.0 [Online]: <a href="https://www.10xgenomics.com/support/software/space-ranger">10xgenomics.com/support/software/space-ranger</a></li>',
+        '<li>Marconato L, Palla G, Yamauchi K, Virshup I, Heidari E, Treis T, Toth M, Shrestha R, Vöhringer H, Huber W, Gerstung M, Moore J, Theis F, Stegle O. SpatialData: an open and universal data framework for spatial omics. bioRxiv 2023.05.05.539647; doi:<a href="https://doi.org/10.1101/2023.05.05.539647"> 10.1101/2023.05.05.539647</a></li>',
+    ].join(' ').trim()
 
     return reference_text
 }
@@ -233,22 +246,103 @@ def methodsDescriptionText(mqc_methods_yaml) {
             temp_doi_ref += "(doi: <a href=\'https://doi.org/${doi_ref.replace("https://doi.org/", "").replace(" ", "")}\'>${doi_ref.replace("https://doi.org/", "").replace(" ", "")}</a>), "
         }
         meta["doi_text"] = temp_doi_ref.substring(0, temp_doi_ref.length() - 2)
-    } else meta["doi_text"] = ""
+    }
+    else {
+        meta["doi_text"] = ""
+    }
     meta["nodoi_text"] = meta.manifest_map.doi ? "" : "<li>If available, make sure to update the text to include the Zenodo DOI of version of the pipeline used. </li>"
 
     // Tool references
-    meta["tool_citations"] = ""
-    meta["tool_bibliography"] = ""
-
-    // TODO nf-core: Only uncomment below if logic in toolCitationText/toolBibliographyText has been filled!
-    // meta["tool_citations"] = toolCitationText().replaceAll(", \\.", ".").replaceAll("\\. \\.", ".").replaceAll(", \\.", ".")
-    // meta["tool_bibliography"] = toolBibliographyText()
+    meta["tool_citations"] = toolCitationText().replaceAll(", \\.", ".").replaceAll("\\. \\.", ".").replaceAll(", \\.", ".")
+    meta["tool_bibliography"] = toolBibliographyText()
 
 
     def methods_text = mqc_methods_yaml.text
 
-    def engine =  new groovy.text.SimpleTemplateEngine()
+    def engine = new groovy.text.SimpleTemplateEngine()
     def description_html = engine.createTemplate(methods_text).make(meta)
 
     return description_html.toString()
+}
+
+def validateParams(params) {
+    if (params.containsKey("read")) {
+        error("You use a deprecated Sopa params format. We flattened all parameters to conform to the future nextflow 26.04 strict syntax check.\nSee the nf-core/sopa docs for more details on the new syntax usage: https://nf-co.re/sopa/docs/usage/.")
+    }
+
+    def TRANSCRIPT_BASED_METHODS = ['use_baysor', 'use_comseg', 'use_proseg']
+    def STAINING_BASED_METHODS = ['use_cellpose', 'use_stardist']
+    def ALL_METHODS = STAINING_BASED_METHODS + TRANSCRIPT_BASED_METHODS
+    def IMAGING_ONLY_TECHNOLOGIES = ['macsima', 'phenocycler', 'hyperion', 'ome_tif']
+
+    def technology = params.technology
+    def is_visium_hd = technology == 'visium_hd'
+    def enabled = ALL_METHODS.findAll { params[it] }
+    def enabled_transcript = TRANSCRIPT_BASED_METHODS.findAll { params[it] }
+    def enabled_staining = STAINING_BASED_METHODS.findAll { params[it] }
+
+    def errors = []
+
+
+    if (enabled.isEmpty()) {
+        errors << "At least one segmentation method must be enabled (one of ${ALL_METHODS.join(', ')})."
+    }
+    if (enabled_transcript.size() > 1) {
+        errors << "Only one transcript-based method may be used, but got: ${enabled_transcript.join(', ')}."
+    }
+    if (enabled_staining.size() > 1) {
+        errors << "Only one staining-based method may be used, but got: ${enabled_staining.join(', ')}."
+    }
+
+    //
+    // Segmentation methods compatibility
+    //
+    if (technology in IMAGING_ONLY_TECHNOLOGIES && enabled_transcript) {
+        errors << "Technology '${technology}' has no transcripts, so transcript-based methods are not supported (got: ${enabled_transcript.join(', ')}). Use 'use_cellpose' or 'use_stardist' instead."
+    }
+
+    if (is_visium_hd) {
+        // Visium HD: proseg runs on bins, optionally with stardistas a prior
+        if (params.use_baysor || params.use_comseg) {
+            errors << "'use_baysor' and 'use_comseg' are not supported on Visium HD data. Use 'use_stardist' and/or 'use_proseg' instead."
+        }
+        if (params.use_cellpose && params.use_proseg) {
+            errors << "'use_cellpose' cannot be used as a prior for 'use_proseg' on Visium HD data. Use 'use_stardist' as the prior instead."
+        }
+    }
+    else {
+        // non Visium HD: only cellpose can be chained with a transcript-based method, stardist standalone,
+        if (params.use_stardist && enabled_transcript) {
+            errors << "'use_stardist' cannot be combined with a transcript-based method (got: ${enabled_transcript.join(', ')}) on technology '${technology}'. This combination is only supported for 'visium_hd'. Use 'use_cellpose' as the prior instead, or run 'use_stardist' alone."
+        }
+        if (params.visium_hd_prior_shapes_key != null) {
+            errors << "'visium_hd_prior_shapes_key' is only supported for Visium HD data, but technology is '${technology}'. Use 'prior_shapes_key' instead."
+        }
+    }
+
+    if (errors) {
+        error("Invalid combination of nf-core/sopa parameters:\n" + errors.collect { "  - ${it}" }.join("\n") + "\nSee https://nf-co.re/sopa/docs/usage/ for the supported configurations.")
+    }
+
+    //
+    // Warnings
+    //
+    if (params.prior_shapes_key != null && !enabled_transcript) {
+        log.warn("'prior_shapes_key' is set but no transcript-based method is enabled: it will be ignored.")
+    }
+    if (params.prior_shapes_key != null && is_visium_hd) {
+        log.warn("'prior_shapes_key' is ignored on Visium HD data: use 'visium_hd_prior_shapes_key' instead.")
+    }
+    if (params.use_stardist && params.use_proseg && is_visium_hd && params.visium_hd_prior_shapes_key == null) {
+        log.info("'visium_hd_prior_shapes_key' not provided: 'stardist_boundaries' will be used as a prior for Proseg.")
+    }
+    if (params.use_proseg && !is_visium_hd && params.patch_width_microns != null && params.patch_width_microns != -1) {
+        log.warn("Proseg needs to run on one single patch, but received patch_width_microns=${params.patch_width_microns}: setting it to -1 instead.")
+    }
+    def cellpose_v4 = params.cellpose_version != null ? params.cellpose_version.toString() == '4' : workflow.profile.contains('gpu')
+    if (params.use_cellpose && cellpose_v4 && params.cellpose_model_type != null) {
+        log.warn("Cellpose v4 only supports the pretrained_model argument: 'cellpose_model_type=${params.cellpose_model_type}' will be ignored.")
+    }
+
+    return params
 }

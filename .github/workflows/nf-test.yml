@@ -64,11 +64,12 @@ jobs:
     runs-on: # use self-hosted runners
       - runs-on=${{ github.run_id }}-nf-test
       - runner=4cpu-linux-x64
+      - volume=80gb
     strategy:
       fail-fast: false
       matrix:
         shard: ${{ fromJson(needs.nf-test-changes.outputs.shard) }}
-        profile: [conda, docker, singularity]
+        profile: [docker, singularity] # TODO: add conda back, but only for cellpose
         isMain:
           - ${{ github.base_ref == 'master' || github.base_ref == 'main' }}
         # Exclude conda and singularity on dev
@@ -105,13 +106,12 @@ jobs:
         if: ${{ always() }}
         run: |
           if [[ "${{ steps.run_nf_test.outcome }}" == "failure" ]]; then
-            echo "::error::Test with ${{ matrix.NXF_VER }} failed"
             # Add to workflow summary
             echo "## ❌ Test failed: ${{ matrix.profile }} | ${{ matrix.NXF_VER }} | Shard ${{ matrix.shard }}/${{ env.TOTAL_SHARDS }}" >> $GITHUB_STEP_SUMMARY
             if [[ "${{ matrix.NXF_VER }}" == "latest-everything" ]]; then
               echo "::warning::Test with latest-everything failed but will not cause workflow failure. Please check if the error is expected or if it needs fixing."
-            fi
-            if [[ "${{ matrix.NXF_VER }}" != "latest-everything" ]]; then
+            else
+              echo "::error::Test with ${{ matrix.NXF_VER }} failed"
               exit 1
             fi
           fi

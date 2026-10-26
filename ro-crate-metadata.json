@@ -32,6 +32,15 @@
                     "@id": "docs/images/"
                 },
                 {
+                    "@id": "modules/"
+                },
+                {
+                    "@id": "modules/local/"
+                },
+                {
+                    "@id": "modules/nf-core/"
+                },
+                {
                     "@id": "workflows/"
                 },
                 {
@@ -101,8 +110,12 @@
         },
         {
             "@id": "main.nf",
-            "@type": ["File", "SoftwareSourceCode", "ComputationalWorkflow"],
-            "contributor": [
+            "@type": [
+                "File",
+                "SoftwareSourceCode",
+                "ComputationalWorkflow"
+            ],
+            "author": [
                 {
                     "@id": "https://orcid.org/0000-0002-3836-2889"
                 }
@@ -119,16 +132,30 @@
                 "spatial-transcriptomics",
                 "spatialdata"
             ],
-            "license": ["MIT"],
-            "name": ["nf-core/sopa"],
+            "license": [
+                "MIT"
+            ],
+            "maintainer": [
+                {
+                    "@id": "https://orcid.org/0000-0002-3836-2889"
+                }
+            ],
+            "name": [
+                "nf-core/sopa"
+            ],
             "programmingLanguage": {
                 "@id": "https://w3id.org/workflowhub/workflow-ro-crate#nextflow"
             },
             "sdPublisher": {
                 "@id": "https://nf-co.re/"
             },
-            "url": ["https://github.com/nf-core/sopa", "https://nf-co.re/sopa/1.0.1/"],
-            "version": ["1.0.1"]
+            "url": [
+                "https://github.com/nf-core/sopa",
+                "https://nf-co.re/sopa/1.0.1/"
+            ],
+            "version": [
+                "1.0.1"
+            ]
         },
         {
             "@id": "https://w3id.org/workflowhub/workflow-ro-crate#nextflow",
@@ -204,6 +231,21 @@
             "@id": "docs/images/",
             "@type": "Dataset",
             "description": "Images for the documentation files"
+        },
+        {
+            "@id": "modules/",
+            "@type": "Dataset",
+            "description": "Modules used by the pipeline"
+        },
+        {
+            "@id": "modules/local/",
+            "@type": "Dataset",
+            "description": "Pipeline-specific modules"
+        },
+        {
+            "@id": "modules/nf-core/",
+            "@type": "Dataset",
+            "description": "nf-core modules"
         },
         {
             "@id": "workflows/",
@@ -289,8 +331,10 @@
         {
             "@id": "https://orcid.org/0000-0002-3836-2889",
             "@type": "Person",
+            "affiliation": "CentraleSupélec, Gustave Roussy",
             "email": "quentin.blampey@gmail.com",
-            "name": "Quentin Blampey"
+            "name": "Quentin Blampey",
+            "url": "https://github.com/quentinblampey"
         }
     ]
 }

@@ -10,24 +10,90 @@
             "sample": {
                 "type": "string",
                 "pattern": "^\\S+$",
-                "errorMessage": "Sample name must be provided and cannot contain spaces",
+                "errorMessage": "Sample name cannot contain spaces",
+                "meta": ["sample"]
+            },
+            "id": {
+                "type": "string",
+                "pattern": "^\\S+$",
+                "errorMessage": "ID cannot contain spaces",
                 "meta": ["id"]
             },
-            "fastq_1": {
+            "data_path": {
                 "type": "string",
-                "format": "file-path",
+                "pattern": "^\\S+$",
+                "format": "path",
                 "exists": true,
-                "pattern": "^([\\S\\s]*\\/)?[^\\s\\/]+\\.f(ast)?q\\.gz$",
-                "errorMessage": "FastQ file for reads 1 must be provided, cannot contain spaces and must have extension '.fq.gz' or '.fastq.gz'"
+                "errorMessage": "Data path must exist and not contain spaces"
             },
-            "fastq_2": {
+            "fastq_dir": {
                 "type": "string",
-                "format": "file-path",
+                "pattern": "^\\S+$",
+                "format": "path",
                 "exists": true,
-                "pattern": "^([\\S\\s]*\\/)?[^\\s\\/]+\\.f(ast)?q\\.gz$",
-                "errorMessage": "FastQ file for reads 2 cannot contain spaces and must have extension '.fq.gz' or '.fastq.gz'"
+                "errorMessage": "Path to the fastq directory must exist and not contain spaces",
+                "meta": ["fastq_dir"]
+            },
+            "cytaimage": {
+                "type": "string",
+                "pattern": "^\\S+(tif|tiff)$",
+                "format": "path",
+                "exists": true,
+                "errorMessage": "Path to the cytaimage file must exist, not contain spaces, and be a .tif or .tiff file",
+                "meta": ["cytaimage"]
+            },
+            "colorizedimage": {
+                "type": "string",
+                "pattern": "^\\S+(tif|tiff|jpg|jpeg|btf)$",
+                "format": "path",
+                "exists": true,
+                "errorMessage": "Path to the colorizedimage file must exist, not contain spaces, and be a .tif, .tiff, .btf, .jpg or .jpeg file",
+                "meta": ["colorizedimage"]
+            },
+            "darkimage": {
+                "type": "string",
+                "pattern": "^\\S+(tif|tiff|jpg|jpeg|btf)$",
+                "format": "path",
+                "exists": true,
+                "errorMessage": "Path to the darkimage file must exist, not contain spaces, and be a .tif, .tiff, .btf, .jpg or .jpeg file",
+                "meta": ["darkimage"]
+            },
+            "image": {
+                "type": "string",
+                "pattern": "^\\S+(tif|tiff|jpg|jpeg|btf)$",
+                "format": "path",
+                "exists": true,
+                "errorMessage": "Path to the image must exist, not contain spaces, and be a .tif, .tiff, .btf, .jpg or .jpeg file",
+                "meta": ["image"]
+            },
+            "slide": {
+                "type": "string",
+                "pattern": "^\\S+$",
+                "errorMessage": "Slide name cannot contain spaces",
+                "meta": ["slide"]
+            },
+            "area": {
+                "type": "string",
+                "pattern": "^\\S+$",
+                "errorMessage": "Area name cannot contain spaces",
+                "meta": ["area"]
+            },
+            "manual_alignment": {
+                "type": "string",
+                "pattern": "^\\S+json$",
+                "format": "path",
+                "exists": true,
+                "errorMessage": "Path to the manual_alignment must exist, not contain spaces, and be a .json file",
+                "meta": ["manual_alignment"]
+            },
+            "slidefile": {
+                "type": "string",
+                "pattern": "^\\S+json$",
+                "format": "path",
+                "exists": true,
+                "errorMessage": "Path to the slidefile must exist, not contain spaces, and be a .json file",
+                "meta": ["slidefile"]
             }
-        },
-        "required": ["sample", "fastq_1"]
+        }
     }
 }
