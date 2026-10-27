@@ -308,6 +308,9 @@ def validateParams(params) {
         if (params.use_cellpose && params.use_proseg) {
             errors << "'use_cellpose' cannot be used as a prior for 'use_proseg' on Visium HD data. Use 'use_stardist' as the prior instead."
         }
+        if (params.reader_kwargs != null) {
+            errors << "The reader_kwargs parameter is not supported for Visium HD technology. Please use the visium_hd_imread_page parameter instead, or open an issue."
+        }
     }
     else {
         // non Visium HD: only cellpose can be chained with a transcript-based method, stardist standalone,
