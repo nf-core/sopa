@@ -214,6 +214,11 @@
                 "visium_hd_imread_page": {
                     "type": "number",
                     "description": "Optional page for the imageio reader"
+                },
+                "reader_kwargs": {
+                    "type": "string",
+                    "description": "Additional keyword arguments for the sopa reader, written as an inline python dictionary.",
+                    "help_text": "E.g., to select a specific merscope layer, use '{\"z_layers\": 2}'"
                 }
             },
             "required": ["technology"],
