@@ -225,12 +225,7 @@ def argsToSpatialData(Map meta, String fullres_image_file) {
         technology: params.technology,
     ]
 
-
-    if (params.technology == "visium_hd") {
-        if (params.reader_kwargs != null) {
-            error "The reader_kwargs parameter is not supported for Visium HD technology. Please use the visium_hd_imread_page parameter instead, or open an issue."
-        }
-
+    if (params.technology == "visium_hd") { // params.reader_kwargs not supported for Visium HD
         args.kwargs = [
             dataset_id: meta.id,
             fullres_image_file: fullres_image_file,
