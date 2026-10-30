@@ -3,23 +3,23 @@
         "content": [
             {
                 "FLUO_ANNOTATION": {
-                    "sopa": "2.2.9"
+                    "sopa": "2.2.12"
                 },
                 "PATCH_SEGMENTATION_PROSEG": {
-                    "sopa": "2.2.9",
+                    "sopa": "2.2.12",
                     "proseg": "3.1.1"
                 },
                 "SCANPY_PREPROCESS": {
-                    "sopa": "2.2.9",
-                    "scanpy": "1.12.2"
+                    "sopa": "2.2.12",
+                    "scanpy": "1.12.4"
                 },
                 "TO_SPATIALDATA": {
-                    "sopa": "2.2.9",
+                    "sopa": "2.2.12",
                     "spatialdata": "0.8.0",
                     "spatialdata_io": "0.7.0"
                 },
                 "Workflow": {
-                    "nf-core/sopa": "v1.0.1"
+                    "nf-core/sopa": "v1.0.2"
                 }
             },
             [
@@ -483,10 +483,10 @@
                 
             ]
         ],
-        "timestamp": "2026-05-22T14:42:35.054704",
+        "timestamp": "2026-10-30T13:12:06.264735",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "25.10.2"
+            "nextflow": "26.04.6"
         }
     }
 }

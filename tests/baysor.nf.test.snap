@@ -4,16 +4,16 @@
             8,
             {
                 "RESOLVE_BAYSOR": {
-                    "sopa": "2.2.9",
-                    "baysor": "0.7.1"
+                    "sopa": "2.2.12",
+                    "baysor": null
                 },
                 "TO_SPATIALDATA": {
-                    "sopa": "2.2.9",
+                    "sopa": "2.2.12",
                     "spatialdata": "0.8.0",
                     "spatialdata_io": "0.7.0"
                 },
                 "Workflow": {
-                    "nf-core/sopa": "v1.0.1"
+                    "nf-core/sopa": "v1.0.2"
                 }
             },
             [
@@ -154,18 +154,6 @@
                 "sample_name.zarr/tables/table/obs/area/c",
                 "sample_name.zarr/tables/table/obs/area/c/0",
                 "sample_name.zarr/tables/table/obs/area/zarr.json",
-                "sample_name.zarr/tables/table/obs/avg_assignment_confidence",
-                "sample_name.zarr/tables/table/obs/avg_assignment_confidence/c",
-                "sample_name.zarr/tables/table/obs/avg_assignment_confidence/c/0",
-                "sample_name.zarr/tables/table/obs/avg_assignment_confidence/zarr.json",
-                "sample_name.zarr/tables/table/obs/avg_confidence",
-                "sample_name.zarr/tables/table/obs/avg_confidence/c",
-                "sample_name.zarr/tables/table/obs/avg_confidence/c/0",
-                "sample_name.zarr/tables/table/obs/avg_confidence/zarr.json",
-                "sample_name.zarr/tables/table/obs/baysor_area",
-                "sample_name.zarr/tables/table/obs/baysor_area/c",
-                "sample_name.zarr/tables/table/obs/baysor_area/c/0",
-                "sample_name.zarr/tables/table/obs/baysor_area/zarr.json",
                 "sample_name.zarr/tables/table/obs/cell_id",
                 "sample_name.zarr/tables/table/obs/cell_id/mask",
                 "sample_name.zarr/tables/table/obs/cell_id/mask/zarr.json",
@@ -174,30 +162,6 @@
                 "sample_name.zarr/tables/table/obs/cell_id/values/c/0",
                 "sample_name.zarr/tables/table/obs/cell_id/values/zarr.json",
                 "sample_name.zarr/tables/table/obs/cell_id/zarr.json",
-                "sample_name.zarr/tables/table/obs/cluster",
-                "sample_name.zarr/tables/table/obs/cluster/c",
-                "sample_name.zarr/tables/table/obs/cluster/c/0",
-                "sample_name.zarr/tables/table/obs/cluster/zarr.json",
-                "sample_name.zarr/tables/table/obs/density",
-                "sample_name.zarr/tables/table/obs/density/c",
-                "sample_name.zarr/tables/table/obs/density/c/0",
-                "sample_name.zarr/tables/table/obs/density/zarr.json",
-                "sample_name.zarr/tables/table/obs/elongation",
-                "sample_name.zarr/tables/table/obs/elongation/c",
-                "sample_name.zarr/tables/table/obs/elongation/c/0",
-                "sample_name.zarr/tables/table/obs/elongation/zarr.json",
-                "sample_name.zarr/tables/table/obs/lifespan",
-                "sample_name.zarr/tables/table/obs/lifespan/c",
-                "sample_name.zarr/tables/table/obs/lifespan/c/0",
-                "sample_name.zarr/tables/table/obs/lifespan/zarr.json",
-                "sample_name.zarr/tables/table/obs/max_cluster_frac",
-                "sample_name.zarr/tables/table/obs/max_cluster_frac/c",
-                "sample_name.zarr/tables/table/obs/max_cluster_frac/c/0",
-                "sample_name.zarr/tables/table/obs/max_cluster_frac/zarr.json",
-                "sample_name.zarr/tables/table/obs/n_transcripts",
-                "sample_name.zarr/tables/table/obs/n_transcripts/c",
-                "sample_name.zarr/tables/table/obs/n_transcripts/c/0",
-                "sample_name.zarr/tables/table/obs/n_transcripts/zarr.json",
                 "sample_name.zarr/tables/table/obs/region",
                 "sample_name.zarr/tables/table/obs/region/categories",
                 "sample_name.zarr/tables/table/obs/region/categories/c",
@@ -214,14 +178,6 @@
                 "sample_name.zarr/tables/table/obs/slide/codes",
                 "sample_name.zarr/tables/table/obs/slide/codes/zarr.json",
                 "sample_name.zarr/tables/table/obs/slide/zarr.json",
-                "sample_name.zarr/tables/table/obs/x",
-                "sample_name.zarr/tables/table/obs/x/c",
-                "sample_name.zarr/tables/table/obs/x/c/0",
-                "sample_name.zarr/tables/table/obs/x/zarr.json",
-                "sample_name.zarr/tables/table/obs/y",
-                "sample_name.zarr/tables/table/obs/y/c",
-                "sample_name.zarr/tables/table/obs/y/c/0",
-                "sample_name.zarr/tables/table/obs/y/zarr.json",
                 "sample_name.zarr/tables/table/obs/zarr.json",
                 "sample_name.zarr/tables/table/obsm",
                 "sample_name.zarr/tables/table/obsm/intensities",
@@ -303,10 +259,10 @@
                 
             ]
         ],
-        "timestamp": "2026-05-22T14:38:34.235229",
+        "timestamp": "2026-10-29T18:02:26.385707",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "25.10.2"
+            "nextflow": "26.04.6"
         }
     }
 }

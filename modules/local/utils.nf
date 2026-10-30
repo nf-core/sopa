@@ -48,11 +48,17 @@ def extractSubArgs(Map args, String group) {
             flow_threshold: args.flow_threshold,
             model_type: args.cellpose_model_type,
             pretrained_model: args.pretrained_model,
-            gpu: args.cellpose_use_gpu,
+            gpu: workflow.profile.contains("gpu"),
             min_area: args.min_area_pixels2,
             clip_limit: args.clip_limit,
             clahe_kernel_size: args.clahe_kernel_size,
             gaussian_sigma: args.gaussian_sigma,
+            method_kwargs: args.cellpose_kwargs,
+        ]
+    } else if (group == "download_cellpose") {
+        return [
+            model_type: args.cellpose_model_type,
+            pretrained_model: args.pretrained_model,
             method_kwargs: args.cellpose_kwargs,
         ]
     } else if (group == "stardist") {
@@ -66,6 +72,10 @@ def extractSubArgs(Map args, String group) {
             clahe_kernel_size: args.clahe_kernel_size,
             gaussian_sigma: args.gaussian_sigma,
             method_kwargs: args.stardist_kwargs,
+        ]
+    } else if (group == "download_stardist") {
+        return [
+            model_type: args.stardist_model_type,
         ]
     } else if (group == "baysor") {
         return [
@@ -125,7 +135,7 @@ def extractSubArgs(Map args, String group) {
         ]
     } else if (group == "transcript_patches") {
         return [
-            patch_width_microns: args.patch_width_microns,
+            patch_width_microns: getPatchWidthMicrons(),
             patch_overlap_microns: args.patch_overlap_microns,
             unassigned_value: args.unassigned_value,
             prior_shapes_key: getPriorShapesKey(),
@@ -164,6 +174,11 @@ def getPriorShapesKey() {
     } else {
         return params.use_cellpose ? "cellpose_boundaries" : null
     }
+}
+
+def getPatchWidthMicrons() {
+    // -1 to use only one patch (mandatory for proseg)
+    return params.use_proseg ? -1 : params.patch_width_microns
 }
 
 def getProsegPriorShapesKey() {
@@ -208,16 +223,18 @@ def extractOutsDir(file) {
 def argsToSpatialData(Map meta, String fullres_image_file) {
     def args = [
         technology: params.technology,
-        kwargs: [:],
     ]
 
-    if (params.visium_hd_imread_page != null) {
-        args.kwargs['imread_kwargs'] = ["page": params.visium_hd_imread_page]
-    }
-
-    if (params.technology == "visium_hd") {
-        args.kwargs["dataset_id"] = meta.id
-        args.kwargs["fullres_image_file"] = fullres_image_file
+    if (params.technology == "visium_hd") { // params.reader_kwargs not supported for Visium HD
+        args.kwargs = [
+            dataset_id: meta.id,
+            fullres_image_file: fullres_image_file,
+        ]
+        if (params.visium_hd_imread_page != null) {
+            args.kwargs['imread_kwargs'] = ["page": params.visium_hd_imread_page]
+        }
+    } else {
+        args.kwargs = params.reader_kwargs ?: [:]
     }
 
     return argsCLI(null, args)
