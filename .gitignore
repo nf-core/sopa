@@ -8,7 +8,8 @@ testing*
 *.pyc
 null/
 .lineage/
+.nf-test/
+.nf-test.log
 sandbox
 samplesheets
 lint_*
-.nf-test*
