@@ -4,7 +4,7 @@ channels:
   - bioconda
 dependencies:
   - python=3.12
-  - sopa=2.2.11
+  - sopa=2.2.12
   - pytorch-gpu=2.13.0
   - cuda-version=12.9
   - torchvision=0.28.0
