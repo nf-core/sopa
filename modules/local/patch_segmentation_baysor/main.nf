@@ -3,7 +3,9 @@ process PATCH_SEGMENTATION_BAYSOR {
     tag "${meta.sample}"
 
     conda "${moduleDir}/environment.yml"
-    container "quay.io/nf-core/sopa:2.2.9-baysor"
+    container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
+?         'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/63/632e6172876a3d3f8763c6f9359d7a02b4b87e090bcecdf4774e319513337376/data'
+:         'community.wave.seqera.io/library/python_pip_baysor-cpp_sopabaysor:85c30fc7ddcf34ab' }"
 
     input:
     tuple val(meta), path(sdata_path), val(cli_arguments), val(index), val(n_patches)

@@ -1,3 +1,4 @@
+include { DOWNLOAD_CELLPOSE_MODEL } from '../../../modules/local/download_cellpose_model'
 include { PATCH_SEGMENTATION_CELLPOSE } from '../../../modules/local/patch_segmentation_cellpose'
 include { RESOLVE_CELLPOSE } from '../../../modules/local/resolve_cellpose'
 include { argsCLI } from '../../../modules/local/utils'
@@ -11,9 +12,12 @@ workflow CELLPOSE {
 
     cellpose_args = argsCLI("cellpose")
 
+    ch_model_dir = DOWNLOAD_CELLPOSE_MODEL(argsCLI("download_cellpose")).first()
+
     ch_patches
         .map { meta, sdata_path, patches_file_image -> [meta, sdata_path, patches_file_image.text.trim().toInteger()] }
         .flatMap { meta, sdata_path, n_patches -> (0..<n_patches).collect { index -> [meta, sdata_path, cellpose_args, index, n_patches] } }
+        .combine(ch_model_dir)
         .set { ch_cellpose }
 
     ch_segmented = PATCH_SEGMENTATION_CELLPOSE(ch_cellpose)
