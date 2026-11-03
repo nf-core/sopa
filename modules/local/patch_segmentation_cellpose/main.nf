@@ -6,8 +6,8 @@ process PATCH_SEGMENTATION_CELLPOSE {
     conda "${moduleDir}/environment.yml"
 
     container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
-?         'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/22/22d62d6425b70620138ad8764139528c1acaabf6cd06403134c8439caa1c9a31/data'
-:         'community.wave.seqera.io/library/python_sopa_cellpose:d098579826bbcf24' }"
+?         'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/1c/1c06334f438946057dc2acdc6580080d740a9b416f479035302c898f055fda8b/data'
+:         'community.wave.seqera.io/library/python_sopa_cellpose:b504a8c810aa7c01' }"
 
     input:
     tuple val(meta), path(sdata_path), val(cli_arguments), val(index), val(n_patches), path(model_dir)
