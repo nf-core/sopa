@@ -6,12 +6,12 @@
                     "sopa": "2.2.12"
                 },
                 "PATCH_SEGMENTATION_PROSEG": {
-                    "sopa": "2.2.12",
-                    "proseg": "3.1.1"
+                    "proseg": "3.1.1",
+                    "sopa": "2.2.12"
                 },
                 "SCANPY_PREPROCESS": {
-                    "sopa": "2.2.12",
-                    "scanpy": "1.12.4"
+                    "scanpy": "1.12.4",
+                    "sopa": "2.2.12"
                 },
                 "TO_SPATIALDATA": {
                     "sopa": "2.2.12",
