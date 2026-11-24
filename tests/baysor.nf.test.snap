@@ -4,8 +4,8 @@
             8,
             {
                 "RESOLVE_BAYSOR": {
-                    "sopa": "2.2.12",
-                    "baysor": null
+                    "baysor": null,
+                    "sopa": "2.2.12"
                 },
                 "TO_SPATIALDATA": {
                     "sopa": "2.2.12",
