@@ -4,8 +4,8 @@ process DOWNLOAD_CELLPOSE_MODEL {
     conda "${moduleDir}/environment.yml"
 
     container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
-?         'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/1c/1c06334f438946057dc2acdc6580080d740a9b416f479035302c898f055fda8b/data'
-:         'community.wave.seqera.io/library/python_sopa_cellpose:b504a8c810aa7c01' }"
+?         'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/a7/a78efe857b2648962ab27574b503765c37be7d880bf2f3e6d3594d3c4816abe5/data'
+:         'community.wave.seqera.io/library/python_sopa_cellpose:29454c8abf082ba0' }"
 
     input:
     val cli_arguments

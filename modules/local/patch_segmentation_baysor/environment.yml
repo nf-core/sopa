@@ -6,4 +6,4 @@ dependencies:
   - pip=24.3.1
   - baysor-cpp=0.8.3
   - pip:
-      - sopa[baysor]==2.2.12
+      - sopa[baysor]==2.3.1
