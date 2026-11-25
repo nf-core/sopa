@@ -5,10 +5,10 @@
             {
                 "RESOLVE_CELLPOSE": {
                     "cellpose": "3.1.1.3",
-                    "sopa": "2.2.12"
+                    "sopa": "2.3.1"
                 },
                 "TO_SPATIALDATA": {
-                    "sopa": "2.2.12",
+                    "sopa": "2.3.1",
                     "spatialdata": "0.8.0",
                     "spatialdata_io": "0.7.0"
                 },
@@ -259,7 +259,7 @@
                 
             ]
         ],
-        "timestamp": "2026-10-30T13:05:07.139628",
+        "timestamp": "2026-11-25T11:38:01.696787",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"

@@ -5,10 +5,10 @@
             {
                 "RESOLVE_BAYSOR": {
                     "baysor": null,
-                    "sopa": "2.2.12"
+                    "sopa": "2.3.1"
                 },
                 "TO_SPATIALDATA": {
-                    "sopa": "2.2.12",
+                    "sopa": "2.3.1",
                     "spatialdata": "0.8.0",
                     "spatialdata_io": "0.7.0"
                 },
@@ -259,7 +259,7 @@
                 
             ]
         ],
-        "timestamp": "2026-10-29T18:02:26.385707",
+        "timestamp": "2026-11-24T19:41:50.940389",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"
